@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en" data-base="..">
+<html class="default" lang="en" data-base="../">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -19,126 +19,124 @@
     <script>
       document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";
       document.body.style.display = "none";
-      setTimeout(() => (app ? app.showPage() : document.body.style.removeProperty("display")), 500);
+      setTimeout(() => (window.app ? app.showPage() : document.body.style.removeProperty("display")), 500);
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search">
-          <div class="field">
-            <label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="../assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
-          </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="../index.html" class="title">@embrajs/reactivity - v1.0.0</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="../assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        <a href="../index.html" class="title">@embrajs/reactivity - v1.0.0</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div>
+        </dialog>
+        <a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"
+          ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
         <div class="tsd-page-title">
-          <ul class="tsd-breadcrumb">
-            <li><a href="../modules.html">@embrajs/reactivity</a></li>
-            <li><a href="compute.html">compute</a></li>
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+            <li><a href="" aria-current="page">compute</a></li>
           </ul>
           <h1>Function compute</h1>
         </div>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
-            <li class="tsd-signature tsd-anchor-link">
-              <a id="compute" class="tsd-anchor"></a><span class="tsd-kind-call-signature">compute</span
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><br />    <span
-                class="tsd-kind-parameter"
-                >fn</span
-              ><span class="tsd-signature-symbol">:</span>
-              <a href="../interfaces/ComputeFn.html" class="tsd-signature-type tsd-kind-interface">ComputeFn</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br />    <span
-                class="tsd-kind-parameter"
-                >config</span
-              ><span class="tsd-signature-symbol">?:</span>
-              <a href="../interfaces/ValConfig.html" class="tsd-signature-type tsd-kind-interface">ValConfig</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br /><span
-                class="tsd-signature-symbol"
-                >)</span
-              ><span class="tsd-signature-symbol">:</span>
-              <a href="../interfaces/ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-              ><span class="tsd-signature-symbol">&gt;</span
-              ><a href="#compute" aria-label="Permalink" class="tsd-anchor-icon"
-                ><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg
-              ></a>
-            </li>
-            <li class="tsd-description">
-              <section class="tsd-panel">
-                <h4>Type Parameters</h4>
-                <ul class="tsd-type-parameter-list">
-                  <li>
-                    <span
-                      ><a id="computetvalue" class="tsd-anchor"></a
-                      ><span class="tsd-kind-type-parameter">TValue</span></span
-                    >
-                  </li>
-                </ul>
-              </section>
-              <div class="tsd-parameters">
-                <h4 class="tsd-parameters-title">Parameters</h4>
-                <ul class="tsd-parameter-list">
-                  <li>
-                    <span
-                      ><span class="tsd-kind-parameter">fn</span>:
-                      <a href="../interfaces/ComputeFn.html" class="tsd-signature-type tsd-kind-interface">ComputeFn</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-                      ><span class="tsd-signature-symbol">&gt;</span></span
-                    >
-                  </li>
-                  <li>
-                    <span
-                      ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">config</span>:
-                      <a href="../interfaces/ValConfig.html" class="tsd-signature-type tsd-kind-interface">ValConfig</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-                      ><span class="tsd-signature-symbol">&gt;</span></span
-                    >
-                  </li>
-                </ul>
-              </div>
-              <h4 class="tsd-returns-title">
-                Returns
-                <a href="../interfaces/ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="compute">
+                <span class="tsd-kind-call-signature">compute</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><br />    <span class="tsd-kind-parameter">fn</span><span class="tsd-signature-symbol">:</span>
+                <a href="../interfaces/ComputeFn.html" class="tsd-signature-type tsd-kind-interface">ComputeFn</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="compute.html#computetvalue">TValue</a
-                ><span class="tsd-signature-symbol">&gt;</span>
-              </h4>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/9f776eca11c0a4bfa7f13d87a3e7b13a21b350a6/src/compute.ts#L9"
-                      >compute.ts:9</a
-                    >
-                  </li>
-                </ul>
-              </aside>
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span
+                ><br />    <span class="tsd-kind-parameter">config</span><span class="tsd-signature-symbol">?:</span>
+                <a href="../interfaces/Config.html" class="tsd-signature-type tsd-kind-interface">Config</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br /><span
+                  class="tsd-signature-symbol"
+                  >)</span
+                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">OwnedReadable</span
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                ><span class="tsd-signature-symbol">&gt;</span
+                ><a href="#compute" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </div>
+              <div class="tsd-description">
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="computetvalue"><span class="tsd-kind-type-parameter">TValue</span></span>
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><span class="tsd-kind-parameter">fn</span>:
+                        <a href="../interfaces/ComputeFn.html" class="tsd-signature-type tsd-kind-interface"
+                          >ComputeFn</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
+                      >
+                    </li>
+                    <li>
+                      <span
+                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">config</span>:
+                        <a href="../interfaces/Config.html" class="tsd-signature-type tsd-kind-interface">Config</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <span class="tsd-signature-type">OwnedReadable</span
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
+                  ><span class="tsd-signature-symbol">&gt;</span>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/23577580c0aa93e103ae926b2678f5b208d70ad1/src/compute.ts#L9"
+                        >compute.ts:9</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
             </li>
           </ul>
         </section>
@@ -148,11 +146,10 @@
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-theme-toggle">

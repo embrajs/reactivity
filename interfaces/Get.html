@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="default" lang="en" data-base="..">
+<html class="default" lang="en" data-base="../">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -19,278 +19,287 @@
     <script>
       document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";
       document.body.style.display = "none";
-      setTimeout(() => (app ? app.showPage() : document.body.style.removeProperty("display")), 500);
+      setTimeout(() => (window.app ? app.showPage() : document.body.style.removeProperty("display")), 500);
     </script>
     <header class="tsd-page-toolbar">
       <div class="tsd-toolbar-contents container">
-        <div class="table-cell" id="tsd-search">
-          <div class="field">
-            <label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"
-              ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <use href="../assets/icons.svg#icon-search"></use></svg></label
-            ><input type="text" id="tsd-search-field" aria-label="Search" />
-          </div>
-          <div class="field"><div id="tsd-toolbar-links"></div></div>
-          <ul class="results">
-            <li class="state loading">Preparing search index...</li>
-            <li class="state failure">The search index is not available</li>
-          </ul>
-          <a href="../index.html" class="title">@embrajs/reactivity - v1.0.0</a>
-        </div>
-        <div class="table-cell" id="tsd-widgets">
-          <a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"
-            ><svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <use href="../assets/icons.svg#icon-menu"></use></svg
-          ></a>
-        </div>
+        <a href="../index.html" class="title">@embrajs/reactivity - v1.0.0</a>
+        <div id="tsd-toolbar-links"></div>
+        <button id="tsd-search-trigger" class="tsd-widget" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <use href="../assets/icons.svg#icon-search"></use>
+          </svg>
+        </button>
+        <dialog id="tsd-search" aria-label="Search">
+          <input
+            role="combobox"
+            id="tsd-search-input"
+            aria-controls="tsd-search-results"
+            aria-autocomplete="list"
+            aria-expanded="true"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Search the docs"
+            maxlength="100"
+          />
+          <ul role="listbox" id="tsd-search-results"></ul>
+          <div id="tsd-search-status" aria-live="polite" aria-atomic="true"><div>Preparing search index...</div></div>
+        </dialog>
+        <a href="#" class="tsd-widget menu" id="tsd-toolbar-menu-trigger" data-toggle="menu" aria-label="Menu"
+          ><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <use href="../assets/icons.svg#icon-menu"></use></svg
+        ></a>
       </div>
     </header>
     <div class="container container-main">
       <div class="col-content">
         <div class="tsd-page-title">
-          <ul class="tsd-breadcrumb">
-            <li><a href="../modules.html">@embrajs/reactivity</a></li>
-            <li><a href="Get.html">Get</a></li>
+          <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+            <li><a href="" aria-current="page">Get</a></li>
           </ul>
           <h1>Interface Get</h1>
         </div>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
-            <li class="tsd-signature tsd-anchor-link">
-              <a id="get" class="tsd-anchor"></a><span class="tsd-kind-call-signature">Get</span
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett">T</a>
-              <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-              ><span class="tsd-kind-parameter">val$</span><span class="tsd-signature-symbol">:</span>
-              <a href="ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett">T</a
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-              ><span class="tsd-signature-symbol">:</span>
-              <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett">T</a
-              ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
-                ><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg
-              ></a>
-            </li>
-            <li class="tsd-description">
-              <section class="tsd-panel">
-                <h4>Type Parameters</h4>
-                <ul class="tsd-type-parameter-list">
-                  <li>
-                    <span
-                      ><a id="gett" class="tsd-anchor"></a><span class="tsd-kind-type-parameter">T</span> =
-                      <span class="tsd-signature-type">any</span></span
-                    >
-                  </li>
-                </ul>
-              </section>
-              <div class="tsd-parameters">
-                <h4 class="tsd-parameters-title">Parameters</h4>
-                <ul class="tsd-parameter-list">
-                  <li>
-                    <span
-                      ><span class="tsd-kind-parameter">val$</span>:
-                      <a href="ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett">T</a
-                      ><span class="tsd-signature-symbol">&gt;</span></span
-                    >
-                  </li>
-                </ul>
-              </div>
-              <h4 class="tsd-returns-title">
-                Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett">T</a>
-              </h4>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/9f776eca11c0a4bfa7f13d87a3e7b13a21b350a6/src/typings.ts#L12"
-                      >typings.ts:12</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </li>
-            <li class="tsd-signature tsd-anchor-link">
-              <a id="get-1" class="tsd-anchor"></a><span class="tsd-kind-call-signature">Get</span
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-1">T</a>
-              <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-              ><span class="tsd-kind-parameter">val$</span><span class="tsd-signature-symbol">?:</span>
-              <a href="ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-1">T</a
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-              ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span>
-              <span class="tsd-signature-symbol">|</span>
-              <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-1">T</a
-              ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
-                ><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg
-              ></a>
-            </li>
-            <li class="tsd-description">
-              <section class="tsd-panel">
-                <h4>Type Parameters</h4>
-                <ul class="tsd-type-parameter-list">
-                  <li>
-                    <span
-                      ><a id="gett-1" class="tsd-anchor"></a><span class="tsd-kind-type-parameter">T</span> =
-                      <span class="tsd-signature-type">any</span></span
-                    >
-                  </li>
-                </ul>
-              </section>
-              <div class="tsd-parameters">
-                <h4 class="tsd-parameters-title">Parameters</h4>
-                <ul class="tsd-parameter-list">
-                  <li>
-                    <span
-                      ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">val$</span>:
-                      <a href="ReadonlyVal.html" class="tsd-signature-type tsd-kind-interface">ReadonlyVal</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-1">T</a
-                      ><span class="tsd-signature-symbol">&gt;</span></span
-                    >
-                  </li>
-                </ul>
-              </div>
-              <h4 class="tsd-returns-title">
-                Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-1">T</a>
-              </h4>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/9f776eca11c0a4bfa7f13d87a3e7b13a21b350a6/src/typings.ts#L13"
-                      >typings.ts:13</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </li>
-            <li class="tsd-signature tsd-anchor-link">
-              <a id="get-2" class="tsd-anchor"></a><span class="tsd-kind-call-signature">Get</span
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-2">T</a>
-              <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-              ><span class="tsd-kind-parameter">val$</span><span class="tsd-signature-symbol">:</span>
-              <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-2">T</a
-              ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-              <a href="../types/UnwrapVal.html" class="tsd-signature-type tsd-kind-type-alias">UnwrapVal</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-2">T</a
-              ><span class="tsd-signature-symbol">&gt;</span
-              ><a href="#get-2" aria-label="Permalink" class="tsd-anchor-icon"
-                ><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg
-              ></a>
-            </li>
-            <li class="tsd-description">
-              <section class="tsd-panel">
-                <h4>Type Parameters</h4>
-                <ul class="tsd-type-parameter-list">
-                  <li>
-                    <span
-                      ><a id="gett-2" class="tsd-anchor"></a><span class="tsd-kind-type-parameter">T</span> =
-                      <span class="tsd-signature-type">any</span></span
-                    >
-                  </li>
-                </ul>
-              </section>
-              <div class="tsd-parameters">
-                <h4 class="tsd-parameters-title">Parameters</h4>
-                <ul class="tsd-parameter-list">
-                  <li>
-                    <span
-                      ><span class="tsd-kind-parameter">val$</span>:
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-2">T</a></span
-                    >
-                  </li>
-                </ul>
-              </div>
-              <h4 class="tsd-returns-title">
-                Returns <a href="../types/UnwrapVal.html" class="tsd-signature-type tsd-kind-type-alias">UnwrapVal</a
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="get">
+                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
+                <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-2">T</a
-                ><span class="tsd-signature-symbol">&gt;</span>
-              </h4>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/9f776eca11c0a4bfa7f13d87a3e7b13a21b350a6/src/typings.ts#L14"
-                      >typings.ts:14</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </li>
-            <li class="tsd-signature tsd-anchor-link">
-              <a id="get-3" class="tsd-anchor"></a><span class="tsd-kind-call-signature">Get</span
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-3">T</a>
-              <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-              ><span class="tsd-kind-parameter">val$</span><span class="tsd-signature-symbol">?:</span>
-              <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-3">T</a
-              ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-              <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-              <a href="../types/UnwrapVal.html" class="tsd-signature-type tsd-kind-type-alias">UnwrapVal</a
-              ><span class="tsd-signature-symbol">&lt;</span
-              ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-3">T</a
-              ><span class="tsd-signature-symbol">&gt;</span
-              ><a href="#get-3" aria-label="Permalink" class="tsd-anchor-icon"
-                ><svg viewBox="0 0 24 24"><use href="../assets/icons.svg#icon-anchor"></use></svg
-              ></a>
-            </li>
-            <li class="tsd-description">
-              <section class="tsd-panel">
-                <h4>Type Parameters</h4>
-                <ul class="tsd-type-parameter-list">
-                  <li>
-                    <span
-                      ><a id="gett-3" class="tsd-anchor"></a><span class="tsd-kind-type-parameter">T</span> =
-                      <span class="tsd-signature-type">any</span></span
-                    >
-                  </li>
-                </ul>
-              </section>
-              <div class="tsd-parameters">
-                <h4 class="tsd-parameters-title">Parameters</h4>
-                <ul class="tsd-parameter-list">
-                  <li>
-                    <span
-                      ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">val$</span>:
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-3">T</a></span
-                    >
-                  </li>
-                </ul>
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
+                ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
               </div>
-              <h4 class="tsd-returns-title">
-                Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                <a href="../types/UnwrapVal.html" class="tsd-signature-type tsd-kind-type-alias">UnwrapVal</a
+              <div class="tsd-description">
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="gett"
+                        ><span class="tsd-kind-type-parameter">T</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><span class="tsd-kind-parameter">$</span>:
+                        <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/23577580c0aa93e103ae926b2678f5b208d70ad1/src/typings.ts#L39"
+                        >typings.ts:39</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
+            </li>
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="get-1">
+                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">?:</span>
+                <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="Get.html#gett-3">T</a
-                ><span class="tsd-signature-symbol">&gt;</span>
-              </h4>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/9f776eca11c0a4bfa7f13d87a3e7b13a21b350a6/src/typings.ts#L15"
-                      >typings.ts:15</a
-                    >
-                  </li>
-                </ul>
-              </aside>
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
+                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span>
+                <span class="tsd-signature-symbol">|</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </div>
+              <div class="tsd-description">
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="gett-1"
+                        ><span class="tsd-kind-type-parameter">T</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">$</span>:
+                        <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
+                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/23577580c0aa93e103ae926b2678f5b208d70ad1/src/typings.ts#L40"
+                        >typings.ts:40</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
+            </li>
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="get-2">
+                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
+                ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
+                ><span class="tsd-signature-symbol">&gt;</span
+                ><a href="#get-2" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </div>
+              <div class="tsd-description">
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="gett-2"
+                        ><span class="tsd-kind-type-parameter">T</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><span class="tsd-kind-parameter">$</span>:
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
+                  ><span class="tsd-signature-symbol">&gt;</span>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/23577580c0aa93e103ae926b2678f5b208d70ad1/src/typings.ts#L41"
+                        >typings.ts:41</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
+            </li>
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="get-3">
+                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">?:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
+                ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
+                <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
+                ><span class="tsd-signature-symbol">&gt;</span
+                ><a href="#get-3" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </div>
+              <div class="tsd-description">
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="gett-3"
+                        ><span class="tsd-kind-type-parameter">T</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">$</span>:
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
+                  <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
+                  ><span class="tsd-signature-symbol">&gt;</span>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/23577580c0aa93e103ae926b2678f5b208d70ad1/src/typings.ts#L42"
+                        >typings.ts:42</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
             </li>
           </ul>
         </section>
@@ -300,11 +309,10 @@
           <div class="tsd-navigation settings">
             <details class="tsd-accordion">
               <summary class="tsd-accordion-summary">
-                <h3>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Settings
-                </h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <use href="../assets/icons.svg#icon-chevronDown"></use>
+                </svg>
+                <h3>Settings</h3>
               </summary>
               <div class="tsd-accordion-details">
                 <div class="tsd-theme-toggle">
