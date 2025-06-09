@@ -1,23 +1,23 @@
-import { isVal, UNIQUE_VALUE } from "./utils";
-import { type ValImpl } from "./val";
+import { type ReadableImpl } from "./readable";
+import { isReadable, UNIQUE_VALUE } from "./utils";
 
-const SCOPE: unique symbol = Symbol.for("[@embra/reactivity/batch]");
+const SCOPE = /* @__PURE__ */ Symbol.for("[@embra/reactivity/batch]");
 
 declare const globalThis: {
   [SCOPE]?: boolean;
 };
 
-export const dirtyVals = /* @__PURE__ */ new Set<(() => void) | ValImpl>();
+export const tasks = /* @__PURE__ */ new Set<(() => void) | ReadableImpl>();
 
 export const batchStart = (): boolean => (globalThis[SCOPE] ? false : (globalThis[SCOPE] = true));
 
 export const batchFlush = (): void => {
   if (globalThis[SCOPE]) {
     let error: unknown = UNIQUE_VALUE;
-    for (const v of dirtyVals) {
-      dirtyVals.delete(v);
+    for (const v of tasks) {
+      tasks.delete(v);
 
-      if (isVal(v)) {
+      if (isReadable(v)) {
         if (v.subs_?.size && v.lastSubInvokeVersion_ !== v.$version) {
           v.lastSubInvokeVersion_ = v.$version;
           const value = v.get();

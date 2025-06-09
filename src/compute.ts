@@ -1,27 +1,27 @@
-import { type Get, type ReadonlyVal, type ValConfig } from "./typings";
-import { isVal } from "./utils";
-import { ValImpl } from "./val";
+import { ReadableImpl } from "./readable";
+import { type Get, type Readable, type Config, type OwnedReadable } from "./typings";
+import { isReadable } from "./utils";
 
 export interface ComputeFn<TValue> {
   (get: Get): TValue;
 }
 
-export const compute = <TValue>(fn: ComputeFn<TValue>, config?: ValConfig<TValue>): ReadonlyVal<TValue> => {
+export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>): OwnedReadable<TValue> => {
   let running: boolean | undefined;
 
-  let self: ValImpl<TValue>;
+  let self: ReadableImpl<TValue>;
 
-  const get = <T = any>(val$?: ReadonlyVal<T> | T | { $: ReadonlyVal<T> }): T | undefined => {
-    if (!isVal(val$)) {
-      return val$ as T | undefined;
+  const get = <T = any>($?: Readable<T> | T | { $: Readable<T> }): T | undefined => {
+    if (!isReadable($)) {
+      return $ as T | undefined;
     }
 
-    self.addDep_(val$ as ValImpl);
+    self.addDep_($ as ReadableImpl);
 
-    return val$.get();
+    return $.get();
   };
 
-  return new ValImpl(v => {
+  return new ReadableImpl(v => {
     self = v;
 
     const isFirst = !running;

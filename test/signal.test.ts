@@ -5,15 +5,15 @@
 import matchers from "jest-extended";
 import { describe, expect, it, vi } from "vitest";
 
-import { batch, compute, type Get, type ReadonlyVal, val, type Val, watch } from "../src";
-import { BRAND, isVal } from "../src/utils";
+import { batch, compute, type Get, type Readable, watch, writable } from "../src";
+import { BRAND, isReadable } from "../src/utils";
 
 expect.extend(matchers);
 
 describe("signal", () => {
   it("should return value", () => {
     const v = [1, 2];
-    const s = val(v);
+    const s = writable(v);
     expect(s.value).toEqual(v);
   });
 
@@ -21,39 +21,39 @@ describe("signal", () => {
    * @divergence Signal is not a class in Value Enhancer.
    */
   // it("should inherit from Signal", () => {
-  //   expect(val(0)).toBeInstanceOf(Signal);
+  //   expect(writable(0)).toBeInstanceOf(Signal);
   // });
 
   it("should support .toString()", () => {
-    const s = val(123);
+    const s = writable(123);
     expect(s.toString()).toEqual("123");
   });
 
   it("should support .toJSON()", () => {
-    const s = val(123);
+    const s = writable(123);
     expect(JSON.stringify(s)).toEqual("123");
   });
 
   it("should support JSON.Stringify()", () => {
-    const s = val(123);
+    const s = writable(123);
     expect(JSON.stringify({ s })).toEqual(JSON.stringify({ s: 123 }));
   });
 
   it("should support .valueOf()", () => {
-    const s = val(123);
+    const s = writable(123);
     expect(s).toHaveProperty("valueOf");
     expect(typeof s.valueOf).toBe("function");
     expect(s.valueOf()).toEqual(123);
     expect(+s).toEqual(123);
 
-    const a = val(1);
-    const b = val(2);
+    const a = writable(1);
+    const b = writable(2);
     // @ts-expect-error not sure how to do it in TypeScript
     expect(a + b).toEqual(3);
   });
 
   it("should notify other listeners of changes after one listener is disposed", () => {
-    const s = val(0);
+    const s = writable(0);
     const spy1 = vi.fn((get: Get) => {
       get(s);
     });
@@ -86,20 +86,20 @@ describe("signal", () => {
 
   describe(".peek()", () => {
     it("should get value", () => {
-      const s = val(1);
+      const s = writable(1);
       expect(s.value).toEqual(1);
       expect(s.get()).toEqual(1);
     });
 
     it("should get the updated value after a value change", () => {
-      const s = val(1);
+      const s = writable(1);
       s.value = 2;
       expect(s.value).toEqual(2);
       expect(s.get()).toEqual(2);
     });
 
     it("should not make surrounding effect depend on the signal", () => {
-      const s = val(1);
+      const s = writable(1);
       const spy = vi.fn(() => {
         s.value;
       });
@@ -114,7 +114,7 @@ describe("signal", () => {
     });
 
     it("should not make surrounding computed depend on the signal", () => {
-      const s = val(1);
+      const s = writable(1);
       const spy = vi.fn((get: Get) => {
         get(s);
       });
@@ -137,7 +137,7 @@ describe("signal", () => {
   describe(".subscribe()", () => {
     it("should subscribe to a signal", () => {
       const spy = vi.fn();
-      const a = val(1);
+      const a = writable(1);
 
       a.subscribe(spy);
       expect(spy).toBeCalledTimes(1);
@@ -146,7 +146,7 @@ describe("signal", () => {
 
     it("should run the callback when the signal value changes", () => {
       const spy = vi.fn();
-      const a = val(1);
+      const a = writable(1);
 
       a.subscribe(spy);
 
@@ -156,7 +156,7 @@ describe("signal", () => {
 
     it("should unsubscribe from a signal", () => {
       const spy = vi.fn();
-      const a = val(1);
+      const a = writable(1);
 
       const dispose = a.subscribe(spy);
       dispose();
@@ -168,8 +168,8 @@ describe("signal", () => {
 
     it("should not start triggering on when a signal accessed in the callback changes", () => {
       const spy = vi.fn();
-      const a = val(0);
-      const b = val(0);
+      const a = writable(0);
+      const b = writable(0);
 
       a.subscribe(() => {
         b.value;
@@ -184,8 +184,8 @@ describe("signal", () => {
 
     it("should not cause surrounding effect to subscribe to changes to a signal accessed in the callback", () => {
       const spy = vi.fn();
-      const a = val(0);
-      const b = val(0);
+      const a = writable(0);
+      const b = writable(0);
 
       watch(() => {
         a.subscribe(() => {
@@ -202,7 +202,7 @@ describe("signal", () => {
   });
 
   it("signals should be identified with a symbol", () => {
-    const a = val(0);
+    const a = writable(0);
     expect(a[BRAND]).toEqual(Symbol.for("@embra/reactivity"));
   });
 
@@ -214,7 +214,7 @@ describe("signal", () => {
 
 describe("effect()", () => {
   it("should run the callback immediately", () => {
-    const s = val(123);
+    const s = writable(123);
     const spy = vi.fn((get: Get) => {
       get(s);
     });
@@ -223,7 +223,7 @@ describe("effect()", () => {
   });
 
   it("should subscribe to signals", () => {
-    const s = val(123);
+    const s = writable(123);
     const spy = vi.fn((get: Get) => {
       get(s);
     });
@@ -235,8 +235,8 @@ describe("effect()", () => {
   });
 
   it("should subscribe to multiple signals", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
     const spy = vi.fn((get: Get) => {
       get(a);
       get(b);
@@ -250,8 +250,8 @@ describe("effect()", () => {
   });
 
   it("should dispose of subscriptions", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
     const spy = vi.fn((get: Get) => {
       get(a) + " " + get(b);
     });
@@ -267,7 +267,7 @@ describe("effect()", () => {
   });
 
   it("should unsubscribe from signal", () => {
-    const s = val(123);
+    const s = writable(123);
     const spy = vi.fn(() => {
       s.value;
     });
@@ -280,9 +280,9 @@ describe("effect()", () => {
   });
 
   it("should conditionally unsubscribe from signals", () => {
-    const a = val("a");
-    const b = val("b");
-    const cond = val(true);
+    const a = writable("a");
+    const b = writable("b");
+    const cond = writable(true);
 
     const spy = vi.fn((get: Get) => {
       get(cond) ? get(a) : get(b);
@@ -304,7 +304,7 @@ describe("effect()", () => {
   });
 
   it("should batch writes", () => {
-    const a = val("a");
+    const a = writable("a");
     const spy = vi.fn((get: Get) => {
       get(a);
     });
@@ -320,7 +320,7 @@ describe("effect()", () => {
   });
 
   it("should call the cleanup callback before the next run", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
 
     watch((get: Get) => {
@@ -338,7 +338,7 @@ describe("effect()", () => {
     const spy1 = vi.fn();
     const spy2 = vi.fn();
     const spy3 = vi.fn();
-    const a = val(spy1);
+    const a = writable(spy1);
 
     watch((get: Get) => {
       return get(a);
@@ -371,7 +371,7 @@ describe("effect()", () => {
   });
 
   it("should not recompute if the effect has been notified about changes, but no direct dependency has actually changed", () => {
-    const s = val(0);
+    const s = writable(0);
     const c = compute((get: Get) => {
       get(s);
       return 0;
@@ -389,8 +389,8 @@ describe("effect()", () => {
 
   it("should not recompute dependencies unnecessarily", () => {
     const spy = vi.fn();
-    const a = val(0);
-    const b = val(0);
+    const a = writable(0);
+    const b = writable(0);
     const c = compute(() => {
       b.value;
       spy();
@@ -410,9 +410,9 @@ describe("effect()", () => {
   });
 
   it("should not recompute dependencies out of order", () => {
-    const a = val(1, { name: "a" });
-    const b = val(1, { name: "b" });
-    const c = val(1, { name: "c" });
+    const a = writable(1, { name: "a" });
+    const b = writable(1, { name: "b" });
+    const c = writable(1, { name: "c" });
 
     const spy = vi.fn((get: Get) => get(c));
     const d = compute(spy, { name: "d" });
@@ -445,7 +445,7 @@ describe("effect()", () => {
   });
 
   it("should recompute if a dependency changes during computation after becoming a dependency", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn((get: Get) => {
       if (get(a) === 0) {
         a.value++;
@@ -456,9 +456,9 @@ describe("effect()", () => {
   });
 
   it("should run the cleanup in an implicit batch", () => {
-    const a = val(0);
-    const b = val("a");
-    const c = val("b");
+    const a = writable(0);
+    const b = writable("a");
+    const c = writable("b");
     const spy = vi.fn();
 
     watch((get: Get) => {
@@ -484,7 +484,7 @@ describe("effect()", () => {
   });
 
   it("should not retrigger the effect if the cleanup modifies one of the dependencies", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
 
     watch((get: Get) => {
@@ -502,7 +502,7 @@ describe("effect()", () => {
   });
 
   it("should run the cleanup if the effect disposes itself", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
 
     const dispose = watch((get: Get) => {
@@ -519,7 +519,7 @@ describe("effect()", () => {
   });
 
   it("should not run the effect if the cleanup function disposes it", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
 
     const dispose = watch((get: Get) => {
@@ -537,7 +537,7 @@ describe("effect()", () => {
   it("should not subscribe to anything if first run throws", () => {
     const error = new Error("test");
 
-    const s = val(0);
+    const s = writable(0);
     const spy = vi.fn((get: Get) => {
       get(s);
       throw error;
@@ -550,7 +550,7 @@ describe("effect()", () => {
   });
 
   it("should reset the cleanup if the effect throws", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
     const error = new Error("hello");
 
@@ -569,7 +569,7 @@ describe("effect()", () => {
   });
 
   it("should dispose the effect if the cleanup callback throws", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
     const error = new Error("hello");
 
@@ -591,8 +591,8 @@ describe("effect()", () => {
 
   it("should run cleanups outside any evaluation context", () => {
     const spy = vi.fn();
-    const a = val(0);
-    const b = val(0);
+    const a = writable(0);
+    const b = writable(0);
     const c = compute((get: Get) => {
       if (get(a) === 0) {
         watch(() => {
@@ -627,7 +627,7 @@ describe("effect()", () => {
 
   //   expect(consoleErrorMock).toHaveBeenCalledTimes(0);
 
-  //   const a = val(0);
+  //   const a = writable(0);
   //   let i = 0;
 
   //   const fn = () =>
@@ -651,7 +651,7 @@ describe("effect()", () => {
   // });
 
   // it("should throw on indirect cycles", () => {
-  // 	const a = val(0);
+  // 	const a = writable(0);
   // 	let i = 0;
 
   // 	const c = compute(() => {
@@ -679,7 +679,7 @@ describe("effect()", () => {
   });
 
   it("should allow disposing a running effect", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
     const dispose = watch((get: Get) => {
       if (get(a) === 1) {
@@ -695,7 +695,7 @@ describe("effect()", () => {
   });
 
   it("should not run if it's first been triggered and then disposed in a batch", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn((get: Get) => {
       get(a);
     });
@@ -711,7 +711,7 @@ describe("effect()", () => {
   });
 
   it("should not run if it's been triggered, disposed and then triggered again in a batch", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn((get: Get) => {
       get(a);
     });
@@ -728,8 +728,8 @@ describe("effect()", () => {
   });
 
   it("should not rerun parent effect if a nested child effect's signal's value changes", () => {
-    const parentSignal = val(0);
-    const childSignal = val(0);
+    const parentSignal = writable(0);
+    const childSignal = writable(0);
 
     const parentEffect = vi.fn((get: Get) => {
       get(parentSignal);
@@ -760,20 +760,20 @@ describe("effect()", () => {
 
 describe("compute()", () => {
   it("should return value", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
 
     const c = compute((get: Get) => get(a) + get(b));
     expect(c.value).toEqual("ab");
   });
 
-  it("should be val", () => {
-    expect(isVal(compute(() => 0))).toBe(true);
+  it("should be Observable", () => {
+    expect(isReadable(compute(() => 0))).toBe(true);
   });
 
   it("should return updated value", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
 
     const c = compute((get: Get) => get(a) + get(b));
     expect(c.value).toEqual("ab");
@@ -783,8 +783,8 @@ describe("compute()", () => {
   });
 
   it("should be lazily computed on demand", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
     const spy = vi.fn((get: Get) => get(a) + get(b));
     const c = compute(spy);
     expect(spy).toBeCalledTimes(0);
@@ -798,7 +798,7 @@ describe("compute()", () => {
   });
 
   it("should be computed only when a dependency has changed at some point", () => {
-    const a = val("a");
+    const a = writable("a");
     const spy = vi.fn((get: Get) => {
       return get(a);
     });
@@ -811,7 +811,7 @@ describe("compute()", () => {
   });
 
   it("should recompute if a dependency changes during computation after becoming a dependency", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn((get: Get) => {
       return (a.value = get(a) + 1);
     });
@@ -825,15 +825,15 @@ describe("compute()", () => {
   });
 
   it("should detect simple dependency cycles", () => {
-    const a: ReadonlyVal = compute((get: Get) => get(a));
+    const a: Readable = compute((get: Get) => get(a));
     expect(() => a.value).toThrow(/Cycle detected/);
   });
 
   it("should detect deep dependency cycles", () => {
-    const a: ReadonlyVal = compute((get: Get) => get(b));
-    const b: ReadonlyVal = compute((get: Get) => get(c));
-    const c: ReadonlyVal = compute((get: Get) => get(d));
-    const d: ReadonlyVal = compute((get: Get) => get(a));
+    const a: Readable = compute((get: Get) => get(b));
+    const b: Readable = compute((get: Get) => get(c));
+    const c: Readable = compute((get: Get) => get(d));
+    const d: Readable = compute((get: Get) => get(a));
     expect(() => a.value).toThrow(/Cycle detected/);
   });
 
@@ -851,7 +851,7 @@ describe("compute()", () => {
   });
 
   it("should store thrown errors and recompute only after a dependency changes", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn((get: Get) => {
       get(a);
       throw new Error();
@@ -866,7 +866,7 @@ describe("compute()", () => {
   });
 
   it("should store thrown non-errors and recompute only after a dependency changes", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn();
     const c = compute((get: Get) => {
       get(a);
@@ -899,9 +899,9 @@ describe("compute()", () => {
   });
 
   it("should conditionally unsubscribe from signals", () => {
-    const a = val("a");
-    const b = val("b");
-    const cond = val(true);
+    const a = writable("a");
+    const b = writable("b");
+    const cond = writable(true);
 
     const spy = vi.fn((get: Get) => {
       return get(cond) ? get(a) : get(b);
@@ -927,7 +927,7 @@ describe("compute()", () => {
   });
 
   it("should consider undefined value separate from uninitialized value", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy = vi.fn(() => undefined);
     const c = compute(spy);
 
@@ -938,7 +938,7 @@ describe("compute()", () => {
   });
 
   it("should not leak errors raised by dependencies", () => {
-    const a = val(0);
+    const a = writable(0);
     const b = compute((get: Get) => {
       get(a);
       throw new Error("error");
@@ -956,7 +956,7 @@ describe("compute()", () => {
   });
 
   it("should propagate notifications even right after first subscription", () => {
-    const a = val(0);
+    const a = writable(0);
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => get(b));
     c.value;
@@ -974,7 +974,7 @@ describe("compute()", () => {
   });
 
   it("should get marked as outdated right after first subscription", () => {
-    const s = val(0);
+    const s = writable(0);
     const c = compute((get: Get) => get(s));
     expect(c.value).toBe(0);
 
@@ -986,7 +986,7 @@ describe("compute()", () => {
   });
 
   it("should propagate notification to other listeners after one listener is disposed", () => {
-    const s = val(0);
+    const s = writable(0);
     const c = compute((get: Get) => get(s));
 
     const spy1 = vi.fn((get: Get) => {
@@ -1016,9 +1016,9 @@ describe("compute()", () => {
   });
 
   it("should not recompute dependencies out of order", () => {
-    const a = val(1);
-    const b = val(1);
-    const c = val(1);
+    const a = writable(1);
+    const b = writable(1);
+    const c = writable(1);
 
     const spy = vi.fn((get: Get) => get(c));
     const d = compute(spy);
@@ -1052,8 +1052,8 @@ describe("compute()", () => {
 
   it("should not recompute dependencies unnecessarily", () => {
     const spy = vi.fn();
-    const a = val(0);
-    const b = val(0);
+    const a = writable(0);
+    const b = writable(0);
     const c = compute((get: Get) => {
       get(b);
       spy();
@@ -1077,7 +1077,7 @@ describe("compute()", () => {
 
 describe(".get", () => {
   it("should get value", () => {
-    const s = val(1);
+    const s = writable(1);
     const c = compute(() => s.value);
     expect(c.value).toEqual(1);
     expect(c.get()).toEqual(1);
@@ -1100,7 +1100,7 @@ describe(".get", () => {
   });
 
   it("should refresh value if stale", () => {
-    const a = val(1);
+    const a = writable(1);
     const b = compute((get: Get) => get(a));
     expect(b.value).toEqual(1);
 
@@ -1109,20 +1109,20 @@ describe(".get", () => {
   });
 
   it("should detect simple dependency cycles", () => {
-    const a: ReadonlyVal = compute((get: Get) => get(a));
+    const a: Readable = compute((get: Get) => get(a));
     expect(() => a.value).to.throw(/Cycle detected/);
   });
 
   it("should detect deep dependency cycles", () => {
-    const a: ReadonlyVal = compute((get: Get) => get(b));
-    const b: ReadonlyVal = compute((get: Get) => get(c));
-    const c: ReadonlyVal = compute((get: Get) => get(d));
-    const d: ReadonlyVal = compute(() => a.value);
+    const a: Readable = compute((get: Get) => get(b));
+    const b: Readable = compute((get: Get) => get(c));
+    const c: Readable = compute((get: Get) => get(d));
+    const d: Readable = compute(() => a.value);
     expect(() => a.value).to.throw(/Cycle detected/);
   });
 
   it("should not make surrounding effect depend on the computed", () => {
-    const s = val(1);
+    const s = writable(1);
     const c = compute((get: Get) => get(s));
     const spy = vi.fn(() => {
       c.value;
@@ -1136,7 +1136,7 @@ describe(".get", () => {
   });
 
   it("should not make surrounding computed depend on the computed", () => {
-    const s = val(1);
+    const s = writable(1);
     const c = compute((get: Get) => get(s));
 
     const spy = vi.fn(() => {
@@ -1153,7 +1153,7 @@ describe(".get", () => {
   });
 
   it("should not make surrounding effect depend on the peeked computed's dependencies", () => {
-    const a = val(1);
+    const a = writable(1);
     const b = compute((get: Get) => get(a));
     const spy = vi.fn();
     watch(() => {
@@ -1168,7 +1168,7 @@ describe(".get", () => {
   });
 
   it("should not make surrounding computed depend on peeked computed's dependencies", () => {
-    const a = val(1);
+    const a = writable(1);
     const b = compute((get: Get) => get(a));
     const spy = vi.fn();
     const d = compute(() => {
@@ -1194,7 +1194,7 @@ describe("garbage collection", function () {
   // 		});
 
   it("should be garbage collectable if nothing is listening to its changes", async () => {
-    const s = val(0);
+    const s = writable(0);
     const ref = new WeakRef(compute((get: Get) => get(s)));
 
     (gc as () => void)();
@@ -1204,9 +1204,9 @@ describe("garbage collection", function () {
   });
 
   it("should be garbage collectable after it has lost all of its listeners", async () => {
-    const s = val(0);
+    const s = writable(0);
 
-    let ref: WeakRef<ReadonlyVal>;
+    let ref: WeakRef<Readable>;
     let dispose: () => void;
     (function () {
       const c = compute((get: Get) => get(s));
@@ -1226,8 +1226,8 @@ describe("garbage collection", function () {
 
 describe("graph updates", () => {
   it("should run computeds once for multiple dep changes", async () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
 
     const spy = vi.fn((get: Get) => {
       // debugger;
@@ -1253,7 +1253,7 @@ describe("graph updates", () => {
     //     C
     //     |
     //     D
-    const a = val(2);
+    const a = writable(2);
 
     const b = compute((get: Get) => get(a) - 1);
     const c = compute((get: Get) => get(a) + get(b));
@@ -1279,7 +1279,7 @@ describe("graph updates", () => {
     //  B     C
     //   \   /
     //     D
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => get(a));
 
@@ -1303,7 +1303,7 @@ describe("graph updates", () => {
     //     D
     //     |
     //     E
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => get(a));
 
@@ -1323,7 +1323,7 @@ describe("graph updates", () => {
   it("should bail out if result is the same", () => {
     // Bail out if value of "B" never changes
     // A->B->C
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => {
       get(a);
       return "foo";
@@ -1351,7 +1351,7 @@ describe("graph updates", () => {
     //     E
     //   /   \
     //  F     G
-    const a = val("a");
+    const a = writable("a");
 
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => get(a));
@@ -1412,7 +1412,7 @@ describe("graph updates", () => {
     //    *A
     //   /   \
     // *B     C <- we don't listen to C
-    const a = val("a");
+    const a = writable("a");
 
     const b = compute((get: Get) => get(a));
     const spy = vi.fn((get: Get) => get(a));
@@ -1435,7 +1435,7 @@ describe("graph updates", () => {
     // *B     D <- we don't listen to C
     //  |
     // *C
-    const a = val("a");
+    const a = writable("a");
     const spyB = vi.fn((get: Get) => get(a));
     const b = compute(spyB);
 
@@ -1473,7 +1473,7 @@ describe("graph updates", () => {
     //  B     *C <- returns same value every time
     //   \   /
     //     D
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => {
       get(a);
@@ -1498,7 +1498,7 @@ describe("graph updates", () => {
     //  B *C *D
     //   \ | /
     //     E
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => {
       get(a);
@@ -1521,9 +1521,10 @@ describe("graph updates", () => {
 
 describe("error handling", () => {
   it("should NOT throw when writing to computeds", () => {
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
-    const fn = () => ((b as Val).value = "aa");
+    // @ts-expect-error // b.value is readonly
+    const fn = () => (b.value = "aa");
     // expect(fn).to.throw(/Cannot set property value/);
     /**
      * @divergence follow the native getter and setter behaviors
@@ -1533,7 +1534,7 @@ describe("error handling", () => {
   });
 
   it("should keep graph consistent on errors during activation", () => {
-    const a = val(0);
+    const a = writable(0);
     const b = compute(() => {
       throw new Error("fail");
     });
@@ -1545,7 +1546,7 @@ describe("error handling", () => {
   });
 
   it("should keep graph consistent on errors in computeds", () => {
-    const a = val(0);
+    const a = writable(0);
     const b = compute((get: Get) => {
       if (get(a) === 1) throw new Error("fail");
       return get(a);
@@ -1561,7 +1562,7 @@ describe("error handling", () => {
   });
 
   it("should support lazy branches", () => {
-    const a = val(0);
+    const a = writable(0);
     const b = compute((get: Get) => get(a));
     const c = compute((get: Get) => (get(a) > 0 ? get(a) : get(b)));
 
@@ -1581,7 +1582,7 @@ describe("error handling", () => {
     // *B     *C
     //   \   /
     //     D
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => {
       get(a);
       return "b";
@@ -1625,8 +1626,8 @@ describe("batch/transaction", () => {
   });
 
   it("should delay writes", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
     const spy = vi.fn((get: Get) => {
       get(a) + " " + get(b);
     });
@@ -1640,8 +1641,8 @@ describe("batch/transaction", () => {
   });
 
   it("should delay writes until outermost batch is complete", () => {
-    const a = val("a");
-    const b = val("b");
+    const a = writable("a");
+    const b = writable("b");
     const spy = vi.fn((get: Get) => {
       get(a) + ", " + get(b);
     });
@@ -1661,7 +1662,7 @@ describe("batch/transaction", () => {
   });
 
   it("should read signals written to", () => {
-    const a = val("a");
+    const a = writable("a");
     let result = "";
     batch(() => {
       a.value = "aa";
@@ -1672,7 +1673,7 @@ describe("batch/transaction", () => {
 
   it("should read computed signals with updated source signals", () => {
     // A->B->C->D->E
-    const a = val("a");
+    const a = writable("a");
     const b = compute((get: Get) => get(a));
     const spyC = vi.fn((get: Get) => get(b));
     const c = compute(spyC);
@@ -1703,9 +1704,9 @@ describe("batch/transaction", () => {
     // If no further writes after batch() are possible, than we
     // didn't restore state properly. Most likely "pending" still
     // holds elements that are already processed.
-    const a = val("a");
-    const b = val("b");
-    const c = val("c");
+    const a = writable("a");
+    const b = writable("b");
+    const c = writable("c");
     const d = compute((get: Get) => get(a) + " " + get(b) + " " + get(c));
     let result: string | undefined;
     watch((get: Get) => {
@@ -1721,7 +1722,7 @@ describe("batch/transaction", () => {
 
   it("should not lead to stale signals with .value in batch", () => {
     const invokes: number[][] = [];
-    const counter = val(0);
+    const counter = writable(0);
     const double = compute((get: Get) => get(counter) * 2);
     const triple = compute((get: Get) => get(counter) * 3);
     watch(get => {
@@ -1737,7 +1738,7 @@ describe("batch/transaction", () => {
 
   it("should not lead to stale signals with peek() in batch", () => {
     const invokes: number[][] = [];
-    const counter = val(0);
+    const counter = writable(0);
     const double = compute(get => get(counter) * 2);
     const triple = compute(get => get(counter) * 3);
     watch(get => {
@@ -1752,8 +1753,8 @@ describe("batch/transaction", () => {
   });
 
   it("should run pending effects even if the callback throws", () => {
-    const a = val(0);
-    const b = val(1);
+    const a = writable(0);
+    const b = writable(1);
     const spy1 = vi.fn((get: Get) => {
       get(a);
     });
@@ -1776,7 +1777,7 @@ describe("batch/transaction", () => {
   });
 
   it("should run pending effects even if some effects throw", () => {
-    const a = val(0);
+    const a = writable(0);
     const spy1 = vi.fn((get: Get) => {
       get(a);
     });
@@ -1827,8 +1828,8 @@ describe("batch/transaction", () => {
  */
 // describe("untracked", () => {
 // 	it("should block tracking inside effects", () => {
-// 		const a = val(1);
-// 		const b = val(2);
+// 		const a = writable(1);
+// 		const b = writable(2);
 // 		const spy = vi.fn(() => {
 // 			a.value + b.value;
 // 		});
@@ -1841,7 +1842,7 @@ describe("batch/transaction", () => {
 // 	});
 
 // 	it("should block tracking even when run inside effect run inside untracked", () => {
-// 		const s = val(1);
+// 		const s = writable(1);
 // 		const spy = vi.fn(() => s.value);
 
 // 		untracked(() =>
@@ -1856,8 +1857,8 @@ describe("batch/transaction", () => {
 // 	});
 
 // 	it("should not cause signal assignments throw", () => {
-// 		const a = val(1);
-// 		const aChangedTime = val(0);
+// 		const a = writable(1);
+// 		const aChangedTime = writable(0);
 
 // 		const dispose = watch(() => {
 // 			a.value;
@@ -1875,8 +1876,8 @@ describe("batch/transaction", () => {
 // 	});
 
 // 	it("should block tracking inside computed signals", () => {
-// 		const a = val(1);
-// 		const b = val(2);
+// 		const a = writable(1);
+// 		const b = writable(2);
 // 		const spy = vi.fn(() => a.value + b.value);
 // 		const c = compute(() => untracked(spy));
 

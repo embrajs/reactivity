@@ -1,29 +1,29 @@
-import { batch, batchFlush, batchStart, dirtyVals } from "./batch";
-import { type Get, type ReadonlyVal, type ValDisposer } from "./typings";
-import { identity, isVal, unsubscribe } from "./utils";
+import { batch, batchFlush, batchStart, tasks } from "./batch";
+import { type Disposer, type Get, type Readable } from "./typings";
+import { identity, isReadable, unsubscribe } from "./utils";
 
 export interface WatchEffect {
-  (get: Get, dispose: ValDisposer): (() => void) | undefined | void;
+  (get: Get, dispose: Disposer): (() => void) | undefined | void;
 }
 
-export const watch = (effect: WatchEffect): ValDisposer => {
+export const watch = (effect: WatchEffect): Disposer => {
   let running: boolean | undefined;
   let disposed: boolean | undefined;
-  let collectedDeps: Set<ReadonlyVal> | undefined;
+  let collectedDeps: Set<Readable> | undefined;
 
-  let cleanupEffect: null | undefined | ValDisposer | void;
+  let cleanupEffect: Disposer | null | undefined | void;
 
-  const get = <T = any>(val$?: null | ReadonlyVal<T> | undefined): T | undefined => {
-    if (!isVal(val$)) {
-      return val$ as T | undefined;
+  const get = <T = any>($?: null | Readable<T> | undefined): T | undefined => {
+    if (!isReadable($)) {
+      return $ as T | undefined;
     }
 
-    if (!collectedDeps?.has(val$)) {
-      (collectedDeps ??= new Set()).add(val$);
-      val$.onReaction_(subscription);
+    if (!collectedDeps?.has($)) {
+      (collectedDeps ??= new Set()).add($);
+      $.onReaction_(subscription);
     }
 
-    return val$.get();
+    return $.get();
   };
 
   const subscription = () => {
@@ -31,12 +31,12 @@ export const watch = (effect: WatchEffect): ValDisposer => {
       unsubscribe(collectedDeps, subscription);
       collectedDeps?.clear();
     }
-    dirtyVals.add(runner);
+    tasks.add(runner);
   };
 
   const dispose = () => {
     disposed = true;
-    dirtyVals.delete(runner);
+    tasks.delete(runner);
     effect = identity;
     unsubscribe(collectedDeps, subscription);
     collectedDeps = undefined;

@@ -3,18 +3,18 @@ export { batch, batchFlush, batchStart } from "./batch";
 export { compute, type ComputeFn } from "./compute";
 
 export type {
-  FlattenVal,
+  Flatten,
   Get,
-  ReadonlyVal,
-  UnwrapVal,
-  Val,
-  ValConfig,
-  ValDisposer,
-  ValEqual,
-  ValSetValue,
-  ValSubscriber,
-  ValVersion,
+  Readable,
+  Unwrap,
+  Writable,
+  Config,
+  Disposer,
+  Equal,
+  SetValue,
+  Subscriber,
+  Version,
 } from "./typings";
 
-export { readonlyVal, val } from "./val";
+export { readable, writable, toWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";

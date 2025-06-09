@@ -1,77 +1,76 @@
-import { batchFlush, batchStart, dirtyVals } from "./batch";
+import { batchFlush, batchStart, tasks } from "./batch";
 import {
-  type ReadonlyVal,
-  type Val,
-  type ValConfig,
-  type ValDisposer,
-  type ValSetValue,
-  type ValSubscriber,
-  type ValVersion,
+  type OwnedReadable,
+  type OwnedWritable,
+  type Config,
+  type Disposer,
+  type Readable,
+  type SetValue,
+  type Subscriber,
+  type Version,
+  type Writable,
 } from "./typings";
-import { attachSetter, BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
+import { BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
 
-export type Deps = Map<ValImpl, ValVersion>;
+export type Deps = Map<ReadableImpl, Version>;
 
 const registry = /* @__PURE__ */ new FinalizationRegistry<{
   d: Deps;
-  r: WeakRef<ValImpl>;
+  r: WeakRef<ReadableImpl>;
 }>(({ d, r }) => {
   for (const dep of d.keys()) {
     dep.dependents_?.delete(r);
   }
 });
 
-interface CreateReadonlyVal {
+interface CreateReadable {
   /**
-   * Creates a readonly val with the given value.
+   * Creates a Readonly with the given value.
    *
-   * @returns A tuple with the readonly val and a function to set the value.
+   * @returns A tuple with the Readonly and a function to set the value.
    */
-  <TValue = any>(): [ReadonlyVal<NoInfer<TValue> | undefined>, ValSetValue<NoInfer<TValue> | undefined>];
+  <TValue = any>(): [OwnedReadable<NoInfer<TValue> | undefined>, SetValue<NoInfer<TValue> | undefined>];
   /**
-   * Creates a readonly val with the given value.
+   * Creates a Readonly with the given value.
    *
-   * @param value Value for the val
-   * @param config Optional custom config for the val.
-   * @returns A tuple with the readonly val and a function to set the value.
+   * @param value
+   * @param config Optional custom config.
+   * @returns A tuple with the Readonly and a function to set the value.
    */
-  (value: [], config?: ValConfig<any[]>): [ReadonlyVal<any[]>, ValSetValue<any[]>];
+  (value: [], config?: Config<any[]>): [OwnedReadable<any[]>, SetValue<any[]>];
   /**
-   * Creates a readonly val with the given value.
+   * Creates a Readonly with the given value.
    *
-   * @param value Value for the val
-   * @param config Optional custom config for the val.
-   * @returns A tuple with the readonly val and a function to set the value.
+   * @param value
+   * @param config Optional custom config.
+   * @returns A tuple with the Readonly and a function to set the value.
    */
-  <TValue = any>(
-    value: TValue,
-    config?: ValConfig<TValue>,
-  ): [ReadonlyVal<NoInfer<TValue>>, ValSetValue<NoInfer<TValue>>];
+  <TValue = any>(value: TValue, config?: Config<TValue>): [OwnedReadable<NoInfer<TValue>>, SetValue<NoInfer<TValue>>];
   /**
-   * Creates a readonly val with the given value.
+   * Creates a Readonly with the given value.
    *
-   * @param value Optional value for the val
-   * @param config Optional custom config for the val.
-   * @returns A tuple with the readonly val and a function to set the value.
+   * @param value
+   * @param config Optional custom config.
+   * @returns A tuple with the Readonly and a function to set the value.
    */
   <TValue = any>(
     value?: TValue,
-    config?: ValConfig<TValue>,
-  ): [ReadonlyVal<NoInfer<TValue | undefined>>, ValSetValue<NoInfer<TValue | undefined>>];
+    config?: Config<TValue>,
+  ): [OwnedReadable<NoInfer<TValue | undefined>>, SetValue<NoInfer<TValue | undefined>>];
 }
 
-export class ValImpl<TValue = any> {
+export class ReadableImpl<TValue = any> {
   public readonly [BRAND]: BRAND = BRAND;
 
   /**
    * @internal
    */
-  public dependents_?: Set<WeakRef<ValImpl>>;
+  public dependents_?: Set<WeakRef<ReadableImpl>>;
 
   /**
    * @internal
    */
-  public deps_?: Map<ValImpl, ValVersion>;
+  public deps_?: Map<ReadableImpl, Version>;
 
   /**
    * @internal
@@ -86,7 +85,7 @@ export class ValImpl<TValue = any> {
   /**
    * @internal
    */
-  public lastSubInvokeVersion_: ValVersion = -1;
+  public lastSubInvokeVersion_: Version = -1;
 
   public readonly name?: string;
 
@@ -95,9 +94,9 @@ export class ValImpl<TValue = any> {
   /**
    * @internal
    */
-  public subs_?: Set<ValSubscriber<TValue>>;
+  public subs_?: Set<Subscriber<TValue>>;
 
-  public get $version(): ValVersion {
+  public get $version(): Version {
     this.get();
     return this._version_;
   }
@@ -113,12 +112,12 @@ export class ValImpl<TValue = any> {
   /**
    * @internal
    */
-  private _DEV_ValDisposed_?: Error;
+  private _disposed_?: Error;
 
   /**
    * @internal
    */
-  private _resolveValue_: (self: ValImpl<TValue>) => TValue;
+  private _resolveValue_: (self: ReadableImpl<TValue>) => TValue;
 
   /**
    * @internal
@@ -138,17 +137,17 @@ export class ValImpl<TValue = any> {
   /**
    * @internal
    */
-  private _version_: ValVersion = -1;
+  private _version_: Version = -1;
 
   /**
    * @internal
    */
-  private _weakRefSelf_?: WeakRef<ValImpl<TValue>>;
+  private _weakRefSelf_?: WeakRef<ReadableImpl<TValue>>;
 
   public constructor(
-    resolveValue: (self: ValImpl<TValue>) => TValue,
-    config?: ValConfig<TValue>,
-    deps?: Map<ValImpl, ValVersion>,
+    resolveValue: (self: ReadableImpl<TValue>) => TValue,
+    config?: Config<TValue>,
+    deps?: Map<ReadableImpl, Version>,
   ) {
     this._resolveValue_ = resolveValue;
     this.equal_ = (config?.equal ?? strictEqual) || undefined;
@@ -156,7 +155,7 @@ export class ValImpl<TValue = any> {
     this.deps_ = deps;
   }
 
-  public addDep_(dep: ValImpl): void {
+  public addDep_(dep: ReadableImpl): void {
     if (strictEqual(this.deps_?.get(dep), dep.$version)) return;
 
     (this.deps_ ??= new Map()).set(dep, dep.$version);
@@ -170,9 +169,9 @@ export class ValImpl<TValue = any> {
 
   public dispose(): void {
     if (process.env.NODE_ENV !== "production") {
-      this._DEV_ValDisposed_ = new Error("[val-dev] Val disposed at:");
+      this._disposed_ = new Error("[embra] Readable disposed at:");
     }
-    dirtyVals.delete(this);
+    tasks.delete(this);
     this.dependents_ = undefined;
     if (this.deps_) {
       registry.unregister(this.deps_);
@@ -229,8 +228,8 @@ export class ValImpl<TValue = any> {
    */
   public notify_ = (): void => {
     if (process.env.NODE_ENV !== "production") {
-      if (this._DEV_ValDisposed_) {
-        console.error(new Error("[val-dev] Updating a disposed val."));
+      if (this._disposed_) {
+        console.error(new Error("[embra] Updating a disposed Readable."));
         console.error((this as any)._DEV_ValDisposed_);
       }
     }
@@ -239,12 +238,12 @@ export class ValImpl<TValue = any> {
 
     const isFirst = batchStart();
 
-    dirtyVals.add(this);
+    tasks.add(this);
 
     if (this.dependents_) {
       for (const ref of this.dependents_) {
         const dependent = ref.deref();
-        if (dependent && !dirtyVals.has(dependent)) {
+        if (dependent && !tasks.has(dependent)) {
           dependent.notify_();
         }
       }
@@ -254,7 +253,7 @@ export class ValImpl<TValue = any> {
   };
 
   /** @internal */
-  public onReaction_(subscriber: ValSubscriber<TValue>): void {
+  public onReaction_(subscriber: Subscriber<TValue>): void {
     if (!this.subs_?.size) {
       // start tracking last first on first subscription
       this.lastSubInvokeVersion_ = this.$version;
@@ -262,19 +261,19 @@ export class ValImpl<TValue = any> {
     (this.subs_ ??= new Set()).add(subscriber);
   }
 
-  public reaction(subscriber: ValSubscriber<TValue>): ValDisposer {
+  public reaction(subscriber: Subscriber<TValue>): Disposer {
     this.onReaction_(subscriber);
     return this.unsubscribe.bind(this, subscriber);
   }
 
-  public removeDep_(dep: ValImpl): void {
+  public removeDep_(dep: ReadableImpl): void {
     this.deps_?.delete(dep);
     if (this._weakRefSelf_) {
       dep.dependents_?.delete(this._weakRefSelf_);
     }
   }
 
-  public subscribe(subscriber: ValSubscriber<TValue>): ValDisposer {
+  public subscribe(subscriber: Subscriber<TValue>): Disposer {
     const disposer = this.reaction(subscriber);
     subscriber(this.get());
     return disposer;
@@ -285,7 +284,7 @@ export class ValImpl<TValue = any> {
    *
    * @example
    * ```js
-   * const v$ = val(val(val({ a: 1 })));
+   * const v$ = writable(writable(writable({ a: 1 })));
    * JSON.stringify(v$); // '{"a":1}'
    * ```
    */
@@ -299,7 +298,7 @@ export class ValImpl<TValue = any> {
    *
    * @example
    * ```js
-   * const v$ = val(val(val(1)));
+   * const v$ = writable(writable(writable(1)));
    * console.log(`${v$}`); // "1"
    * ```
    */
@@ -307,12 +306,12 @@ export class ValImpl<TValue = any> {
     return "" + this.toJSON();
   }
 
-  public unsubscribe(subscriber?: (...args: any[]) => any): void {
-    if (subscriber) {
-      this.subs_?.delete(subscriber);
-    } else {
-      this.subs_?.clear();
-    }
+  public unsubscribe(subscriber: (...args: any[]) => any): void {
+    this.subs_?.delete(subscriber);
+  }
+
+  public clear(): void {
+    this.subs_?.clear();
   }
 
   public valueOf(): TValue {
@@ -320,15 +319,15 @@ export class ValImpl<TValue = any> {
   }
 }
 
-export const readonlyVal: CreateReadonlyVal = <TValue = any>(
+export const readable: CreateReadable = <TValue = any>(
   value?: TValue,
-  config?: ValConfig<TValue | undefined>,
-): [ReadonlyVal<NoInfer<TValue> | undefined>, ValSetValue<NoInfer<TValue> | undefined>] => {
+  config?: Config<TValue | undefined>,
+): [OwnedReadable<NoInfer<TValue> | undefined>, SetValue<NoInfer<TValue> | undefined>] => {
   let currentValue = value;
 
   const get = () => currentValue;
 
-  const v = new ValImpl(get, config);
+  const v = new ReadableImpl(get, config);
 
   const set = (value: TValue | undefined): void => {
     if (!v.equal_?.(value, currentValue)) {
@@ -340,33 +339,49 @@ export const readonlyVal: CreateReadonlyVal = <TValue = any>(
   return [v, set];
 };
 
-interface CreateVal {
-  /**
-   * Creates a writable val.
-   * @returns A val with undefined value.
-   */
-  <TValue = any>(): Val<TValue | undefined>;
-  /**
-   * Creates a writable val.
-   * @param value Initial value.
-   * @param config Optional custom config.
-   */
-  (value: [], config?: ValConfig<any[]>): Val<any[]>;
-  /**
-   * Creates a writable val.
-   * @param value Initial value.
-   * @param config Optional custom config.
-   */
-  <TValue = any>(value: TValue, config?: ValConfig<TValue>): Val<NoInfer<TValue>>;
-  /**
-   * Creates a writable val.
-   * @param value Initial value.
-   * @param config Optional custom config.
-   */
-  <TValue = any>(value?: TValue, config?: ValConfig<TValue | undefined>): Val<NoInfer<TValue>>;
+export interface ToWritable {
+  <TValue>($: OwnedReadable<TValue>, set: (this: void, value: TValue) => void): OwnedWritable<TValue>;
+  <TValue>($: Readable<TValue>, set: (this: void, value: TValue) => void): Writable<TValue>;
 }
 
-export const val: CreateVal = <TValue = any>(
+/**
+ * Converts a Readable to a Writable By adding a setter function.
+ * @param $
+ * @param set a function that sets the value of Readable.
+ * @returns The same Readable with the new setter.
+ */
+export const toWritable: ToWritable = <TValue>(
+  $: Readable<TValue>,
+  set: (this: void, value: TValue) => void,
+): OwnedWritable<TValue> => ((($ as OwnedWritable<TValue>).set = set), $ as OwnedWritable<TValue>);
+
+interface CreateWritable {
+  /**
+   * Creates a Writable.
+   * @returns A Writable with undefined value.
+   */
+  <TValue = any>(): Writable<TValue | undefined>;
+  /**
+   * Creates a Writable.
+   * @param value Initial value.
+   * @param config Optional custom config.
+   */
+  (value: [], config?: Config<any[]>): Writable<any[]>;
+  /**
+   * Creates a Writable.
+   * @param value Initial value.
+   * @param config Optional custom config.
+   */
+  <TValue = any>(value: TValue, config?: Config<TValue>): Writable<NoInfer<TValue>>;
+  /**
+   * Creates a Writable.
+   * @param value Initial value.
+   * @param config Optional custom config.
+   */
+  <TValue = any>(value?: TValue, config?: Config<TValue | undefined>): Writable<NoInfer<TValue>>;
+}
+
+export const writable: CreateWritable = <TValue = any>(
   value?: TValue,
-  config?: ValConfig<TValue>,
-): Val<NoInfer<TValue | undefined>> => attachSetter(...readonlyVal(value, config));
+  config?: Config<TValue>,
+): OwnedWritable<NoInfer<TValue | undefined>> => toWritable(...readable(value, config));

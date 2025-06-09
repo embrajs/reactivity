@@ -1,11 +1,4 @@
-import {
-  type ReadonlyVal,
-  type Val,
-  type ValDisposer,
-  type ValInputsValueTuple,
-  type ValSubscriber,
-  type ValVersion,
-} from "./typings";
+import { type $sValueTuple, type Readable, type Version } from "./typings";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -15,47 +8,20 @@ export const UNIQUE_VALUE: unique symbol = /* @__PURE__ */ Symbol();
 export type UNIQUE_VALUE = typeof UNIQUE_VALUE;
 
 /**
- * Set the value of a val.
- * It works for both `Val` and `ReadonlyVal` type (if the `ReadonlyVal` is actually a `Val`).
- * Do nothing if the val is really `ReadonlyVal`.
- */
-export const trySetValue = <TValue>(val: ReadonlyVal<TValue>, value: TValue): void => (val as Val<TValue>).set?.(value);
-
-export const setValue = <TValue>(val: Val<TValue>, value: TValue): void => val.set(value);
-
-/**
- * Subscribe to value changes with immediate emission.
- * @param val
- * @param subscriber
- * @returns a disposer function that cancels the subscription
- */
-export const subscribe = <TValue>(val: ReadonlyVal<TValue>, subscriber: ValSubscriber<TValue>): ValDisposer =>
-  val.subscribe(subscriber);
-
-/**
- * Subscribe to value changes without immediate emission.
- * @param val
- * @param subscriber
- * @returns a disposer function that cancels the subscription
- */
-export const reaction = <TValue>(val: ReadonlyVal<TValue>, subscriber: ValSubscriber<TValue>): ValDisposer =>
-  val.reaction(subscriber);
-
-/**
  * Remove the given subscriber.
  * Remove all if no subscriber provided.
- * @param val
+ * @param $
  * @param subscriber
  */
 export const unsubscribe = (
-  val: Iterable<ReadonlyVal> | null | ReadonlyVal | undefined,
-  subscriber?: (...args: any[]) => any,
+  $: Iterable<Readable> | Readable | null | undefined,
+  subscriber: (...args: any[]) => any,
 ): void => {
-  if (val) {
-    if (isVal(val)) {
-      val.unsubscribe(subscriber);
+  if ($) {
+    if (isReadable($)) {
+      $.unsubscribe(subscriber);
     } else {
-      for (const v of val) {
+      for (const v of $) {
         v.unsubscribe(subscriber);
       }
     }
@@ -98,41 +64,22 @@ export const arrayShallowEqual = (arrA: any, arrB: any): boolean => {
   return true;
 };
 
-const getValue = <TValue>(val: ReadonlyVal<TValue>): TValue => val.value;
+const getValue = <TValue>($: Readable<TValue>): TValue => $.value;
 
-export const getValues = <TValInputs extends readonly ReadonlyVal[]>(
-  valInputs: TValInputs,
-): [...ValInputsValueTuple<TValInputs>] => valInputs.map(getValue) as [...ValInputsValueTuple<TValInputs>];
+export const getValues = <T extends readonly Readable[]>($s: T): [...$sValueTuple<T>] =>
+  $s.map(getValue) as [...$sValueTuple<T>];
 
-export const getValVersion = (val$: ReadonlyVal): ValVersion => val$.$version;
+export const getVersion = ($: Readable): Version => $.$version;
 
-/**
- * Attach a new setter to a val.
- * @param val$ a readonly Val
- * @param set a function that sets the value of val$
- * @returns The same val$ with the new setter.
- */
-export const attachSetter = <TValue>(
-  val$: ReadonlyVal<TValue>,
-  set: (this: void, value: TValue) => void,
-): Val<TValue> => (((val$ as Val<TValue>).set = set), val$ as Val<TValue>);
-
-interface IsVal {
-  (val$: unknown): val$ is ReadonlyVal;
-  (val$: any): val$ is ReadonlyVal;
-  <T extends ReadonlyVal>(val$: T): val$ is T extends ReadonlyVal ? T : never;
+interface IsReadable {
+  <T extends Readable>($: T): $ is T;
+  ($: unknown): $ is Readable;
+  ($: any): $ is Readable;
 }
 
 /**
- * Checks if `val` is `ReadonlyVal` or `Val`.
+ * Checks if $ is is a Readable$.
  *
- * @returns `true` if `val` is `ReadonlyVal` or `Val`.
+ * @returns `true` if $ is Readable$.
  */
-export const isVal: IsVal = (val$: unknown): val$ is ReadonlyVal =>
-  (val$ as ReadonlyVal | undefined)?.[BRAND] === BRAND;
-
-/**
- * Checks if `val` is a readonly `Val`.
- * @returns `true` if `val` is a readonly `Val`.
- */
-export const isReadonly = <TValue>(val$: ReadonlyVal<TValue>): val$ is Val<TValue> => !(val$ as Val)?.set;
+export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;

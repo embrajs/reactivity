@@ -1,6 +1,7 @@
 {
   "language": "en",
   "words": [
+    "computeds",
     "coverallsapp",
     "CRIMX",
     "embra",
@@ -14,7 +15,7 @@
     "treeshake",
     "tsup",
     "typedoc",
-    "Vals",
+    "unmark",
     "vite",
     "vitest",
     "wopjs",
