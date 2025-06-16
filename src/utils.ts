@@ -78,8 +78,8 @@ interface IsReadable {
 }
 
 /**
- * Checks if $ is is a Readable$.
+ * Checks if $ is is a Readable.
  *
- * @returns `true` if $ is Readable$.
+ * @returns `true` if $ is Readable.
  */
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
