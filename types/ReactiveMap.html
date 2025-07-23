@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>Unwrap | @embrajs/reactivity - v1.0.0</title>
+    <title>ReactiveMap | @embrajs/reactivity - v1.0.0</title>
     <meta name="description" content="Documentation for @embrajs/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,27 +55,30 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">Unwrap</a></li>
+            <li><a href="" aria-current="page">ReactiveMap</a></li>
           </ul>
-          <h1>Type Alias Unwrap&lt;T&gt;</h1>
+          <h1>Type Alias ReactiveMap&lt;K, V&gt;</h1>
         </div>
         <div class="tsd-signature">
-          <span class="tsd-kind-type-alias">Unwrap</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
-          <span class="tsd-signature-keyword">extends</span>
-          <a href="../interfaces/Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
-          ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-keyword">infer</span>
-          <span class="tsd-kind-type-parameter">TValue</span><span class="tsd-signature-symbol">&gt;</span>
-          <span class="tsd-signature-symbol">?</span>
-          <span class="tsd-signature-type tsd-kind-type-parameter">TValue</span>
-          <span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
+          <span class="tsd-kind-type-alias">ReactiveMap</span><span class="tsd-signature-symbol">:</span>
+          <span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span
+          ><a href="../interfaces/OwnedReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
+            >OwnedReactiveMap</a
+          ><span class="tsd-signature-symbol">&lt;</span
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+          ><span class="tsd-signature-symbol">,</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
+          <span class="tsd-signature-type">&quot;dispose&quot;</span><span class="tsd-signature-symbol">&gt;</span>
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
           <ul class="tsd-type-parameter-list">
             <li>
-              <span id="t"><span class="tsd-kind-type-parameter">T</span></span>
+              <span id="k"><span class="tsd-kind-type-parameter">K</span></span>
+            </li>
+            <li>
+              <span id="v"><span class="tsd-kind-type-parameter">V</span></span>
             </li>
           </ul>
         </section>
@@ -84,8 +87,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/a1063f9e8404bc2acf847038991f4029f83a054f/src/typings.ts#L99"
-                >src/typings.ts:99</a
+                href="https://github.com/embrajs/reactivity/blob/a1063f9e8404bc2acf847038991f4029f83a054f/src/collections/reactiveMap.ts#L178"
+                >src/collections/reactiveMap.ts:178</a
               >
             </li>
           </ul>
