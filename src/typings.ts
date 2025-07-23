@@ -89,7 +89,7 @@ export interface OwnedReadable<TValue = any> extends Readable<TValue> {
   /**
    * Remove all subscribers.
    */
-  clear(): void;
+  unsubscribeAll(): void;
 }
 
 export type SetValue<TValue = any> = (value: TValue) => void;
@@ -118,5 +118,5 @@ export interface OwnedWritable<TValue = any> extends Writable<TValue> {
   /**
    * Remove all subscribers.
    */
-  clear(): void;
+  unsubscribeAll(): void;
 }

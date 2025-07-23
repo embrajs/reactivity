@@ -1,4 +1,4 @@
-import { batchFlush, batchStart, tasks } from "./batch";
+import { batchFlush, batchStart, BATCH_SCOPE, tasks } from "./batch";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -82,11 +82,6 @@ export class ReadableImpl<TValue = any> {
    */
   public equal_?: (newValue: TValue, oldValue: TValue) => boolean;
 
-  /**
-   * @internal
-   */
-  public lastSubInvokeVersion_: Version = -1;
-
   public readonly name?: string;
 
   public set?: (value: TValue) => void;
@@ -108,6 +103,11 @@ export class ReadableImpl<TValue = any> {
   public set value(value: TValue) {
     this.set?.(value);
   }
+
+  /**
+   * @internal
+   */
+  private lastSubInvokeVersion_: Version = -1;
 
   /**
    * @internal
@@ -153,6 +153,25 @@ export class ReadableImpl<TValue = any> {
     this.equal_ = (config?.equal ?? strictEqual) || undefined;
     this.name = config?.name;
     this.deps_ = deps;
+  }
+
+  /** @internal */
+  public [BATCH_SCOPE](): void {
+    let error: unknown = UNIQUE_VALUE;
+    if (this.subs_?.size && this.lastSubInvokeVersion_ !== this.$version) {
+      this.lastSubInvokeVersion_ = this.$version;
+      const value = this.get();
+      for (const sub of this.subs_) {
+        try {
+          sub(value);
+        } catch (e) {
+          error = e;
+        }
+      }
+    }
+    if (error !== UNIQUE_VALUE) {
+      throw error;
+    }
   }
 
   public addDep_(dep: ReadableImpl): void {
@@ -310,7 +329,7 @@ export class ReadableImpl<TValue = any> {
     this.subs_?.delete(subscriber);
   }
 
-  public clear(): void {
+  public unsubscribeAll(): void {
     this.subs_?.clear();
   }
 
@@ -360,25 +379,25 @@ interface CreateWritable {
    * Creates a Writable.
    * @returns A Writable with undefined value.
    */
-  <TValue = any>(): Writable<TValue | undefined>;
+  <TValue = any>(): OwnedWritable<TValue | undefined>;
   /**
    * Creates a Writable.
    * @param value Initial value.
    * @param config Optional custom config.
    */
-  (value: [], config?: Config<any[]>): Writable<any[]>;
+  (value: [], config?: Config<any[]>): OwnedWritable<any[]>;
   /**
    * Creates a Writable.
    * @param value Initial value.
    * @param config Optional custom config.
    */
-  <TValue = any>(value: TValue, config?: Config<TValue>): Writable<NoInfer<TValue>>;
+  <TValue = any>(value: TValue, config?: Config<TValue>): OwnedWritable<TValue>;
   /**
    * Creates a Writable.
    * @param value Initial value.
    * @param config Optional custom config.
    */
-  <TValue = any>(value?: TValue, config?: Config<TValue | undefined>): Writable<NoInfer<TValue>>;
+  <TValue = any>(value?: TValue, config?: Config<TValue | undefined>): OwnedWritable<TValue>;
 }
 
 export const writable: CreateWritable = <TValue = any>(
