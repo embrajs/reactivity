@@ -83,3 +83,17 @@ interface IsReadable {
  * @returns `true` if $ is Readable.
  */
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
+
+export const invokeEach = <T>(iterable: Iterable<(value: T) => any>, value: T) => {
+  let error: unknown = UNIQUE_VALUE;
+  for (const fn of iterable) {
+    try {
+      fn(value);
+    } catch (e) {
+      error = e;
+    }
+  }
+  if (error !== UNIQUE_VALUE) {
+    throw error;
+  }
+};

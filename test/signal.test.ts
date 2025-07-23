@@ -18,7 +18,7 @@ describe("signal", () => {
   });
 
   /**
-   * @divergence Signal is not a class in Value Enhancer.
+   * @divergence Signal is not a class in @embra/reactivity.
    */
   // it("should inherit from Signal", () => {
   //   expect(writable(0)).toBeInstanceOf(Signal);

@@ -18,3 +18,10 @@ export type {
 
 export { readable, writable, toWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";
+
+export {
+  reactiveMap,
+  type OwnedReactiveMap,
+  type ReactiveMap,
+  type ReactiveMapChanged,
+} from "./collections/reactiveMap";
