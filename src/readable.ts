@@ -112,7 +112,7 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  private _disposed_?: Error;
+  private _disposed_?: Error | true;
 
   /**
    * @internal
@@ -187,8 +187,11 @@ export class ReadableImpl<TValue = any> {
   }
 
   public dispose(): void {
+    if (this._disposed_) return;
     if (process.env.NODE_ENV !== "production") {
       this._disposed_ = new Error("[embra] Readable disposed at:");
+    } else {
+      this._disposed_ = true;
     }
     tasks.delete(this);
     this.dependents_ = undefined;
@@ -246,10 +249,10 @@ export class ReadableImpl<TValue = any> {
    * @internal
    */
   public notify_ = (): void => {
-    if (process.env.NODE_ENV !== "production") {
-      if (this._disposed_) {
-        console.error(new Error("[embra] Updating a disposed Readable."));
-        console.error((this as any)._DEV_ValDisposed_);
+    if (this._disposed_) {
+      console.error(new Error("disposed"));
+      if (process.env.NODE_ENV !== "production") {
+        console.error(this._disposed_);
       }
     }
 

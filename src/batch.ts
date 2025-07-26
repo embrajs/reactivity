@@ -7,7 +7,15 @@ declare const globalThis: {
   [BATCH_SCOPE]?: boolean;
 };
 
-export const tasks = /* @__PURE__ */ new Set<{ [BATCH_SCOPE]: () => void }>();
+export type BatchTask<O extends object = object> = O & {
+  [BATCH_SCOPE]: () => void;
+};
+
+export const tasks = /* @__PURE__ */ new Set<BatchTask>();
+
+export const toTask = <T extends object>(target: T, fn: () => void): BatchTask<T> => (
+  ((target as BatchTask)[BATCH_SCOPE] = fn), target as BatchTask<T>
+);
 
 export const batchStart = (): boolean => (globalThis[BATCH_SCOPE] ? false : (globalThis[BATCH_SCOPE] = true));
 
