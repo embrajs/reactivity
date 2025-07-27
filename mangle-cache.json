@@ -1,1 +1,14 @@
-{}
+{
+  "addDep_": "d",
+  "data_": "a",
+  "delete_": "l",
+  "dependents_": "n",
+  "deps_": "p",
+  "equal_": "e",
+  "multi_": "m",
+  "notify_": "y",
+  "onReaction_": "o",
+  "single_": "s",
+  "task_": "k",
+  "upsert_": "u"
+}

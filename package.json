@@ -26,7 +26,7 @@
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --coverage",
     "build": "tsup",
-    "build:min": "MINIFY=true tsup && echo '' && gzip-size dist/index.mjs dist/index.js",
+    "build:min": "MINIFY=true tsup --env.NODE_ENV production && echo '' && gzip-size dist/index.mjs dist/index.js",
     "release": "commit-and-tag-version"
   },
   "keywords": [

@@ -1,4 +1,4 @@
-import { batch, batchFlush, batchStart, BATCH_SCOPE, tasks } from "./batch";
+import { batch, batchFlush, batchStart, tasks } from "./batch";
 import { type Disposer, type Get, type Readable } from "./typings";
 import { identity, isReadable, unsubscribe } from "./utils";
 
@@ -85,7 +85,7 @@ export const watch = (effect: WatchEffect): Disposer => {
       isBatchTop && batchFlush();
     }
   };
-  runner[BATCH_SCOPE] = runner;
+  runner.task_ = runner;
 
   runner();
 

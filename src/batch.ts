@@ -1,37 +1,31 @@
+import { context } from "./context";
 import { UNIQUE_VALUE } from "./utils";
 
-export const BATCH_SCOPE = /* @__PURE__ */ Symbol.for("[@embra/reactivity/batch]");
-export type BATCH_SCOPE = typeof BATCH_SCOPE;
-
-declare const globalThis: {
-  [BATCH_SCOPE]?: boolean;
-};
-
 export type BatchTask<O extends object = object> = O & {
-  [BATCH_SCOPE]: () => void;
+  task_: () => void;
 };
 
-export const tasks = /* @__PURE__ */ new Set<BatchTask>();
+export const tasks: Set<BatchTask> = /* @__PURE__ */ (() => context.tasks_)();
 
 export const toTask = <T extends object>(target: T, fn: () => void): BatchTask<T> => (
-  ((target as BatchTask)[BATCH_SCOPE] = fn), target as BatchTask<T>
+  ((target as BatchTask).task_ = fn), target as BatchTask<T>
 );
 
-export const batchStart = (): boolean => (globalThis[BATCH_SCOPE] ? false : (globalThis[BATCH_SCOPE] = true));
+export const batchStart = (): boolean => !context.batching_ && (context.batching_ = true);
 
 export const batchFlush = (): void => {
-  if (globalThis[BATCH_SCOPE]) {
+  if (context.batching_) {
     let error: unknown = UNIQUE_VALUE;
     for (const task of tasks) {
       tasks.delete(task);
       try {
-        task[BATCH_SCOPE]();
+        task.task_();
       } catch (e) {
         error = e;
       }
     }
 
-    globalThis[BATCH_SCOPE] = false;
+    context.batching_ = false;
 
     if (error !== UNIQUE_VALUE) {
       throw error;

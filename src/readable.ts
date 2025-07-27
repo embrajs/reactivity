@@ -1,4 +1,4 @@
-import { batchFlush, batchStart, BATCH_SCOPE, tasks } from "./batch";
+import { batchFlush, batchStart, tasks } from "./batch";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -75,11 +75,6 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  public eager_?: boolean;
-
-  /**
-   * @internal
-   */
   public equal_?: (newValue: TValue, oldValue: TValue) => boolean;
 
   public readonly name?: string;
@@ -89,7 +84,7 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  public subs_?: Set<Subscriber<TValue>>;
+  private _subs_?: Set<Subscriber<TValue>>;
 
   public get $version(): Version {
     this.get();
@@ -107,7 +102,7 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  private lastSubInvokeVersion_: Version = -1;
+  private _lastSubInvokeVersion_: Version = -1;
 
   /**
    * @internal
@@ -156,12 +151,12 @@ export class ReadableImpl<TValue = any> {
   }
 
   /** @internal */
-  public [BATCH_SCOPE](): void {
+  public task_(): void {
     let error: unknown = UNIQUE_VALUE;
-    if (this.subs_?.size && this.lastSubInvokeVersion_ !== this.$version) {
-      this.lastSubInvokeVersion_ = this.$version;
+    if (this._subs_?.size && this._lastSubInvokeVersion_ !== this.$version) {
+      this._lastSubInvokeVersion_ = this.$version;
       const value = this.get();
-      for (const sub of this.subs_) {
+      for (const sub of this._subs_) {
         try {
           sub(value);
         } catch (e) {
@@ -276,11 +271,11 @@ export class ReadableImpl<TValue = any> {
 
   /** @internal */
   public onReaction_(subscriber: Subscriber<TValue>): void {
-    if (!this.subs_?.size) {
+    if (!this._subs_?.size) {
       // start tracking last first on first subscription
-      this.lastSubInvokeVersion_ = this.$version;
+      this._lastSubInvokeVersion_ = this.$version;
     }
-    (this.subs_ ??= new Set()).add(subscriber);
+    (this._subs_ ??= new Set()).add(subscriber);
   }
 
   public reaction(subscriber: Subscriber<TValue>): Disposer {
@@ -329,11 +324,11 @@ export class ReadableImpl<TValue = any> {
   }
 
   public unsubscribe(subscriber: (...args: any[]) => any): void {
-    this.subs_?.delete(subscriber);
+    this._subs_?.delete(subscriber);
   }
 
   public unsubscribeAll(): void {
-    this.subs_?.clear();
+    this._subs_?.clear();
   }
 
   public valueOf(): TValue {

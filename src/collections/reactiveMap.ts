@@ -1,4 +1,4 @@
-import { batch, type BatchTask, tasks, toTask } from "../batch";
+import { batchFlush, batchStart, type BatchTask, tasks, toTask } from "../batch";
 import { type AddEventListener, event, send, size } from "../event";
 import { writable } from "../readable";
 import { type Disposer, type OwnedWritable, type Readable } from "../typings";
@@ -24,16 +24,16 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @returns A disposer function to unsubscribe from the event.
    */
   public onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): Disposer {
-    return (this._onChanged_ ??= toTask(event({ delete: new Set(), upsert: new Map() }), () => {
+    return (this._onChanged_ ??= toTask(event({ delete_: new Set(), upsert_: new Map() }), () => {
       if (this._onChanged_ && size(this._onChanged_)) {
         const { data_ } = this._onChanged_;
-        if (data_.upsert.size > 0 || data_.delete.size > 0) {
+        if (data_.upsert_.size > 0 || data_.delete_.size > 0) {
           const changedData = {
-            upsert: [...data_.upsert],
-            delete: [...data_.delete],
+            upsert: [...data_.upsert_],
+            delete: [...data_.delete_],
           };
-          data_.upsert.clear();
-          data_.delete.clear();
+          data_.upsert_.clear();
+          data_.delete_.clear();
           send(this._onChanged_, changedData);
         }
       } else {
@@ -77,11 +77,11 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     super();
 
     if (entries) {
-      batch(() => {
-        for (const [key, value] of entries) {
-          this.set(key, value);
-        }
-      });
+      const isBatchTop = batchStart();
+      for (const [key, value] of entries) {
+        this.set(key, value);
+      }
+      isBatchTop && batchFlush();
     }
   }
 
@@ -98,9 +98,9 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
         data_.add(value);
       }
       if (data_.size) {
-        batch(() => {
-          tasks.add(this._onDisposeValue_!);
-        });
+        const isBatchTop = batchStart();
+        tasks.add(this._onDisposeValue_!);
+        isBatchTop && batchFlush();
       }
     }
     this._$ = this._onChanged_ = this._onDisposeValue_ = undefined;
@@ -110,34 +110,41 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     if (this.has(key)) {
       const oldValue = this.get(key)!;
       if (!strictEqual(oldValue, value)) {
+        const isBatchTop = batchStart();
         // task added in this._upsert_
         this._onDisposeValue_?.data_.add(oldValue);
         this._upsert_(key, value);
+        isBatchTop && batchFlush();
       }
     } else {
+      const isBatchTop = batchStart();
       this._upsert_(key, value);
+      isBatchTop && batchFlush();
     }
     return this;
   }
 
   public override delete(key: K): boolean {
     if (this.has(key)) {
+      const isBatchTop = batchStart();
       if (this._onDisposeValue_) {
         this._onDisposeValue_.data_.add(this.get(key)!);
         tasks.add(this._onDisposeValue_);
       }
       if (this._onChanged_) {
-        this._onChanged_.data_.delete.add(key);
-        this._onChanged_.data_.upsert.delete(key);
+        this._onChanged_.data_.delete_.add(key);
+        this._onChanged_.data_.upsert_.delete(key);
         tasks.add(this._onChanged_);
       }
       this._notify_();
+      isBatchTop && batchFlush();
     }
     return super.delete(key);
   }
 
   public override clear(): void {
     if (this.size) {
+      const isBatchTop = batchStart();
       if (this._onDisposeValue_ || this._onChanged_) {
         for (const [key, value] of this) {
           if (this._onDisposeValue_) {
@@ -145,25 +152,26 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
             tasks.add(this._onDisposeValue_);
           }
           if (this._onChanged_) {
-            this._onChanged_.data_.delete.add(key);
-            this._onChanged_.data_.upsert.delete(key);
+            this._onChanged_.data_.delete_.add(key);
+            this._onChanged_.data_.upsert_.delete(key);
             tasks.add(this._onChanged_);
           }
         }
       }
       super.clear();
       this._notify_();
+      isBatchTop && batchFlush();
     }
   }
 
   public rename(key: K, newKey: K): void {
-    batch(() => {
-      if (this.has(key)) {
-        const value = this.get(key)!;
-        this.delete(key);
-        this.set(newKey, value);
-      }
-    });
+    if (this.has(key)) {
+      const isBatchTop = batchStart();
+      const value = this.get(key)!;
+      this.delete(key);
+      this.set(newKey, value);
+      isBatchTop && batchFlush();
+    }
   }
 
   /**
@@ -179,8 +187,8 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     AddEventListener<
       ReactiveMapChanged<K, V>,
       {
-        readonly upsert: Map<K, V>;
-        readonly delete: Set<K>;
+        readonly upsert_: Map<K, V>;
+        readonly delete_: Set<K>;
       }
     >
   >;
@@ -195,8 +203,8 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
       tasks.add(this._onDisposeValue_);
     }
     if (this._onChanged_) {
-      this._onChanged_.data_.upsert.set(key, value);
-      this._onChanged_.data_.delete.delete(key);
+      this._onChanged_.data_.upsert_.set(key, value);
+      this._onChanged_.data_.delete_.delete(key);
       tasks.add(this._onChanged_);
     }
     super.set(key, value);
