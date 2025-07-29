@@ -1,7 +1,7 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
-import { type EventObject, on, send, size } from "../event";
+import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
-import { type Disposer, type OwnedWritable, type Readable } from "../typings";
+import { type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
 
 export interface ReactiveMapChanged<K, V> {
@@ -32,7 +32,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @param fn - The function to call when the map is changed.
    * @returns A disposer function to unsubscribe from the event.
    */
-  public onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): Disposer {
+  public onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): RemoveListener {
     return on(
       (this._onChanged_ ??= {
         delete_: new Set<K>(),
@@ -72,7 +72,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
    */
-  public onDisposeValue(fn: (value: V) => void): Disposer {
+  public onDisposeValue(fn: (value: V) => void): RemoveListener {
     return on(
       (this._onDisposeValue_ ??= {
         delete_: new Set<V>(),

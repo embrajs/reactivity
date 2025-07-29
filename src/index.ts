@@ -1,7 +1,3 @@
-export { batch, batchFlush, batchStart } from "./batch";
-
-export { compute, type ComputeFn } from "./compute";
-
 export type {
   Flatten,
   Get,
@@ -15,6 +11,12 @@ export type {
   Subscriber,
   Version,
 } from "./typings";
+
+export { type Listener, type RemoveListener } from "./event";
+
+export { batch, batchFlush, batchStart } from "./batch";
+
+export { compute, type ComputeFn } from "./compute";
 
 export { readable, writable, toWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";

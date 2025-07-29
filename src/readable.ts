@@ -1,5 +1,4 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "./batch";
-import { off, on, send, size, type EventObject } from "./event";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -11,7 +10,7 @@ import {
   type Version,
   type Writable,
 } from "./typings";
-import { BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
+import { BRAND, invokeEach, strictEqual, UNIQUE_VALUE } from "./utils";
 
 export type Deps = Map<ReadableImpl, Version>;
 
@@ -86,7 +85,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /**
    * @internal
    */
-  private _subs_?: EventObject<TValue> | null;
+  private _subs_?: Set<Subscriber<TValue>>;
 
   public get $version(): Version {
     this.get();
@@ -154,9 +153,9 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 
   /** @internal */
   public task_(): void {
-    if (this._subs_ && size(this._subs_) && this._lastSubInvokeVersion_ !== this.$version) {
+    if (this._subs_?.size && this._lastSubInvokeVersion_ !== this.$version) {
       this._lastSubInvokeVersion_ = this.$version;
-      send(this._subs_, this.get());
+      invokeEach(this._subs_, this.get());
     }
   }
 
@@ -262,11 +261,11 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 
   /** @internal */
   public onReaction_(subscriber: Subscriber<TValue>): void {
-    if (!this._subs_ || !size(this._subs_)) {
+    if (!this._subs_?.size) {
       // start tracking last first on first subscription
       this._lastSubInvokeVersion_ = this.$version;
     }
-    on((this._subs_ ??= {}), subscriber);
+    (this._subs_ ??= new Set()).add(subscriber);
   }
 
   public reaction(subscriber: Subscriber<TValue>): Disposer {
@@ -315,11 +314,11 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   }
 
   public unsubscribe(subscriber: (...args: any[]) => any): void {
-    this._subs_ && off(this._subs_, subscriber);
+    this._subs_?.delete(subscriber);
   }
 
   public unsubscribeAll(): void {
-    this._subs_ = null;
+    this._subs_?.clear();
   }
 
   public valueOf(): TValue {

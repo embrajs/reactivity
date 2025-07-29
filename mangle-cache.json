@@ -1,5 +1,6 @@
 {
   "addDep_": "d",
+  "batching_": "c",
   "data_": "a",
   "delete_": "l",
   "dependents_": "n",
@@ -10,5 +11,6 @@
   "onReaction_": "o",
   "single_": "s",
   "task_": "k",
+  "tasks_": "t",
   "upsert_": "u"
 }
