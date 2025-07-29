@@ -21,6 +21,8 @@ export { compute, type ComputeFn } from "./compute";
 export { readable, writable, toWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";
 
+export { isReadable, unsubscribe, identity, strictEqual, arrayShallowEqual } from "./utils";
+
 export {
   reactiveMap,
   type OwnedReactiveMap,

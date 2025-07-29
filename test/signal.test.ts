@@ -5,8 +5,8 @@
 import matchers from "jest-extended";
 import { describe, expect, it, vi } from "vitest";
 
-import { batch, compute, type Get, type Readable, watch, writable } from "../src";
-import { BRAND, isReadable } from "../src/utils";
+import { batch, compute, type Get, type Readable, watch, writable, isReadable } from "../src";
+import { BRAND } from "../src/utils";
 
 expect.extend(matchers);
 
