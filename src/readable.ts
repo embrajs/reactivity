@@ -1,4 +1,5 @@
-import { batchFlush, batchStart, tasks } from "./batch";
+import { batchFlush, batchStart, type BatchTask, tasks } from "./batch";
+import { off, on, send, size, type EventObject } from "./event";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -59,7 +60,8 @@ interface CreateReadable {
   ): [OwnedReadable<NoInfer<TValue | undefined>>, SetValue<NoInfer<TValue | undefined>>];
 }
 
-export class ReadableImpl<TValue = any> {
+/** @internal */
+export class ReadableImpl<TValue = any> implements BatchTask {
   public readonly [BRAND]: BRAND = BRAND;
 
   /**
@@ -84,7 +86,7 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  private _subs_?: Set<Subscriber<TValue>>;
+  private _subs_?: EventObject<TValue> | null;
 
   public get $version(): Version {
     this.get();
@@ -152,20 +154,9 @@ export class ReadableImpl<TValue = any> {
 
   /** @internal */
   public task_(): void {
-    let error: unknown = UNIQUE_VALUE;
-    if (this._subs_?.size && this._lastSubInvokeVersion_ !== this.$version) {
+    if (this._subs_ && size(this._subs_) && this._lastSubInvokeVersion_ !== this.$version) {
       this._lastSubInvokeVersion_ = this.$version;
-      const value = this.get();
-      for (const sub of this._subs_) {
-        try {
-          sub(value);
-        } catch (e) {
-          error = e;
-        }
-      }
-    }
-    if (error !== UNIQUE_VALUE) {
-      throw error;
+      send(this._subs_, this.get());
     }
   }
 
@@ -243,7 +234,7 @@ export class ReadableImpl<TValue = any> {
   /**
    * @internal
    */
-  public notify_ = (): void => {
+  public notify_(): void {
     if (this._disposed_) {
       console.error(new Error("disposed"));
       if (process.env.NODE_ENV !== "production") {
@@ -267,15 +258,15 @@ export class ReadableImpl<TValue = any> {
     }
 
     isFirst && batchFlush();
-  };
+  }
 
   /** @internal */
   public onReaction_(subscriber: Subscriber<TValue>): void {
-    if (!this._subs_?.size) {
+    if (!this._subs_ || !size(this._subs_)) {
       // start tracking last first on first subscription
       this._lastSubInvokeVersion_ = this.$version;
     }
-    (this._subs_ ??= new Set()).add(subscriber);
+    on((this._subs_ ??= {}), subscriber);
   }
 
   public reaction(subscriber: Subscriber<TValue>): Disposer {
@@ -324,11 +315,11 @@ export class ReadableImpl<TValue = any> {
   }
 
   public unsubscribe(subscriber: (...args: any[]) => any): void {
-    this._subs_?.delete(subscriber);
+    this._subs_ && off(this._subs_, subscriber);
   }
 
   public unsubscribeAll(): void {
-    this._subs_?.clear();
+    this._subs_ = null;
   }
 
   public valueOf(): TValue {

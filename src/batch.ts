@@ -7,10 +7,6 @@ export type BatchTask<O extends object = object> = O & {
 
 export const tasks: Set<BatchTask> = /* @__PURE__ */ (() => context.tasks_)();
 
-export const toTask = <T extends object>(target: T, fn: () => void): BatchTask<T> => (
-  ((target as BatchTask).task_ = fn), target as BatchTask<T>
-);
-
 export const batchStart = (): boolean => !context.batching_ && (context.batching_ = true);
 
 export const batchFlush = (): void => {

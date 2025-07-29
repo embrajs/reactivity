@@ -5,39 +5,30 @@ export interface Listener<T = any> {
   (data: T): void;
 }
 
-export interface AddEventListener<T = any, D = any> {
-  (listener: Listener<T>): Disposer;
+export interface EventObject<T = any> {
   /** @internal */
-  multi_?: Set<Listener<T>>;
+  multi_?: Set<Listener<T>> | null;
   /** @internal */
   single_?: Listener<T> | null;
-  /** @internal */
-  data_: D;
 }
 
-export function event<T = any, D = any>(data: D): AddEventListener<T, D> {
-  function addEventListener(listener: Listener<T>): Disposer {
-    return on(addEventListener, listener);
-  }
-  addEventListener.data_ = data;
-  return addEventListener;
+export function send<T = any>(eventObject: EventObject<T>, data: T): void {
+  eventObject.multi_ ? invokeEach(eventObject.multi_, data) : eventObject.single_?.(data);
 }
 
-export function send<T = any>(addEventListener: AddEventListener<T>, data: T): void {
-  addEventListener.multi_ ? invokeEach(addEventListener.multi_, data) : addEventListener.single_?.(data);
+export function size(eventObject: EventObject): number {
+  return eventObject.multi_ ? eventObject.multi_.size : eventObject.single_ ? 1 : 0;
 }
 
-export function size(addEventListener: AddEventListener): number {
-  return addEventListener.multi_ ? addEventListener.multi_.size : addEventListener.single_ ? 1 : 0;
+export function on(eventObject: EventObject, listener: Listener): Disposer {
+  eventObject.single_ || eventObject.multi_
+    ? (eventObject.multi_ ??= new Set<Listener>().add(eventObject.single_!)).add(listener)
+    : (eventObject.single_ = listener);
+  return off.bind(null, eventObject, listener);
 }
 
-export function on(addEventListener: AddEventListener, listener: Listener): Disposer {
-  addEventListener.single_ || addEventListener.multi_
-    ? (addEventListener.multi_ ??= new Set<Listener>().add(addEventListener.single_!)).add(listener)
-    : (addEventListener.single_ = listener);
-  return off.bind(addEventListener, listener);
-}
-
-function off(this: AddEventListener, listener: Listener): void {
-  this.multi_ ? this.multi_.delete(listener) : this.single_ === listener && (this.single_ = null);
+export function off(eventObject: EventObject, listener: Listener): void {
+  eventObject.multi_
+    ? eventObject.multi_.delete(listener)
+    : eventObject.single_ === listener && (eventObject.single_ = null);
 }

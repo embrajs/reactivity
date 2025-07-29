@@ -1,5 +1,5 @@
-import { batchFlush, batchStart, type BatchTask, tasks, toTask } from "../batch";
-import { type AddEventListener, event, send, size } from "../event";
+import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
+import { type EventObject, on, send, size } from "../event";
 import { writable } from "../readable";
 import { type Disposer, type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
@@ -7,6 +7,15 @@ import { strictEqual } from "../utils";
 export interface ReactiveMapChanged<K, V> {
   readonly upsert: readonly [K, V][];
   readonly delete: readonly K[];
+}
+
+interface OnChanged<K, V> extends BatchTask<EventObject<ReactiveMapChanged<K, V>>> {
+  readonly upsert_: Map<K, V>;
+  readonly delete_: Set<K>;
+}
+
+interface OnValueRemoved<V> extends BatchTask<EventObject<V>> {
+  readonly delete_: Set<V>;
 }
 
 export class OwnedReactiveMap<K, V> extends Map<K, V> {
@@ -24,22 +33,29 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @returns A disposer function to unsubscribe from the event.
    */
   public onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): Disposer {
-    return (this._onChanged_ ??= toTask(event({ delete_: new Set(), upsert_: new Map() }), () => {
-      if (this._onChanged_ && size(this._onChanged_)) {
-        const { data_ } = this._onChanged_;
-        if (data_.upsert_.size > 0 || data_.delete_.size > 0) {
-          const changedData = {
-            upsert: [...data_.upsert_],
-            delete: [...data_.delete_],
-          };
-          data_.upsert_.clear();
-          data_.delete_.clear();
-          send(this._onChanged_, changedData);
-        }
-      } else {
-        this._onChanged_ = undefined;
-      }
-    }))(fn);
+    return on(
+      (this._onChanged_ ??= {
+        delete_: new Set<K>(),
+        upsert_: new Map<K, V>(),
+        task_: () => {
+          if (this._onChanged_ && size(this._onChanged_)) {
+            const { upsert_, delete_ } = this._onChanged_;
+            if (upsert_.size > 0 || delete_.size > 0) {
+              const changedData = {
+                upsert: [...upsert_],
+                delete: [...delete_],
+              };
+              upsert_.clear();
+              delete_.clear();
+              send(this._onChanged_, changedData);
+            }
+          } else {
+            this._onChanged_ = null;
+          }
+        },
+      }),
+      fn,
+    );
   }
 
   /**
@@ -57,20 +73,26 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @returns A disposer function to unsubscribe from the event.
    */
   public onDisposeValue(fn: (value: V) => void): Disposer {
-    return (this._onDisposeValue_ ??= toTask(event(new Set<V>()), () => {
-      if (this._onDisposeValue_ && size(this._onDisposeValue_)) {
-        const { data_ } = this._onDisposeValue_;
-        if (data_.size) {
-          const removedValues = [...data_];
-          data_.clear();
-          for (const value of removedValues) {
-            send(this._onDisposeValue_, value);
+    return on(
+      (this._onDisposeValue_ ??= {
+        delete_: new Set<V>(),
+        task_: () => {
+          if (this._onDisposeValue_ && size(this._onDisposeValue_)) {
+            const { delete_ } = this._onDisposeValue_;
+            if (delete_.size) {
+              const removedValues = [...delete_];
+              delete_.clear();
+              for (const value of removedValues) {
+                send(this._onDisposeValue_, value);
+              }
+            }
+          } else {
+            this._onDisposeValue_ = null;
           }
-        }
-      } else {
-        this._onDisposeValue_ = undefined;
-      }
-    }))(fn);
+        },
+      }),
+      fn,
+    );
   }
 
   public constructor(entries?: readonly (readonly [K, V])[] | null) {
@@ -93,17 +115,17 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
       this._disposed_ = true;
     }
     if (this._onDisposeValue_) {
-      const { data_ } = this._onDisposeValue_;
+      const { delete_ } = this._onDisposeValue_;
       for (const value of this.values()) {
-        data_.add(value);
+        delete_.add(value);
       }
-      if (data_.size) {
+      if (delete_.size) {
         const isBatchTop = batchStart();
         tasks.add(this._onDisposeValue_!);
         isBatchTop && batchFlush();
       }
     }
-    this._$ = this._onChanged_ = this._onDisposeValue_ = undefined;
+    this._$ = this._onChanged_ = this._onDisposeValue_ = null;
   }
 
   public override set(key: K, value: V): this {
@@ -112,7 +134,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
       if (!strictEqual(oldValue, value)) {
         const isBatchTop = batchStart();
         // task added in this._upsert_
-        this._onDisposeValue_?.data_.add(oldValue);
+        this._onDisposeValue_?.delete_.add(oldValue);
         this._upsert_(key, value);
         isBatchTop && batchFlush();
       }
@@ -128,12 +150,12 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     if (this.has(key)) {
       const isBatchTop = batchStart();
       if (this._onDisposeValue_) {
-        this._onDisposeValue_.data_.add(this.get(key)!);
+        this._onDisposeValue_.delete_.add(this.get(key)!);
         tasks.add(this._onDisposeValue_);
       }
       if (this._onChanged_) {
-        this._onChanged_.data_.delete_.add(key);
-        this._onChanged_.data_.upsert_.delete(key);
+        this._onChanged_.delete_.add(key);
+        this._onChanged_.upsert_.delete(key);
         tasks.add(this._onChanged_);
       }
       this._notify_();
@@ -148,12 +170,12 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
       if (this._onDisposeValue_ || this._onChanged_) {
         for (const [key, value] of this) {
           if (this._onDisposeValue_) {
-            this._onDisposeValue_.data_.add(value);
+            this._onDisposeValue_.delete_.add(value);
             tasks.add(this._onDisposeValue_);
           }
           if (this._onChanged_) {
-            this._onChanged_.data_.delete_.add(key);
-            this._onChanged_.data_.upsert_.delete(key);
+            this._onChanged_.delete_.add(key);
+            this._onChanged_.upsert_.delete(key);
             tasks.add(this._onChanged_);
           }
         }
@@ -180,31 +202,23 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   private _disposed_?: Error | true;
 
   /** @internal */
-  private _$?: OwnedWritable<this>;
+  private _$?: OwnedWritable<this> | null;
 
   /** @internal */
-  private _onChanged_?: BatchTask<
-    AddEventListener<
-      ReactiveMapChanged<K, V>,
-      {
-        readonly upsert_: Map<K, V>;
-        readonly delete_: Set<K>;
-      }
-    >
-  >;
+  private _onChanged_?: null | OnChanged<K, V>;
 
   /** @internal */
-  private _onDisposeValue_?: BatchTask<AddEventListener<V, Set<V>>>;
+  private _onDisposeValue_?: null | OnValueRemoved<V>;
 
   /** @internal */
   private _upsert_(key: K, value: V): void {
     if (this._onDisposeValue_) {
-      this._onDisposeValue_.data_.delete(value);
+      this._onDisposeValue_.delete_.delete(value);
       tasks.add(this._onDisposeValue_);
     }
     if (this._onChanged_) {
-      this._onChanged_.data_.upsert_.set(key, value);
-      this._onChanged_.data_.delete_.delete(key);
+      this._onChanged_.upsert_.set(key, value);
+      this._onChanged_.delete_.delete(key);
       tasks.add(this._onChanged_);
     }
     super.set(key, value);
