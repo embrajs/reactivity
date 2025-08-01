@@ -4,7 +4,7 @@
   <style>
     .header {
       font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
-      fill: #bd93f9f5;
+      fill: #fb4c1bf7;
       animation: fadeInAnimation 0.8s ease-in-out forwards;
     }
     @supports(-moz-appearance: auto) {
@@ -92,9 +92,9 @@
     <text x="215" y="34" class="text">2.31 kB</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="100%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 400ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 400ms" />
       </svg>
     </svg>
   </g>
@@ -106,9 +106,9 @@
     <text x="215" y="34" class="text">1.12 kB</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="48.33405452185201%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 550ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 550ms" />
       </svg>
     </svg>
   </g>
@@ -120,9 +120,9 @@
     <text x="215" y="34" class="text">358 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="15.49112938122025%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
       </svg>
     </svg>
   </g>
@@ -134,9 +134,9 @@
     <text x="215" y="34" class="text">233 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="10.082215491129382%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 850ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 850ms" />
       </svg>
     </svg>
   </g>
@@ -148,9 +148,9 @@
     <text x="215" y="34" class="text">107 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="4.6300302899177845%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1000ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1000ms" />
       </svg>
     </svg>
   </g>
@@ -162,9 +162,9 @@
     <text x="215" y="34" class="text">102 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="4.41367373431415%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1150ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1150ms" />
       </svg>
     </svg>
   </g>
@@ -176,9 +176,9 @@
     <text x="215" y="34" class="text">898 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="38.857637386412804%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1300ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1300ms" />
       </svg>
     </svg>
   </g>
@@ -190,9 +190,9 @@
     <text x="215" y="34" class="text">788 B</text>
 
     <svg width="200" x="0" y="25">
-      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#bd93f934"></rect>
+      <rect rx="5" ry="5" x="0" y="0" width="200" height="8" fill="#fb4c1b37"></rect>
       <svg width="34.09779316313284%">
-        <rect height="8" fill="#bd93f9" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1450ms" />
+        <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1450ms" />
       </svg>
     </svg>
   </g>
