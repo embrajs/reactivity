@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>ReactiveMapChanged | @embrajs/reactivity - v1.0.0</title>
+    <title>ReactiveSetChanged | @embrajs/reactivity - v1.0.0</title>
     <meta name="description" content="Documentation for @embrajs/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,40 +55,34 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">ReactiveMapChanged</a></li>
+            <li><a href="" aria-current="page">ReactiveSetChanged</a></li>
           </ul>
-          <h1>Interface ReactiveMapChanged&lt;K, V&gt;</h1>
+          <h1>Interface ReactiveSetChanged&lt;V&gt;</h1>
         </div>
         <div class="tsd-signature">
-          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">ReactiveMapChanged</span
+          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">ReactiveSetChanged</span
           ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">{</span><br />    <a
             class="tsd-kind-property"
             href="#delete"
             >delete</a
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">readonly</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br />    <a
             class="tsd-kind-property"
             href="#upsert"
             >upsert</a
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-keyword">readonly</span>
-          <span class="tsd-signature-symbol">[</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span
-          ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
+          ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">;</span><br /><span
+            class="tsd-signature-symbol"
+            >}</span
+          >
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
           <ul class="tsd-type-parameter-list">
-            <li>
-              <span id="k"><span class="tsd-kind-type-parameter">K</span></span>
-            </li>
             <li>
               <span id="v"><span class="tsd-kind-type-parameter">V</span></span>
             </li>
@@ -99,8 +93,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveMap.ts#L7"
-                >src/collections/reactiveMap.ts:7</a
+                href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveSet.ts#L6"
+                >src/collections/reactiveSet.ts:6</a
               >
             </li>
           </ul>
@@ -152,7 +146,7 @@
               <div class="tsd-signature">
                 <span class="tsd-kind-property">delete</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-keyword">readonly</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
                 ><span class="tsd-signature-symbol">[]</span>
               </div>
               <aside class="tsd-sources">
@@ -160,8 +154,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveMap.ts#L9"
-                      >src/collections/reactiveMap.ts:9</a
+                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveSet.ts#L8"
+                      >src/collections/reactiveSet.ts:8</a
                     >
                   </li>
                 </ul>
@@ -176,19 +170,17 @@
               </h3>
               <div class="tsd-signature">
                 <span class="tsd-kind-property">upsert</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-keyword">readonly</span> <span class="tsd-signature-symbol">[</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                ><span class="tsd-signature-symbol">,</span>
+                <span class="tsd-signature-keyword">readonly</span>
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span>
+                ><span class="tsd-signature-symbol">[]</span>
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveMap.ts#L8"
-                      >src/collections/reactiveMap.ts:8</a
+                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveSet.ts#L7"
+                      >src/collections/reactiveSet.ts:7</a
                     >
                   </li>
                 </ul>

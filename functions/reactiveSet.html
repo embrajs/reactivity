@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>batchStart | @embrajs/reactivity - v1.0.0</title>
+    <title>reactiveSet | @embrajs/reactivity - v1.0.0</title>
     <meta name="description" content="Documentation for @embrajs/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,29 +55,70 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">batchStart</a></li>
+            <li><a href="" aria-current="page">reactiveSet</a></li>
           </ul>
-          <h1>Function batchStart</h1>
+          <h1>Function reactiveSet</h1>
         </div>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="batchstart">
-                <span class="tsd-kind-call-signature">batchStart</span><span class="tsd-signature-symbol">()</span
-                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span
-                ><a href="#batchstart" aria-label="Permalink" class="tsd-anchor-icon"
+              <div class="tsd-signature tsd-anchor-link" id="reactiveset">
+                <span class="tsd-kind-call-signature">reactiveSet</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivesetv">V</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">values</span><span class="tsd-signature-symbol">?:</span>
+                <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-keyword">readonly</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivesetv">V</a
+                ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a href="../interfaces/OwnedReactiveSet.html" class="tsd-signature-type tsd-kind-interface"
+                  >OwnedReactiveSet</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivesetv">V</a
+                ><span class="tsd-signature-symbol">&gt;</span
+                ><a href="#reactiveset" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
               <div class="tsd-description">
-                <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="reactivesetv"><span class="tsd-kind-type-parameter">V</span></span>
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">values</span>:
+                        <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-keyword">readonly</span>
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivesetv">V</a
+                        ><span class="tsd-signature-symbol">[]</span></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns
+                  <a href="../interfaces/OwnedReactiveSet.html" class="tsd-signature-type tsd-kind-interface"
+                    >OwnedReactiveSet</a
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivesetv">V</a
+                  ><span class="tsd-signature-symbol">&gt;</span>
+                </h4>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/batch.ts#L10"
-                        >src/batch.ts:10</a
+                        href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/collections/reactiveSet.ts#L206"
+                        >src/collections/reactiveSet.ts:206</a
                       >
                     </li>
                   </ul>

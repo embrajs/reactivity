@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>Writable | @embrajs/reactivity - v1.0.0</title>
+    <title>OwnedReadable | @embrajs/reactivity - v1.0.0</title>
     <meta name="description" content="Documentation for @embrajs/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,18 +55,18 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">Writable</a></li>
+            <li><a href="" aria-current="page">OwnedReadable</a></li>
           </ul>
-          <h1>Interface Writable&lt;TValue&gt;</h1>
+          <h1>Interface OwnedReadable&lt;TValue&gt;</h1>
         </div>
         <section class="tsd-panel tsd-comment">
           <div class="tsd-comment tsd-typography">
-            <p>A Readable with a writable <code>value</code> property and a <code>set</code> method.</p>
+            <p>A Readable is a reactive value that can be read and subscribed to.</p>
           </div>
           <div class="tsd-comment tsd-typography"></div>
         </section>
         <div class="tsd-signature">
-          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">Writable</span
+          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">OwnedReadable</span
           ><span class="tsd-signature-symbol">&lt;</span
           ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a>
           <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
@@ -79,18 +79,15 @@
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">()</span>
           <span class="tsd-signature-symbol">=&gt;</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#set">set</a
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-          ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
-          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-property"
-            href="#value"
-            >value</a
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#value">value</a
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#reaction-1"
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#dispose-1"
+            >dispose</a
+          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
+          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br />    <a
+            class="tsd-kind-call-signature"
+            href="#reaction-1"
             >reaction</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">subscriber</span
           ><span class="tsd-signature-symbol">:</span>
@@ -134,8 +131,8 @@
             </li>
           </ul>
         </section>
-        <section class="tsd-panel tsd-hierarchy" data-refl="62">
-          <h4>Hierarchy (<a href="../hierarchy.html#Writable">View Summary</a>)</h4>
+        <section class="tsd-panel tsd-hierarchy" data-refl="37">
+          <h4>Hierarchy (<a href="../hierarchy.html#OwnedReadable">View Summary</a>)</h4>
           <ul class="tsd-hierarchy">
             <li class="tsd-hierarchy-item">
               <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
@@ -143,14 +140,7 @@
               ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
               ><span class="tsd-signature-symbol">&gt;</span>
               <ul class="tsd-hierarchy">
-                <li class="tsd-hierarchy-item">
-                  <span class="tsd-hierarchy-target">Writable</span>
-                  <ul class="tsd-hierarchy">
-                    <li class="tsd-hierarchy-item">
-                      <a href="OwnedWritable.html" class="tsd-signature-type tsd-kind-interface">OwnedWritable</a>
-                    </li>
-                  </ul>
-                </li>
+                <li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">OwnedReadable</span></li>
               </ul>
             </li>
           </ul>
@@ -160,8 +150,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L90"
-                >src/typings.ts:90</a
+                href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L72"
+                >src/typings.ts:72</a
               >
             </li>
           </ul>
@@ -189,11 +179,6 @@
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>get</span></a
                     >
-                    <a href="#set" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>set</span></a
-                    >
                     <a href="#value" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
@@ -204,6 +189,11 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Methods</h3>
                   <div class="tsd-index-list">
+                    <a href="#dispose" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                        <use href="../assets/icons.svg#icon-2048"></use></svg
+                      ><span>dispose</span></a
+                    >
                     <a href="#reaction" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use></svg
@@ -292,37 +282,8 @@
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="set">
-                <span>set</span
-                ><a href="#set" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">set</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
-                ><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-                ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
-                <span class="tsd-signature-type">void</span>
-              </div>
-              <div class="tsd-comment tsd-typography"><p>Set new value</p></div>
-              <div class="tsd-comment tsd-typography"></div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L94"
-                      >src/typings.ts:94</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="value">
-                <span>value</span
+                <code class="tsd-tag">Readonly</code><span>value</span
                 ><a href="#value" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
@@ -331,16 +292,16 @@
                 <span class="tsd-kind-property">value</span><span class="tsd-signature-symbol">:</span>
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a>
               </div>
-              <div class="tsd-comment tsd-typography"><p>Current value of the Writable</p></div>
+              <div class="tsd-comment tsd-typography"><p>Current value of the $.</p></div>
               <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
-                <p>Overrides <a href="Readable.html">Readable</a>.<a href="Readable.html#value">value</a></p>
+                <p>Inherited from <a href="Readable.html">Readable</a>.<a href="Readable.html#value">value</a></p>
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L92"
-                      >src/typings.ts:92</a
+                      href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L45"
+                      >src/typings.ts:45</a
                     >
                   </li>
                 </ul>
@@ -356,6 +317,42 @@
             <h2>Methods</h2>
           </summary>
           <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="dispose">
+                <span>dispose</span
+                ><a href="#dispose" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="dispose-1">
+                    <span class="tsd-kind-call-signature">dispose</span><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                    ><a href="#dispose-1" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography"><p>Remove all subscribers and lock.</p></div>
+                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                    <div class="tsd-comment tsd-typography"></div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/b476c3deb8fa8d0e0afaeb3a2d6278008297d5a2/src/typings.ts#L76"
+                            >src/typings.ts:76</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="reaction">
                 <span>reaction</span
@@ -613,10 +610,6 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>get</span></a
-                  ><a href="#set"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>set</span></a
                   ><a href="#value"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
@@ -631,7 +624,11 @@
                   >Methods
                 </summary>
                 <div>
-                  <a href="#reaction"
+                  <a href="#dispose"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>dispose</span></a
+                  ><a href="#reaction"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>reaction</span></a
