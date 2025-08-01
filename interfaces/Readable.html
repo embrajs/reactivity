@@ -110,7 +110,7 @@
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#unsubscribe-1"
             >unsubscribe</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">subscriber</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
+          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span
           ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">args</span
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span
           ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span>
@@ -149,8 +149,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L44"
-                >src/typings.ts:44</a
+                href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L40"
+                >src/typings.ts:40</a
               >
             </li>
           </ul>
@@ -238,8 +238,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L50"
-                      >src/typings.ts:50</a
+                      href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L46"
+                      >src/typings.ts:46</a
                     >
                   </li>
                 </ul>
@@ -268,8 +268,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L49"
-                      >src/typings.ts:49</a
+                      href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L45"
+                      >src/typings.ts:45</a
                     >
                   </li>
                 </ul>
@@ -294,8 +294,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L58"
-                      >src/typings.ts:58</a
+                      href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L54"
+                      >src/typings.ts:54</a
                     >
                   </li>
                 </ul>
@@ -319,8 +319,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L54"
-                      >src/typings.ts:54</a
+                      href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L50"
+                      >src/typings.ts:50</a
                     >
                   </li>
                 </ul>
@@ -390,8 +390,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L66"
-                            >src/typings.ts:66</a
+                            href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L62"
+                            >src/typings.ts:62</a
                           >
                         </li>
                       </ul>
@@ -454,8 +454,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L72"
-                            >src/typings.ts:72</a
+                            href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L68"
+                            >src/typings.ts:68</a
                           >
                         </li>
                       </ul>
@@ -475,7 +475,7 @@
                 <li class="">
                   <div class="tsd-signature tsd-anchor-link" id="unsubscribe-1">
                     <span class="tsd-kind-call-signature">unsubscribe</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">subscriber</span><span class="tsd-signature-symbol">:</span>
+                    ><span class="tsd-kind-parameter">subscriber</span><span class="tsd-signature-symbol">?:</span>
                     <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span
                     ><span class="tsd-kind-parameter">args</span><span class="tsd-signature-symbol">:</span>
                     <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span
@@ -488,13 +488,15 @@
                     ></a>
                   </div>
                   <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Remove the given subscriber.</p></div>
+                    <div class="tsd-comment tsd-typography">
+                      <p>Remove the given subscriber or all subscribers if no subscriber is provided.</p>
+                    </div>
                     <div class="tsd-parameters">
                       <h4 class="tsd-parameters-title">Parameters</h4>
                       <ul class="tsd-parameter-list">
                         <li>
                           <span
-                            ><span class="tsd-kind-parameter">subscriber</span>:
+                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">subscriber</span>:
                             <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span
                             ><span class="tsd-kind-parameter">args</span><span class="tsd-signature-symbol">:</span>
                             <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span
@@ -502,6 +504,11 @@
                             <span class="tsd-signature-symbol">=&gt;</span>
                             <span class="tsd-signature-type">any</span></span
                           >
+                          <div class="tsd-comment tsd-typography">
+                            <p>
+                              Optional subscriber function to remove. If not provided, all subscribers will be removed.
+                            </p>
+                          </div>
                           <div class="tsd-comment tsd-typography"></div>
                         </li>
                       </ul>
@@ -513,8 +520,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/97abab66ba621bb590fade8f39be2d04a4e6b108/src/typings.ts#L77"
-                            >src/typings.ts:77</a
+                            href="https://github.com/embrajs/reactivity/blob/8dd94583f79d2387d1fa1f98f0936cbd474b6990/src/typings.ts#L74"
+                            >src/typings.ts:74</a
                           >
                         </li>
                       </ul>
