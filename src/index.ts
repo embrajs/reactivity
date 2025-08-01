@@ -17,11 +17,13 @@ export { type Listener, type RemoveListener } from "./event";
 export { batch, batchFlush, batchStart } from "./batch";
 
 export { compute, type ComputeFn } from "./compute";
+export { derive, type Derive } from "./derive";
+export { combine, type Combine } from "./combine";
 
 export { readable, writable, toWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";
 
-export { isReadable, unsubscribe, identity, strictEqual, arrayShallowEqual } from "./utils";
+export { isReadable, unsubscribe, strictEqual, arrayShallowEqual } from "./utils";
 
 export {
   reactiveMap,

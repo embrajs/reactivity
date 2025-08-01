@@ -1,4 +1,4 @@
-import { type $sValueTuple, type Readable } from "./typings";
+import { type Readable } from "./typings";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -27,9 +27,6 @@ export const unsubscribe = (
     }
   }
 };
-
-/** Returns the value passed in. */
-export const identity = <TValue>(value: TValue): TValue => value;
 
 /**
  * `Object.is`
@@ -63,11 +60,6 @@ export const arrayShallowEqual = (arrA: any, arrB: any): boolean => {
   }
   return true;
 };
-
-const getValue = <TValue>($: Readable<TValue>): TValue => $.value;
-
-export const getValues = <T extends readonly Readable[]>($s: T): [...$sValueTuple<T>] =>
-  $s.map(getValue) as [...$sValueTuple<T>];
 
 interface IsReadable {
   <T extends Readable>($: T): $ is T;

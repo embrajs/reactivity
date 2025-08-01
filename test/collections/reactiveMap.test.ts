@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterAll, beforeAll } from "vitest";
 
 import { batch, reactiveMap } from "../../src";
 
@@ -35,6 +35,14 @@ describe("ReactiveMap", () => {
       const map = reactiveMap<string, number>();
       map.set("foo", 1);
       expect(map.get("foo")).toEqual(1);
+    });
+
+    it("should update existing value", () => {
+      const map = reactiveMap<string, number>();
+      map.set("foo", 1);
+      expect(map.get("foo")).toEqual(1);
+      map.set("foo", 2);
+      expect(map.get("foo")).toEqual(2);
     });
 
     it("should notify on set", () => {
@@ -449,7 +457,17 @@ describe("ReactiveMap", () => {
     });
   });
 
-  describe("dispose", () => {
+  describe.each(["test", "production"])("dispose [%s]", NODE_ENV => {
+    const originalEnv = process.env.NODE_ENV;
+
+    beforeAll(() => {
+      process.env.NODE_ENV = NODE_ENV;
+    });
+
+    afterAll(() => {
+      process.env.NODE_ENV = originalEnv;
+    });
+
     it("should clear the map and dispose of resources", () => {
       const consoleErrorMock = vi.spyOn(console, "error").mockImplementation(() => void 0);
 
@@ -495,6 +513,14 @@ describe("ReactiveMap", () => {
 
       consoleErrorMock.mockRestore();
     });
+
+    it("should allow disposing multiple times", () => {
+      const map = reactiveMap<string, number>();
+      expect(() => {
+        map.dispose();
+        map.dispose();
+      }).not.toThrow();
+    });
   });
 
   describe("onChanged", () => {
@@ -521,6 +547,10 @@ describe("ReactiveMap", () => {
     });
 
     it("should not notify listeners after dispose", () => {
+      const consoleErrorMock = vi.spyOn(console, "error").mockImplementation(() => void 0);
+
+      expect(consoleErrorMock).not.toBeCalled();
+
       const map = reactiveMap<string, number>();
       const listener = vi.fn();
 
@@ -529,6 +559,9 @@ describe("ReactiveMap", () => {
 
       map.set("foo", 1);
       expect(listener).toHaveBeenCalledTimes(0);
+      expect(consoleErrorMock).toBeCalled();
+
+      consoleErrorMock.mockRestore();
     });
 
     it("should not notify disposed listeners", () => {
@@ -540,6 +573,28 @@ describe("ReactiveMap", () => {
 
       map.set("foo", 1);
       expect(listener).toHaveBeenCalledTimes(0);
+    });
+
+    it("should not notify removed listeners", () => {
+      const map = reactiveMap<string, number>();
+      const listener1 = vi.fn();
+      const dispose = map.onChanged(listener1);
+
+      map.set("foo", 1);
+      expect(listener1).toHaveBeenCalledTimes(1);
+
+      listener1.mockClear();
+
+      dispose();
+      map.set("bar", 2);
+      expect(listener1).toHaveBeenCalledTimes(0);
+
+      const listener2 = vi.fn();
+      map.onChanged(listener2);
+
+      map.set("baz", 3);
+      expect(listener2).toHaveBeenCalledWith({ upsert: [["baz", 3]], delete: [] });
+      expect(listener1).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -566,6 +621,24 @@ describe("ReactiveMap", () => {
       map.delete("bar");
       expect(listener1).toHaveBeenCalledWith(2);
       expect(listener2).toHaveBeenCalledTimes(0);
+    });
+
+    it("should not notify removed listeners", () => {
+      const map = reactiveMap<string, number>();
+      const listener = vi.fn();
+      const dispose = map.onDisposeValue(listener);
+
+      map.set("foo", 1);
+      map.delete("foo");
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(1);
+
+      listener.mockClear();
+
+      dispose();
+      map.set("bar", 2);
+      map.delete("bar");
+      expect(listener).toHaveBeenCalledTimes(0);
     });
   });
 });

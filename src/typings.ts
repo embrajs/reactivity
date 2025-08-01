@@ -1,9 +1,5 @@
 import { type BRAND } from "./utils";
 
-export type $sValueTuple<TValInputs extends readonly Readable[]> = Readonly<{
-  [K in keyof TValInputs]: Extract$Value<TValInputs[K]>;
-}>;
-
 /**
  * Custom config for the Readable/Writable.
  */

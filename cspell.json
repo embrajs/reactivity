@@ -12,6 +12,7 @@
     "Parens",
     "pnpm",
     "preinstall",
+    "Readables",
     "treeshake",
     "tsup",
     "typedoc",

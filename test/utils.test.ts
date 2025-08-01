@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { arrayShallowEqual, compute, identity, isReadable, readable, strictEqual, unsubscribe, writable } from "../src";
+import { arrayShallowEqual, compute, isReadable, readable, strictEqual, unsubscribe, writable } from "../src";
 
 describe("utils", () => {
   describe("unsubscribe", () => {
@@ -60,17 +60,9 @@ describe("utils", () => {
     });
   });
 
-  describe("identity", () => {
-    it("should return the value passed in", () => {
-      const value = { a: 1 };
-      expect(identity(value)).toBe(value);
-    });
-  });
-
   describe("strictEqual", () => {
     it("should return true for the same value", () => {
       const value = { a: 1 };
-      expect(identity(value)).toBe(value);
       expect(strictEqual(value, value)).toBe(true);
     });
 
