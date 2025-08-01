@@ -1,5 +1,4 @@
 export type {
-  Flatten,
   Get,
   Readable,
   Unwrap,
@@ -31,3 +30,10 @@ export {
   type ReactiveMap,
   type ReactiveMapChanged,
 } from "./collections/reactiveMap";
+
+export {
+  reactiveSet,
+  type OwnedReactiveSet,
+  type ReactiveSet,
+  type ReactiveSetChanged,
+} from "./collections/reactiveSet";

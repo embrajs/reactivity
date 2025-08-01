@@ -19,14 +19,6 @@ export type Disposer = () => void;
 
 export type Equal<TValue = any> = (newValue: TValue, oldValue: TValue) => boolean;
 
-/**
- * @internal
- * @ignore
- */
-export type Extract$Value<T> = T extends Readable<infer TValue> ? TValue : never;
-
-export type Flatten<T> = Readable<Unwrap<Unwrap<T>>>;
-
 export interface Get {
   <T = any>($: Readable<T>): T;
   <T = any>($?: Readable<T>): T | undefined;

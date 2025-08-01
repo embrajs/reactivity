@@ -1,3 +1,4 @@
+import { type BatchTask } from "./batch";
 import { invokeEach } from "./utils";
 
 export type Listener<T = any> = (data: T) => void;
@@ -14,6 +15,11 @@ export interface EventObject<T = any> {
   multi_?: Set<Listener<T>> | null;
   /** @internal */
   single_?: Listener<T> | null;
+}
+
+/** When a value should be disposed */
+export interface OnDisposeValue<V> extends BatchTask<EventObject<V>> {
+  readonly delete_: Set<V>;
 }
 
 export const send = <T = any>(eventObject: EventObject<T>, data: T): void =>

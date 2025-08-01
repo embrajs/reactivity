@@ -1,5 +1,5 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
-import { type EventObject, on, type RemoveListener, send, size } from "../event";
+import { type EventObject, on, type OnDisposeValue, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
 import { type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
@@ -12,10 +12,6 @@ export interface ReactiveMapChanged<K, V> {
 interface OnChanged<K, V> extends BatchTask<EventObject<ReactiveMapChanged<K, V>>> {
   readonly upsert_: Map<K, V>;
   readonly delete_: Set<K>;
-}
-
-interface OnValueRemoved<V> extends BatchTask<EventObject<V>> {
-  readonly delete_: Set<V>;
 }
 
 export class OwnedReactiveMap<K, V> extends Map<K, V> {
@@ -196,9 +192,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     }
   }
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private _disposed_?: Error | true;
 
   /** @internal */
@@ -208,14 +202,11 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   private _onChanged_?: null | OnChanged<K, V>;
 
   /** @internal */
-  private _onDisposeValue_?: null | OnValueRemoved<V>;
+  private _onDisposeValue_?: null | OnDisposeValue<V>;
 
   /** @internal */
   private _upsert_(key: K, value: V): void {
-    if (this._onDisposeValue_) {
-      this._onDisposeValue_.delete_.delete(value);
-      tasks.add(this._onDisposeValue_);
-    }
+    this._onDisposeValue_?.delete_.delete(value);
     if (this._onChanged_) {
       this._onChanged_.upsert_.set(key, value);
       this._onChanged_.delete_.delete(key);
