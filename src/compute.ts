@@ -1,5 +1,5 @@
 import { ReadableImpl } from "./readable";
-import { type Get, type Readable, type Config, type OwnedReadable } from "./typings";
+import { type Config, type Get, type OwnedReadable, type Readable } from "./typings";
 import { isReadable } from "./utils";
 
 export interface ComputeFn<TValue> {
@@ -8,8 +8,6 @@ export interface ComputeFn<TValue> {
 
 export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>): OwnedReadable<TValue> => {
   let running: boolean | undefined;
-
-  let self: ReadableImpl<TValue>;
 
   const get = <T = any>($?: Readable<T> | T | { $: Readable<T> }): T | undefined => {
     if (!isReadable($)) {
@@ -21,9 +19,7 @@ export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>):
     return $.get();
   };
 
-  return new ReadableImpl(v => {
-    self = v;
-
+  const self = new ReadableImpl(self => {
     const isFirst = !running;
     running = true;
 
@@ -41,4 +37,6 @@ export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>):
       }
     }
   }, config);
+
+  return self;
 };

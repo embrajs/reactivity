@@ -270,7 +270,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 
   public reaction(subscriber: Subscriber<TValue>): Disposer {
     this.onReaction_(subscriber);
-    return this.unsubscribe.bind(this, subscriber);
+    return () => this.unsubscribe(subscriber);
   }
 
   public removeDep_(dep: ReadableImpl): void {
@@ -313,12 +313,8 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     return "" + this.toJSON();
   }
 
-  public unsubscribe(subscriber: (...args: any[]) => any): void {
-    this._subs_?.delete(subscriber);
-  }
-
-  public unsubscribeAll(): void {
-    this._subs_?.clear();
+  public unsubscribe(subscriber?: (...args: any[]) => any): void {
+    subscriber ? this._subs_?.delete(subscriber) : this._subs_?.clear();
   }
 
   public valueOf(): TValue {

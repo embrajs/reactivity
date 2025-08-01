@@ -1,4 +1,4 @@
-import { type $sValueTuple, type Readable, type Version } from "./typings";
+import { type $sValueTuple, type Readable } from "./typings";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -15,7 +15,7 @@ export type UNIQUE_VALUE = typeof UNIQUE_VALUE;
  */
 export const unsubscribe = (
   $: Iterable<Readable> | Readable | null | undefined,
-  subscriber: (...args: any[]) => any,
+  subscriber?: (...args: any[]) => any,
 ): void => {
   if ($) {
     if (isReadable($)) {
@@ -68,8 +68,6 @@ const getValue = <TValue>($: Readable<TValue>): TValue => $.value;
 
 export const getValues = <T extends readonly Readable[]>($s: T): [...$sValueTuple<T>] =>
   $s.map(getValue) as [...$sValueTuple<T>];
-
-export const getVersion = ($: Readable): Version => $.$version;
 
 interface IsReadable {
   <T extends Readable>($: T): $ is T;

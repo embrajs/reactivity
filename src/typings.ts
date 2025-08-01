@@ -71,10 +71,11 @@ export interface Readable<TValue = any> {
    */
   subscribe(subscriber: Subscriber<TValue>): Disposer;
   /**
-   * Remove the given subscriber.
-   * @param subscriber
+   * Remove the given subscriber or all subscribers if no subscriber is provided.
+   * @param subscriber Optional subscriber function to remove.
+   * If not provided, all subscribers will be removed.
    */
-  unsubscribe(subscriber: (...args: any[]) => any): void;
+  unsubscribe(subscriber?: (...args: any[]) => any): void;
 }
 
 export interface OwnedReadable<TValue = any> extends Readable<TValue> {
@@ -82,10 +83,6 @@ export interface OwnedReadable<TValue = any> extends Readable<TValue> {
    * Remove all subscribers and lock.
    */
   dispose(): void;
-  /**
-   * Remove all subscribers.
-   */
-  unsubscribeAll(): void;
 }
 
 export type SetValue<TValue = any> = (value: TValue) => void;
@@ -111,8 +108,4 @@ export interface OwnedWritable<TValue = any> extends Writable<TValue> {
    * Remove all subscribers and lock.
    */
   dispose(): void;
-  /**
-   * Remove all subscribers.
-   */
-  unsubscribeAll(): void;
 }

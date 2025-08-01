@@ -496,4 +496,76 @@ describe("ReactiveMap", () => {
       consoleErrorMock.mockRestore();
     });
   });
+
+  describe("onChanged", () => {
+    it("should notify multiple listeners on change", () => {
+      const map = reactiveMap<string, number>();
+      const listener1 = vi.fn();
+      const listener2 = vi.fn();
+
+      map.onChanged(listener1);
+      const dispose = map.onChanged(listener2);
+
+      map.set("foo", 1);
+      expect(listener1).toHaveBeenCalledWith({ upsert: [["foo", 1]], delete: [] });
+      expect(listener2).toHaveBeenCalledWith({ upsert: [["foo", 1]], delete: [] });
+
+      listener1.mockClear();
+      listener2.mockClear();
+
+      dispose();
+
+      map.set("bar", 2);
+      expect(listener1).toHaveBeenCalledWith({ upsert: [["bar", 2]], delete: [] });
+      expect(listener2).toHaveBeenCalledTimes(0);
+    });
+
+    it("should not notify listeners after dispose", () => {
+      const map = reactiveMap<string, number>();
+      const listener = vi.fn();
+
+      map.onChanged(listener);
+      map.dispose();
+
+      map.set("foo", 1);
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
+
+    it("should not notify disposed listeners", () => {
+      const map = reactiveMap<string, number>();
+      const listener = vi.fn();
+
+      const dispose = map.onChanged(listener);
+      dispose();
+
+      map.set("foo", 1);
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe("onDisposeValue", () => {
+    it("should notify listeners when a value should be disposed", () => {
+      const map = reactiveMap<string, number>();
+      const listener1 = vi.fn();
+      const listener2 = vi.fn();
+
+      map.onDisposeValue(listener1);
+      const dispose = map.onDisposeValue(listener2);
+
+      map.set("foo", 1);
+      map.delete("foo");
+      expect(listener1).toHaveBeenCalledWith(1);
+      expect(listener2).toHaveBeenCalledWith(1);
+
+      listener1.mockClear();
+      listener2.mockClear();
+
+      dispose();
+
+      map.set("bar", 2);
+      map.delete("bar");
+      expect(listener1).toHaveBeenCalledWith(2);
+      expect(listener2).toHaveBeenCalledTimes(0);
+    });
+  });
 });

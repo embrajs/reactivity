@@ -48,10 +48,6 @@ export const watch = (effect: WatchEffect): Disposer => {
   };
 
   const runner = () => {
-    if (disposed) {
-      return;
-    }
-
     if (cleanupEffect) {
       const cleanup = cleanupEffect;
       cleanupEffect = null;

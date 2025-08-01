@@ -26,7 +26,7 @@ export const on = (eventObject: EventObject, listener: Listener): RemoveListener
   eventObject.single_ || eventObject.multi_
     ? (eventObject.multi_ ??= new Set<Listener>().add(eventObject.single_!)).add(listener)
     : (eventObject.single_ = listener),
-  off.bind(null, eventObject, listener)
+  () => off(eventObject, listener)
 );
 
 export const off = (eventObject: EventObject, listener: Listener): boolean =>

@@ -774,12 +774,13 @@ describe("compute()", () => {
   it("should return updated value", () => {
     const a = writable("a");
     const b = writable("b");
+    const c = "C";
 
-    const c = compute((get: Get) => get(a) + get(b));
-    expect(c.value).toEqual("ab");
+    const d = compute((get: Get) => get(a) + get(b) + get(c));
+    expect(d.value).toEqual("abC");
 
     a.value = "aa";
-    expect(c.value).toEqual("aab");
+    expect(d.value).toEqual("aabC");
   });
 
   it("should be lazily computed on demand", () => {
