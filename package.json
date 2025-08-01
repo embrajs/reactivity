@@ -1,6 +1,6 @@
 {
-  "name": "@embrajs/reactivity",
-  "version": "1.0.0",
+  "name": "@embra/reactivity",
+  "version": "0.0.1",
   "description": "Chainable, hook-flavored signals.",
   "repository": "embrajs/reactivity",
   "main": "./dist/index.js",
