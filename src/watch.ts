@@ -1,6 +1,6 @@
 import { batch, batchFlush, batchStart, tasks } from "./batch";
 import { type Disposer, type Get, type Readable } from "./typings";
-import { identity, isReadable, unsubscribe } from "./utils";
+import { isReadable, unsubscribe } from "./utils";
 
 export interface WatchEffect {
   (get: Get, dispose: Disposer): (() => void) | undefined | void;
@@ -37,7 +37,7 @@ export const watch = (effect: WatchEffect): Disposer => {
   const dispose = () => {
     disposed = true;
     tasks.delete(runner);
-    effect = identity;
+    effect = null as any; // enable gc
     unsubscribe(collectedDeps, subscription);
     collectedDeps = undefined;
     if (cleanupEffect) {
