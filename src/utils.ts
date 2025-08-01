@@ -61,7 +61,7 @@ export const arrayShallowEqual = (arrA: any, arrB: any): boolean => {
   return true;
 };
 
-interface IsReadable {
+export interface IsReadable {
   <T extends Readable>($: T): $ is T;
   ($: unknown): $ is Readable;
   ($: any): $ is Readable;

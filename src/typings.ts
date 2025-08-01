@@ -35,6 +35,9 @@ export interface Readable<TValue = any> {
    * If two versions of a $ is not equal(`Object.is`), it means the `value` has changed (event if the `value` is equal).
    */
   readonly $version: Version;
+  /**
+   * @internal
+   */
   readonly [BRAND]: BRAND;
   /**
    * Current value of the $.

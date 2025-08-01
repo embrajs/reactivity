@@ -5,7 +5,6 @@ export interface Derive {
   /**
    * Derive a new Readable with same value from the given Readable.
    * @param dep$ - The Readable to derive from.
-   * @param config - Custom config for the derived Readable.
    * @returns A Readable with same value as the given Readable.
    */
   <TDepValue = any, TValue = any>(dep$: Readable<TDepValue>): OwnedReadable<TValue>;
@@ -18,7 +17,7 @@ export interface Derive {
    */
   <TDepValue = any, TValue = any>(
     dep$: Readable<TDepValue>,
-    transform: (depValue: TDepValue) => TValue,
+    transform?: (depValue: TDepValue) => TValue,
     config?: Config<TValue>,
   ): OwnedReadable<TValue>;
 }

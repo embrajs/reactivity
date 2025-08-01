@@ -23,7 +23,7 @@ const registry = /* @__PURE__ */ new FinalizationRegistry<{
   }
 });
 
-interface CreateReadable {
+export interface CreateReadable {
   /**
    * Creates a Readonly with the given value.
    *
@@ -61,6 +61,9 @@ interface CreateReadable {
 
 /** @internal */
 export class ReadableImpl<TValue = any> implements BatchTask {
+  /**
+   * @internal
+   */
   public readonly [BRAND]: BRAND = BRAND;
 
   /**
@@ -358,7 +361,7 @@ export const toWritable: ToWritable = <TValue>(
   set: (this: void, value: TValue) => void,
 ): OwnedWritable<TValue> => ((($ as OwnedWritable<TValue>).set = set), $ as OwnedWritable<TValue>);
 
-interface CreateWritable {
+export interface CreateWritable {
   /**
    * Creates a Writable.
    * @returns A Writable with undefined value.

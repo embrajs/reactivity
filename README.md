@@ -8,7 +8,6 @@
 [![Build Status](https://github.com/embrajs/reactivity/actions/workflows/build.yml/badge.svg)](https://github.com/embrajs/reactivity/actions/workflows/build.yml)
 [![npm-version](https://img.shields.io/npm/v/embra/reactivity.svg)](https://www.npmjs.com/package/embra/reactivity)
 [![Coverage Status](https://img.shields.io/coverallsCoverage/github/embrajs/reactivity)](https://coveralls.io/github/embrajs/reactivity)
-[![minified-size](https://img.shields.io/bundlephobia/minzip/embra/reactivity)](https://bundlephobia.com/package/embra/reactivity)
 
 Chainable, hook-flavored signals.
 
@@ -17,3 +16,5 @@ Chainable, hook-flavored signals.
 ```bash
 npm add @embra/reactivity
 ```
+
+![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)

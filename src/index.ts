@@ -1,14 +1,16 @@
 export type {
   Get,
   Readable,
-  Unwrap,
+  OwnedReadable,
   Writable,
+  OwnedWritable,
   Config,
   Disposer,
   Equal,
-  SetValue,
   Subscriber,
+  SetValue,
   Version,
+  Unwrap,
 } from "./typings";
 
 export { type Listener, type RemoveListener } from "./event";
@@ -17,12 +19,12 @@ export { batch, batchFlush, batchStart } from "./batch";
 
 export { compute, type ComputeFn } from "./compute";
 export { derive, type Derive } from "./derive";
-export { combine, type Combine } from "./combine";
+export { combine, type Combine, type MapReadablesToValues } from "./combine";
 
-export { readable, writable, toWritable } from "./readable";
+export { readable, type CreateReadable, writable, type CreateWritable, toWritable, type ToWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";
 
-export { isReadable, unsubscribe, strictEqual, arrayShallowEqual } from "./utils";
+export { isReadable, type IsReadable, unsubscribe, strictEqual, arrayShallowEqual } from "./utils";
 
 export {
   reactiveMap,
