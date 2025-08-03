@@ -51,6 +51,11 @@ export default defineConfig({
       externals: ["./compute"],
     },
     {
+      title: "{ reactiveMap, reactiveSet }",
+      code: "export { reactiveMap } from './src/collections/reactiveMap.ts';export { reactiveSet } from './src/collections/reactiveSet.ts'",
+      externals: ["../batch", "../readable", "../utils"],
+    },
+    {
       title: "{ reactiveMap }",
       code: "export { reactiveMap } from './src/collections/reactiveMap.ts'",
       externals: ["../batch", "../readable", "../utils"],
