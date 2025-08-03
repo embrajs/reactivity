@@ -29,8 +29,8 @@ export const size = (eventObject: EventObject): number =>
   eventObject.multi_ ? eventObject.multi_.size : eventObject.single_ ? 1 : 0;
 
 export const on = (eventObject: EventObject, listener: Listener): RemoveListener => (
-  eventObject.single_ || eventObject.multi_
-    ? (eventObject.multi_ ??= new Set<Listener>().add(eventObject.single_!)).add(listener)
+  eventObject.multi_ || eventObject.single_
+    ? (eventObject.single_ = void (eventObject.multi_ ??= new Set<Listener>().add(eventObject.single_!)).add(listener))
     : (eventObject.single_ = listener),
   () => off(eventObject, listener)
 );
