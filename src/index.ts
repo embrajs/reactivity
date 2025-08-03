@@ -30,6 +30,7 @@ export {
   reactiveMap,
   type OwnedReactiveMap,
   type ReactiveMap,
+  type ReadonlyReactiveMap,
   type ReactiveMapChanged,
 } from "./collections/reactiveMap";
 
@@ -37,5 +38,6 @@ export {
   reactiveSet,
   type OwnedReactiveSet,
   type ReactiveSet,
+  type ReadonlyReactiveSet,
   type ReactiveSetChanged,
 } from "./collections/reactiveSet";

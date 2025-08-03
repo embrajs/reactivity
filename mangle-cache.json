@@ -8,6 +8,7 @@
   "equal_": "e",
   "multi_": "m",
   "notify_": "y",
+  "onDisposeValue_": "v",
   "onReaction_": "o",
   "single_": "s",
   "task_": "k",

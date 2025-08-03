@@ -1,7 +1,8 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
-import { type EventObject, on, type OnDisposeValue, type RemoveListener, send, size } from "../event";
+import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
 import { type OwnedWritable, type Readable } from "../typings";
+import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 export interface ReactiveSetChanged<V> {
   readonly upsert: readonly V[];
@@ -17,7 +18,7 @@ export class OwnedReactiveSet<V> extends Set<V> {
   /**
    * A Readable that emits the set itself whenever it changes.
    */
-  public get $(): Readable<ReactiveSet<V>> {
+  public get $(): Readable<ReadonlyReactiveSet<V>> {
     return (this._$ ??= writable(this, { equal: false }));
   }
 
@@ -65,66 +66,43 @@ export class OwnedReactiveSet<V> extends Set<V> {
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
    */
-  public onDisposeValue(fn: (value: V) => void): RemoveListener {
-    return on(
-      (this._onDisposeValue_ ??= {
-        delete_: new Set<V>(),
-        task_: () => {
-          if (this._onDisposeValue_ && size(this._onDisposeValue_)) {
-            const { delete_ } = this._onDisposeValue_;
-            if (delete_.size) {
-              const removedValues = [...delete_];
-              delete_.clear();
-              for (const value of removedValues) {
-                send(this._onDisposeValue_, value);
-              }
-            }
-          } else {
-            this._onDisposeValue_ = null;
-          }
-        },
-      }),
-      fn,
-    );
-  }
+  public readonly onDisposeValue = onDisposeValue;
 
   public constructor(values?: readonly V[] | null) {
     super();
 
     if (values) {
-      const isBatchTop = batchStart();
       for (const value of values) {
-        this.add(value);
+        super.add(value);
       }
-      isBatchTop && batchFlush();
     }
   }
 
   public dispose(): void {
     if (this._disposed_) return;
     if (process.env.NODE_ENV !== "production") {
-      this._disposed_ = new Error("[embra] ReactiveMap disposed at:");
+      this._disposed_ = new Error("[embra] ReactiveSet disposed at:");
     } else {
       this._disposed_ = true;
     }
-    if (this._onDisposeValue_) {
-      const { delete_ } = this._onDisposeValue_;
+    if (this.onDisposeValue_) {
+      const { delete_ } = this.onDisposeValue_;
       for (const value of this.values()) {
         delete_.add(value);
       }
       if (delete_.size) {
         const isBatchTop = batchStart();
-        tasks.add(this._onDisposeValue_!);
+        tasks.add(this.onDisposeValue_);
         isBatchTop && batchFlush();
       }
     }
-    this._$ = this._onChanged_ = this._onDisposeValue_ = null;
+    this._$ = this._onChanged_ = this.onDisposeValue_ = null;
   }
 
   public override add(value: V): this {
     if (!this.has(value)) {
       const isBatchTop = batchStart();
-      this._onDisposeValue_?.delete_.delete(value);
+      this.onDisposeValue_?.delete_.delete(value);
       if (this._onChanged_) {
         this._onChanged_.upsert_.add(value);
         this._onChanged_.delete_.delete(value);
@@ -140,9 +118,9 @@ export class OwnedReactiveSet<V> extends Set<V> {
   public override delete(value: V): boolean {
     if (this.has(value)) {
       const isBatchTop = batchStart();
-      if (this._onDisposeValue_) {
-        this._onDisposeValue_.delete_.add(value);
-        tasks.add(this._onDisposeValue_);
+      if (this.onDisposeValue_) {
+        this.onDisposeValue_.delete_.add(value);
+        tasks.add(this.onDisposeValue_);
       }
       if (this._onChanged_) {
         this._onChanged_.delete_.add(value);
@@ -158,11 +136,11 @@ export class OwnedReactiveSet<V> extends Set<V> {
   public override clear(): void {
     if (this.size) {
       const isBatchTop = batchStart();
-      if (this._onDisposeValue_ || this._onChanged_) {
+      if (this.onDisposeValue_ || this._onChanged_) {
         for (const value of this) {
-          if (this._onDisposeValue_) {
-            this._onDisposeValue_.delete_.add(value);
-            tasks.add(this._onDisposeValue_);
+          if (this.onDisposeValue_) {
+            this.onDisposeValue_.delete_.add(value);
+            tasks.add(this.onDisposeValue_);
           }
           if (this._onChanged_) {
             this._onChanged_.delete_.add(value);
@@ -187,7 +165,7 @@ export class OwnedReactiveSet<V> extends Set<V> {
   private _onChanged_?: null | OnChanged<V>;
 
   /** @internal */
-  private _onDisposeValue_?: null | OnDisposeValue<V>;
+  public onDisposeValue_?: null | OnDisposeValue<V>;
 
   /** @internal */
   private _notify_() {
@@ -202,5 +180,29 @@ export class OwnedReactiveSet<V> extends Set<V> {
 }
 
 export type ReactiveSet<V> = Omit<OwnedReactiveSet<V>, "dispose">;
+
+export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
+  readonly $: Readable<ReadonlySet<V>>;
+  /**
+   * Subscribe to changes in the set.
+   *
+   * @param fn - The function to call when the set is changed.
+   * @returns A disposer function to unsubscribe from the event.
+   */
+  onChanged(fn: (changed: ReactiveSetChanged<V>) => void): RemoveListener;
+  /**
+   * Subscribe to events when a value is needed to be disposed.
+   *
+   * A value is considered for disposal when:
+   * - it is deleted from the set.
+   * - it is replaced by another value (the old value is removed).
+   * - it is cleared from the set.
+   * - the set is disposed.
+   *
+   * @param fn - The function to call when a value is needed to be disposed.
+   * @returns A disposer function to unsubscribe from the event.
+   */
+  onDisposeValue(fn: (value: V) => void): RemoveListener;
+}
 
 export const reactiveSet = <V>(values?: readonly V[] | null): OwnedReactiveSet<V> => new OwnedReactiveSet(values);

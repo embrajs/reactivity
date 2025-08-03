@@ -1,8 +1,9 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
-import { type EventObject, on, type OnDisposeValue, type RemoveListener, send, size } from "../event";
+import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
 import { type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
+import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 export interface ReactiveMapChanged<K, V> {
   readonly upsert: readonly [K, V][];
@@ -18,7 +19,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   /**
    * A Readable that emits the map itself whenever it changes.
    */
-  public get $(): Readable<ReactiveMap<K, V>> {
+  public get $(): Readable<ReadonlyReactiveMap<K, V>> {
     return (this._$ ??= writable(this, { equal: false }));
   }
 
@@ -68,38 +69,15 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
    */
-  public onDisposeValue(fn: (value: V) => void): RemoveListener {
-    return on(
-      (this._onDisposeValue_ ??= {
-        delete_: new Set<V>(),
-        task_: () => {
-          if (this._onDisposeValue_ && size(this._onDisposeValue_)) {
-            const { delete_ } = this._onDisposeValue_;
-            if (delete_.size) {
-              const removedValues = [...delete_];
-              delete_.clear();
-              for (const value of removedValues) {
-                send(this._onDisposeValue_, value);
-              }
-            }
-          } else {
-            this._onDisposeValue_ = null;
-          }
-        },
-      }),
-      fn,
-    );
-  }
+  public readonly onDisposeValue = onDisposeValue;
 
   public constructor(entries?: readonly (readonly [K, V])[] | null) {
     super();
 
     if (entries) {
-      const isBatchTop = batchStart();
       for (const [key, value] of entries) {
-        this.set(key, value);
+        super.set(key, value);
       }
-      isBatchTop && batchFlush();
     }
   }
 
@@ -110,18 +88,18 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
     } else {
       this._disposed_ = true;
     }
-    if (this._onDisposeValue_) {
-      const { delete_ } = this._onDisposeValue_;
+    if (this.onDisposeValue_) {
+      const { delete_ } = this.onDisposeValue_;
       for (const value of this.values()) {
         delete_.add(value);
       }
       if (delete_.size) {
         const isBatchTop = batchStart();
-        tasks.add(this._onDisposeValue_!);
+        tasks.add(this.onDisposeValue_);
         isBatchTop && batchFlush();
       }
     }
-    this._$ = this._onChanged_ = this._onDisposeValue_ = null;
+    this._$ = this._onChanged_ = this.onDisposeValue_ = null;
   }
 
   public override set(key: K, value: V): this {
@@ -130,7 +108,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
       if (!strictEqual(oldValue, value)) {
         const isBatchTop = batchStart();
         // task added in this._upsert_
-        this._onDisposeValue_?.delete_.add(oldValue);
+        this.onDisposeValue_?.delete_.add(oldValue);
         this._upsert_(key, value);
         isBatchTop && batchFlush();
       }
@@ -145,9 +123,9 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   public override delete(key: K): boolean {
     if (this.has(key)) {
       const isBatchTop = batchStart();
-      if (this._onDisposeValue_) {
-        this._onDisposeValue_.delete_.add(this.get(key)!);
-        tasks.add(this._onDisposeValue_);
+      if (this.onDisposeValue_) {
+        this.onDisposeValue_.delete_.add(this.get(key)!);
+        tasks.add(this.onDisposeValue_);
       }
       if (this._onChanged_) {
         this._onChanged_.delete_.add(key);
@@ -163,11 +141,11 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   public override clear(): void {
     if (this.size) {
       const isBatchTop = batchStart();
-      if (this._onDisposeValue_ || this._onChanged_) {
+      if (this.onDisposeValue_ || this._onChanged_) {
         for (const [key, value] of this) {
-          if (this._onDisposeValue_) {
-            this._onDisposeValue_.delete_.add(value);
-            tasks.add(this._onDisposeValue_);
+          if (this.onDisposeValue_) {
+            this.onDisposeValue_.delete_.add(value);
+            tasks.add(this.onDisposeValue_);
           }
           if (this._onChanged_) {
             this._onChanged_.delete_.add(key);
@@ -202,11 +180,11 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
   private _onChanged_?: null | OnChanged<K, V>;
 
   /** @internal */
-  private _onDisposeValue_?: null | OnDisposeValue<V>;
+  public onDisposeValue_?: null | OnDisposeValue<V>;
 
   /** @internal */
   private _upsert_(key: K, value: V): void {
-    this._onDisposeValue_?.delete_.delete(value);
+    this.onDisposeValue_?.delete_.delete(value);
     if (this._onChanged_) {
       this._onChanged_.upsert_.set(key, value);
       this._onChanged_.delete_.delete(key);
@@ -229,6 +207,32 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
 }
 
 export type ReactiveMap<K, V> = Omit<OwnedReactiveMap<K, V>, "dispose">;
+
+export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
+  readonly $: Readable<ReadonlyMap<K, V>>;
+  /**
+   * Subscribe to changes in the map.
+   *
+   * @param fn - The function to call when the map is changed.
+   * @returns A disposer function to unsubscribe from the event.
+   */
+  onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): RemoveListener;
+  /**
+   * Subscribe to events when a value is needed to be disposed.
+   *
+   * A value is considered for disposal when:
+   * - it is deleted from the map.
+   * - it is replaced by another value (the old value is removed).
+   * - it is cleared from the map.
+   * - the map is disposed.
+   *
+   * Note that for performance reasons, it does not handle the case where multiple keys map to the same value.
+   *
+   * @param fn - The function to call when a value is needed to be disposed.
+   * @returns A disposer function to unsubscribe from the event.
+   */
+  onDisposeValue(fn: (value: V) => void): RemoveListener;
+}
 
 export const reactiveMap = <K, V>(entries?: readonly (readonly [K, V])[] | null): OwnedReactiveMap<K, V> =>
   new OwnedReactiveMap(entries);
