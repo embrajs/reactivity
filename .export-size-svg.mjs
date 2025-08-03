@@ -1,8 +1,19 @@
 import { defineConfig } from "export-size-svg";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const mangleCache = JSON.parse(readFileSync(join(__dirname, "mangle-cache.json"), "utf-8"));
 
 export default defineConfig({
   title: "@embra/reactivity",
   out: "./docs/assets",
+  esbuildOptions: {
+    sourcesContent: false,
+    mangleProps: /[^_]_$/,
+    mangleCache,
+  },
   svg: {
     theme: {
       titleColor: "#fb4c1bf7",
