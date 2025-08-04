@@ -26,6 +26,8 @@ export { watch, type WatchEffect } from "./watch";
 
 export { isReadable, type IsReadable, unsubscribe, strictEqual, arrayShallowEqual } from "./utils";
 
+export { type OnDisposeValue } from "./collections/utils";
+
 export {
   reactiveMap,
   type OwnedReactiveMap,
@@ -41,3 +43,10 @@ export {
   type ReadonlyReactiveSet,
   type ReactiveSetChanged,
 } from "./collections/reactiveSet";
+
+export {
+  reactiveArray,
+  type OwnedReactiveArray,
+  type ReactiveArray,
+  type ReadonlyReactiveArray,
+} from "./collections/reactiveArray";

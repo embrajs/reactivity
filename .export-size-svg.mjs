@@ -15,6 +15,7 @@ export default defineConfig({
     mangleCache,
   },
   svg: {
+    cardWidth: 400,
     theme: {
       titleColor: "#fb4c1bf7",
       progressColor: "#fb4a1b",
@@ -36,33 +37,13 @@ export default defineConfig({
       externals: ["./batch", "./utils"],
     },
     {
-      title: "{ compute }",
-      code: "export { compute } from './src/compute.ts'",
+      title: "{ compute, combine, derive }",
+      code: "export { compute } from './src/compute.ts';export { combine } from './src/combine.ts';export { derive } from './src/derive.ts'",
       externals: ["./readable", "./utils"],
     },
     {
-      title: "{ combine }",
-      code: "export { combine } from './src/combine.ts'",
-      externals: ["./compute"],
-    },
-    {
-      title: "{ derive }",
-      code: "export { derive } from './src/derive.ts'",
-      externals: ["./compute"],
-    },
-    {
-      title: "{ reactiveMap, reactiveSet }",
-      code: "export { reactiveMap } from './src/collections/reactiveMap.ts';export { reactiveSet } from './src/collections/reactiveSet.ts'",
-      externals: ["../batch", "../readable", "../utils"],
-    },
-    {
-      title: "{ reactiveMap }",
-      code: "export { reactiveMap } from './src/collections/reactiveMap.ts'",
-      externals: ["../batch", "../readable", "../utils"],
-    },
-    {
-      title: "{ reactiveSet }",
-      code: "export { reactiveSet } from './src/collections/reactiveSet.ts'",
+      title: "{ reactiveMap, reactiveSet, reactiveArray }",
+      code: "export { reactiveMap } from './src/collections/reactiveMap.ts';export { reactiveSet } from './src/collections/reactiveSet.ts';export { reactiveArray } from './src/collections/reactiveArray.ts'",
       externals: ["../batch", "../readable", "../utils"],
     },
   ],
