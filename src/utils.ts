@@ -1,4 +1,4 @@
-import { type Readable } from "./typings";
+import { type Writable, type Readable } from "./typings";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -68,11 +68,24 @@ export interface IsReadable {
 }
 
 /**
- * Checks if $ is is a Readable.
+ * Checks if $ is is a Readable. A Writable is also a Readable.
  *
  * @returns `true` if $ is Readable.
  */
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
+
+export interface IsWritable {
+  <T extends Writable>($: T): $ is T;
+  ($: unknown): $ is Writable;
+  ($: any): $ is Writable;
+}
+
+/**
+ * Checks if $ is is a Writable.
+ *
+ * @returns `true` if $ is Readable.
+ */
+export const isWritable: IsWritable = ($: unknown): $ is Writable => isReadable($) && !!($ as Writable).set;
 
 export const invokeEach = <T>(iterable: Iterable<(value: T) => any>, value: T) => {
   let error: unknown = UNIQUE_VALUE;

@@ -1,3 +1,5 @@
+import { initCustomFormatter } from "./dev/customFormatter";
+
 export type {
   Get,
   Readable,
@@ -50,3 +52,7 @@ export {
   type ReactiveArray,
   type ReadonlyReactiveArray,
 } from "./collections/reactiveArray";
+
+if (process.env.NODE_ENV !== "production") {
+  /* @__PURE__ */ initCustomFormatter();
+}

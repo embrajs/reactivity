@@ -18,3 +18,9 @@ npm add @embra/reactivity
 ```
 
 ![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)
+
+## Devtools
+
+## Custom Formatter
+
+`@embra/reactivity` in development mode supports DevTools [custom formatters](https://www.mattzeunert.com/2016/02/19/custom-chrome-devtools-object-formatters.html). You may enable it by checking the "Enable custom formatters" option in the "Console" section of DevTools general settings.
