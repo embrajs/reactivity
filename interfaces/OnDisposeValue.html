@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>Config | @embra/reactivity - v0.0.1</title>
+    <title>OnDisposeValue | @embra/reactivity - v0.0.1</title>
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,42 +55,52 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">Config</a></li>
+            <li><a href="" aria-current="page">OnDisposeValue</a></li>
           </ul>
-          <h1>Interface Config&lt;TValue&gt;</h1>
+          <h1>Interface OnDisposeValue&lt;V&gt;</h1>
         </div>
         <section class="tsd-panel tsd-comment">
-          <div class="tsd-comment tsd-typography"><p>Custom config for the Readable/Writable.</p></div>
+          <div class="tsd-comment tsd-typography"><p>When a value should be disposed</p></div>
           <div class="tsd-comment tsd-typography"></div>
         </section>
         <div class="tsd-signature">
-          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">Config</span
+          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">OnDisposeValue</span
           ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a>
-          <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">{</span><br />    <a
             class="tsd-kind-property"
-            href="#equal"
-            >equal</a
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">false</span>
-          <span class="tsd-signature-symbol">|</span>
-          <a href="../types/Equal.html" class="tsd-signature-type tsd-kind-type-alias">Equal</a
+            href="#delete_"
+            >delete_</a
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
           ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
             class="tsd-kind-property"
-            href="#name"
-            >name</a
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span
+            href="#task_"
+            >task_</a
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">()</span>
+          <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
           ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
           <ul class="tsd-type-parameter-list">
             <li>
-              <span id="tvalue"
-                ><span class="tsd-kind-type-parameter">TValue</span> = <span class="tsd-signature-type">any</span></span
-              >
+              <span id="v"><span class="tsd-kind-type-parameter">V</span></span>
+            </li>
+          </ul>
+        </section>
+        <section class="tsd-panel tsd-hierarchy" data-refl="285">
+          <h4>Hierarchy</h4>
+          <ul class="tsd-hierarchy">
+            <li class="tsd-hierarchy-item">
+              <span class="tsd-signature-type">BatchTask</span><span class="tsd-signature-symbol">&lt;</span
+              ><span class="tsd-signature-type">EventObject</span><span class="tsd-signature-symbol">&lt;</span
+              ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+              ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
+              <ul class="tsd-hierarchy">
+                <li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">OnDisposeValue</span></li>
+              </ul>
             </li>
           </ul>
         </section>
@@ -99,8 +109,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/typings.ts#L6"
-                >src/typings.ts:6</a
+                href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/collections/utils.ts#L5"
+                >src/collections/utils.ts:5</a
               >
             </li>
           </ul>
@@ -118,15 +128,15 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a href="#equal" class="tsd-index-link"
+                    <a href="#delete_" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>equal?</span></a
+                      ><span>delete_</span></a
                     >
-                    <a href="#name" class="tsd-index-link"
+                    <a href="#task_" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>name?</span></a
+                      ><span>task_</span></a
                     >
                   </div>
                 </section>
@@ -143,56 +153,50 @@
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="equal">
-                <code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>equal</span
-                ><a href="#equal" aria-label="Permalink" class="tsd-anchor-icon"
+              <h3 class="tsd-anchor-link" id="delete_">
+                <code class="tsd-tag">Readonly</code><span>delete_</span
+                ><a href="#delete_" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">equal</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">false</span> <span class="tsd-signature-symbol">|</span>
-                <a href="../types/Equal.html" class="tsd-signature-type tsd-kind-type-alias">Equal</a
-                ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+                <span class="tsd-kind-property">delete_</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
                 ><span class="tsd-signature-symbol">&gt;</span>
               </div>
-              <div class="tsd-comment tsd-typography">
-                <p>Compare two values. Default <code>Object.is</code>. <code>false</code> to disable equality check.</p>
-              </div>
-              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/typings.ts#L11"
-                      >src/typings.ts:11</a
+                      href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/collections/utils.ts#L6"
+                      >src/collections/utils.ts:6</a
                     >
                   </li>
                 </ul>
               </aside>
             </section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="name">
-                <code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code><span>name</span
-                ><a href="#name" aria-label="Permalink" class="tsd-anchor-icon"
+              <h3 class="tsd-anchor-link" id="task_">
+                <span>task_</span
+                ><a href="#task_" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">string</span>
+                <span class="tsd-kind-property">task_</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-symbol">()</span> <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span>
               </div>
-              <div class="tsd-comment tsd-typography"><p>Name for debugging.</p></div>
-              <div class="tsd-comment tsd-typography"></div>
               <aside class="tsd-sources">
+                <p>Inherited from BatchTask.task_</p>
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/typings.ts#L15"
-                      >src/typings.ts:15</a
+                      href="https://github.com/embrajs/reactivity/blob/430f5028db2cb937f6e5527d0e053380efd07670/src/batch.ts#L5"
+                      >src/batch.ts:5</a
                     >
                   </li>
                 </ul>
@@ -238,14 +242,14 @@
                   >Properties
                 </summary>
                 <div>
-                  <a href="#equal"
+                  <a href="#delete_"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>equal</span></a
-                  ><a href="#name"
+                    ><span>delete_</span></a
+                  ><a href="#task_"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>name</span></a
+                    ><span>task_</span></a
                   >
                 </div>
               </details>
