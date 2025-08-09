@@ -71,7 +71,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> {
    */
   public readonly onDisposeValue = onDisposeValue;
 
-  public constructor(entries?: readonly (readonly [K, V])[] | null) {
+  public constructor(entries?: Iterable<readonly [K, V]> | null) {
     super();
 
     if (entries) {
@@ -234,5 +234,5 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
-export const reactiveMap = <K, V>(entries?: readonly (readonly [K, V])[] | null): OwnedReactiveMap<K, V> =>
+export const reactiveMap = <K, V>(entries?: Iterable<readonly [K, V]> | null): OwnedReactiveMap<K, V> =>
   new OwnedReactiveMap(entries);

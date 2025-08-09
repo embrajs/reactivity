@@ -402,39 +402,82 @@ describe("ReactiveArray", () => {
 
   describe("splice", () => {
     it("should splice and remove elements", () => {
-      const arr = reactiveArray([1, 2, 3, 4]);
+      const arr = [1, 2, 3, 4];
+      const arr1$ = reactiveArray([...arr]);
+      const arr2$ = reactiveArray(arr);
+
       const removed = arr.splice(1, 2);
-      expect(removed).toEqual([2, 3]);
-      expect(arr).toEqual([1, 4]);
+      const removed1 = arr1$.splice(1, 2);
+      const removed2 = arr2$.splice(1, 2);
+
+      expect(removed1).toEqual(removed);
+      expect(removed2).toEqual(removed);
+
+      expect(arr1$).toEqual(arr);
+      expect(arr2$).toEqual(arr);
+    });
+
+    it("should not remove elements if the second argument is not provided", () => {
+      const arr = [1, 2, 3, 4];
+      const arr1$ = reactiveArray([...arr]);
+      const arr2$ = reactiveArray(arr);
+
+      const removed = arr.splice(0);
+      const removed1 = arr1$.splice(0);
+      const removed2 = arr2$.splice(0);
+
+      expect(removed1).toEqual(removed);
+      expect(removed2).toEqual(removed);
+
+      expect(arr1$).toEqual(arr);
+      expect(arr2$).toEqual(arr);
     });
 
     it("should splice and add elements", () => {
-      const arr = reactiveArray([1, 4]);
+      const arr = [1, 4];
+      const arr1$ = reactiveArray([...arr]);
+      const arr2$ = reactiveArray(arr);
+
       const removed = arr.splice(1, 0, 2, 3);
-      expect(removed).toEqual([]);
-      expect(arr).toEqual([1, 2, 3, 4]);
+      const removed1 = arr1$.splice(1, 0, 2, 3);
+      const removed2 = arr2$.splice(1, 0, 2, 3);
+
+      expect(removed1).toEqual(removed);
+      expect(removed2).toEqual(removed);
+
+      expect(arr1$).toEqual(arr);
+      expect(arr2$).toEqual(arr);
     });
 
     it("should splice and replace elements", () => {
-      const arr = reactiveArray([1, 2, 3, 4]);
+      const arr = [1, 2, 3, 4];
+      const arr1$ = reactiveArray([...arr]);
+      const arr2$ = reactiveArray(arr);
+
       const removed = arr.splice(1, 2, 5, 6);
-      expect(removed).toEqual([2, 3]);
-      expect(arr).toEqual([1, 5, 6, 4]);
+      const removed1 = arr1$.splice(1, 2, 5, 6);
+      const removed2 = arr2$.splice(1, 2, 5, 6);
+
+      expect(removed1).toEqual(removed);
+      expect(removed2).toEqual(removed);
+
+      expect(arr1$).toEqual(arr);
+      expect(arr2$).toEqual(arr);
     });
 
     it("should notify on splice when removing", () => {
-      const arr = reactiveArray([1, 2, 3, 4]);
+      const arr1$ = reactiveArray([1, 2, 3, 4]);
 
       const mockNotify = vi.fn();
-      arr.$.reaction(mockNotify);
+      arr1$.$.reaction(mockNotify);
 
       const onDisposeValueSpy = vi.fn();
-      arr.onDisposeValue(onDisposeValueSpy);
+      arr1$.onDisposeValue(onDisposeValueSpy);
 
-      arr.splice(1, 2);
+      arr1$.splice(1, 2);
 
       expect(mockNotify).toHaveBeenCalledTimes(1);
-      expect(mockNotify).toHaveBeenCalledWith(arr);
+      expect(mockNotify).toHaveBeenCalledWith(arr1$);
 
       expect(onDisposeValueSpy).toHaveBeenCalledTimes(0);
     });

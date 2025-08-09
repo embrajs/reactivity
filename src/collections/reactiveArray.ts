@@ -116,9 +116,9 @@ export class OwnedReactiveArray<V> extends Array<V> {
 
   public override splice(start: number, deleteCount?: number): V[];
   public override splice(start: number, deleteCount: number, ...items: V[]): V[];
-  public override splice(start: number, deleteCount: number, ...items: V[]): V[] {
-    const removed = super.splice(start, deleteCount, ...items);
-    if (removed.length > 0 || items.length > 0) {
+  public override splice(...args: [number, number, ...V[]]): V[] {
+    const removed = super.splice(...args);
+    if (removed.length > 0 || args.length > 2) {
       this._notify_();
     }
     return removed;
@@ -225,7 +225,7 @@ export interface ReadonlyReactiveArray<V> extends ReadonlyArray<V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
-export const reactiveArray = <V>(values?: readonly V[] | null): OwnedReactiveArray<V> => {
+export const reactiveArray = <V>(values?: Iterable<V> | null): OwnedReactiveArray<V> => {
   const arr = new OwnedReactiveArray<V>();
   if (values) {
     arr.push(...values);

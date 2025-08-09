@@ -68,7 +68,7 @@ export class OwnedReactiveSet<V> extends Set<V> {
    */
   public readonly onDisposeValue = onDisposeValue;
 
-  public constructor(values?: readonly V[] | null) {
+  public constructor(values?: Iterable<V> | null) {
     super();
 
     if (values) {
@@ -205,4 +205,4 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
-export const reactiveSet = <V>(values?: readonly V[] | null): OwnedReactiveSet<V> => new OwnedReactiveSet(values);
+export const reactiveSet = <V>(values?: Iterable<V> | null): OwnedReactiveSet<V> => new OwnedReactiveSet(values);
