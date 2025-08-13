@@ -87,7 +87,12 @@ export interface IsWritable {
  */
 export const isWritable: IsWritable = ($: unknown): $ is Writable => isReadable($) && !!($ as Writable).set;
 
-export const invokeEach = <T>(iterable: Iterable<(value: T) => any>, value: T) => {
+interface InvokeEach {
+  (iterable: Iterable<() => any>): void;
+  <T>(iterable: Iterable<(value: T) => any>, value: T): void;
+}
+
+export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>, value?: T) => {
   let error: unknown = UNIQUE_VALUE;
   for (const fn of iterable) {
     try {

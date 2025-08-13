@@ -2,7 +2,7 @@ import { ReadableImpl } from "./readable";
 import { type Config, type Get, type OwnedReadable, type Readable } from "./typings";
 import { isReadable } from "./utils";
 
-export interface ComputeFn<TValue> {
+export interface ComputeFn<TValue = any> {
   (get: Get): TValue;
 }
 

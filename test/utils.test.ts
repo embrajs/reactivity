@@ -1,6 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { arrayShallowEqual, compute, isReadable, readable, strictEqual, unsubscribe, writable } from "../src";
+import {
+  arrayShallowEqual,
+  compute,
+  isReadable,
+  isWritable,
+  readable,
+  strictEqual,
+  unsubscribe,
+  writable,
+} from "../src";
 
 describe("utils", () => {
   describe("unsubscribe", () => {
@@ -120,6 +129,24 @@ describe("utils", () => {
     it("should return false for non-Readable instances", () => {
       const notReadable = { value: "not readable" };
       expect(isReadable(notReadable)).toBe(false);
+    });
+  });
+
+  describe("isWritable", () => {
+    it("should return true for Writable instances", () => {
+      const a = writable("a");
+      expect(isWritable(a)).toBe(true);
+    });
+
+    it("should return false for Readable instances", () => {
+      const [b] = readable("b");
+      expect(isWritable(b)).toBe(false);
+    });
+
+    it("should return false for non-Readable/Writable instances", () => {
+      const notReadable = { value: "not readable" };
+      expect(isWritable(notReadable)).toBe(false);
+      expect(isWritable(undefined)).toBe(false);
     });
   });
 });

@@ -1,6 +1,12 @@
 import { isReadable, isWritable } from "../utils";
 
-export function initCustomFormatter(): void {
+/**
+ * Enables custom formatting for Readable and Writable objects in Chrome DevTools.
+ * It is enabled in development by default.
+ *
+ * @see {@link https://www.mattzeunert.com/2016/02/19/custom-chrome-devtools-object-formatters.html}
+ */
+export function customFormatter(): void {
   if (typeof window === "undefined") {
     return;
   }

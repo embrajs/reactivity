@@ -1,4 +1,4 @@
-import { initCustomFormatter } from "./dev/customFormatter";
+import { customFormatter } from "./dev";
 
 export type {
   Get,
@@ -26,7 +26,15 @@ export { combine, type Combine, type MapReadablesToValues } from "./combine";
 export { readable, type CreateReadable, writable, type CreateWritable, toWritable, type ToWritable } from "./readable";
 export { watch, type WatchEffect } from "./watch";
 
-export { isReadable, type IsReadable, unsubscribe, strictEqual, arrayShallowEqual } from "./utils";
+export {
+  isReadable,
+  type IsReadable,
+  isWritable,
+  type IsWritable,
+  unsubscribe,
+  strictEqual,
+  arrayShallowEqual,
+} from "./utils";
 
 export { type OnDisposeValue } from "./collections/utils";
 
@@ -53,6 +61,8 @@ export {
   type ReadonlyReactiveArray,
 } from "./collections/reactiveArray";
 
+export { customFormatter, trace, type Trace, type TraceConfig } from "./dev";
+
 if (process.env.NODE_ENV !== "production") {
-  /* @__PURE__ */ initCustomFormatter();
+  /* @__PURE__ */ customFormatter();
 }

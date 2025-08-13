@@ -30,6 +30,7 @@ export interface Get {
  * A Readable is a reactive value that can be read and subscribed to.
  */
 export interface Readable<TValue = any> {
+  readonly name?: string;
   /**
    * A version representation of the value.
    * If two versions of a $ is not equal(`Object.is`), it means the `value` has changed (event if the `value` is equal).
@@ -39,6 +40,10 @@ export interface Readable<TValue = any> {
    * @internal
    */
   readonly [BRAND]: BRAND;
+  /**
+   * @internal
+   */
+  deps_?: Map<Readable, Version>;
   /**
    * Current value of the $.
    */

@@ -26,6 +26,7 @@ export default defineConfig({
     {
       title: "*",
       code: "export * from './src/index.ts'",
+      externals: ["./dev"],
     },
     {
       title: "{ readable, writable } (core)",
