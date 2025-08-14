@@ -5,7 +5,7 @@ export default defineConfig({
     coverage: {
       include: ["src/**"],
       exclude: ["src/dev/**"],
-      reporter: ["html", "text", "lcov"],
+      reporter: ["html", "text", "json-summary"],
     },
     poolOptions: {
       forks: {

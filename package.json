@@ -1,7 +1,7 @@
 {
   "name": "@embra/reactivity",
   "version": "0.0.1",
-  "description": "Chainable, hook-flavored signals.",
+  "description": "A lightweight, composable and explicit reactivity system.",
   "repository": "embrajs/reactivity",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -24,7 +24,7 @@
     "docs": "typedoc --options typedoc.json && prettier --ignore-path .prettierignore --write docs && export-size-svg",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
-    "test:ci": "vitest --coverage",
+    "test:ci": "vitest --coverage --coverage.reportsDirectory='./docs/coverage'",
     "build": "tsup",
     "build:min": "MINIFY=true tsup --env.NODE_ENV production && echo '' && gzip-size dist/index.mjs dist/index.js",
     "release": "commit-and-tag-version"
