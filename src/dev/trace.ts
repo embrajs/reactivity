@@ -1,5 +1,5 @@
 import { type ComputeFn } from "../compute";
-import { type Get, type Readable } from "../typings";
+import { type ReadableProvider, type Get, type Readable } from "../typings";
 import { isReadable, isWritable } from "../utils";
 import { type WatchEffect } from "../watch";
 
@@ -31,9 +31,12 @@ export interface Trace {
  * count$.set(1);
  * ```
  */
-export const trace: Trace = (x: unknown, config?: TraceConfig): any => {
+export const trace: Trace = (x: any, config?: TraceConfig): any => {
   if (isReadable(x)) {
     return traceReadable(x, config);
+  }
+  if (isReadable(x?.$)) {
+    return traceReadableProvider(x, config);
   }
   if (typeof x === "function") {
     return traceWatch(x as ComputeFn | WatchEffect, config);
@@ -114,7 +117,7 @@ class Deps {
 
 const traceReadable = <T extends Readable>($: T, config?: TraceConfig): T => {
   const deps = new Deps();
-  const $type = isWritable($) ? "Writable" : isReadable($) ? "Readable" : "Unknown";
+  const $type = isWritable($) ? "Writable" : "Readable";
   const traceLocation = new Error("LocationDebugError");
   let lastValue: any = traceLocation;
 
@@ -137,8 +140,8 @@ const traceReadable = <T extends Readable>($: T, config?: TraceConfig): T => {
       console.log($.value);
     } else {
       console.log($.value, "<- previous:", lastValue);
-      lastValue = $.value;
     }
+    lastValue = $.value;
 
     if ($.deps_) {
       for (const dep of $.deps_.keys()) {
@@ -160,14 +163,74 @@ const traceReadable = <T extends Readable>($: T, config?: TraceConfig): T => {
   return $;
 };
 
+const traceReadableProvider = <T extends ReadableProvider>($: T, config?: TraceConfig): T => {
+  const $type =
+    $ instanceof Set
+      ? "ReactiveSet"
+      : $ instanceof Map
+        ? "ReactiveMap"
+        : $ instanceof Array
+          ? "ReactiveArray"
+          : "ReadableProvider";
+  // const deps = new Deps();
+  const traceLocation = new Error("LocationDebugError");
+  let lastValue: any = traceLocation;
+
+  $.$.subscribe(() => {
+    ((config?.defaultExpand ?? true) ? console.group : console.groupCollapsed)(
+      `\x1b[36m[embra]\x1b[0m trace ${$type}${config?.name ? `: ${config.name}` : ""}`,
+    );
+
+    if (config?.printStack ?? true) {
+      console.groupCollapsed("trace location");
+      console.log(traceLocation);
+      console.groupEnd();
+
+      console.groupCollapsed(`effect location`);
+      console.trace();
+      console.groupEnd();
+    }
+
+    const value =
+      $ instanceof Set ? new Set($) : $ instanceof Map ? new Map($) : $ instanceof Array ? [...$] : $.$.value;
+
+    if (lastValue === traceLocation) {
+      console.log(value);
+    } else {
+      console.log(value, "<- previous:", lastValue);
+    }
+    lastValue = value;
+
+    // if ($.$.deps_) {
+    //   for (const dep of $.$.deps_.keys()) {
+    //     deps.newDeps.set(dep, { value: dep.value, version: dep.$version });
+    //   }
+
+    //   deps.print();
+
+    //   [deps.oldDeps, deps.newDeps] = [deps.newDeps, deps.oldDeps];
+    //   deps.newDeps.clear();
+    // } else {
+    //   deps.oldDeps.clear();
+    //   deps.newDeps.clear();
+    // }
+
+    console.groupEnd();
+  });
+
+  return $;
+};
+
 const traceWatch = <T extends WatchEffect | ComputeFn>(effect: T, config?: TraceConfig): T => {
   const deps = new Deps();
   const traceLocation = new Error("TraceLocationDebugError");
 
   return ((get: Get, ...args: [any]): any => {
-    const myGet: Get = $ => {
+    const myGet: Get = ($: any) => {
       if (isReadable($)) {
         deps.newDeps.set($, { value: $.value, version: $.$version });
+      } else if (isReadable($?.$)) {
+        deps.newDeps.set($.$, { value: $.$.value, version: $.$.$version });
       }
       return get($);
     };

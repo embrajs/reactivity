@@ -1,5 +1,5 @@
 import { ReadableImpl } from "./readable";
-import { type Config, type Get, type OwnedReadable, type Readable } from "./typings";
+import { type ReadableLike, type Config, type Get, type OwnedReadable } from "./typings";
 import { isReadable } from "./utils";
 
 export interface ComputeFn<TValue = any> {
@@ -9,9 +9,12 @@ export interface ComputeFn<TValue = any> {
 export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>): OwnedReadable<TValue> => {
   let running: boolean | undefined;
 
-  const get = <T = any>($?: Readable<T> | T | { $: Readable<T> }): T | undefined => {
+  const get: Get = ($?: ReadableLike): unknown => {
     if (!isReadable($)) {
-      return $ as T | undefined;
+      if (!isReadable($?.$)) {
+        return $;
+      }
+      $ = $.$;
     }
 
     self.addDep_($ as ReadableImpl);

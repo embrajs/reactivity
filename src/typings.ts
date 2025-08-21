@@ -20,10 +20,8 @@ export type Disposer = () => void;
 export type Equal<TValue = any> = (newValue: TValue, oldValue: TValue) => boolean;
 
 export interface Get {
-  <T = any>($: Readable<T>): T;
-  <T = any>($?: Readable<T>): T | undefined;
-  <T = any>($: T): Unwrap<T>;
-  <T = any>($?: T): undefined | Unwrap<T>;
+  <T = any>($: ReadableLike<T>): T;
+  <T = any, U = any>($: ReadableLike<T> | U): T | U;
 }
 
 /**
@@ -80,6 +78,12 @@ export interface OwnedReadable<TValue = any> extends Readable<TValue> {
    */
   dispose(): void;
 }
+
+export interface ReadableProvider<TValue = any> {
+  readonly $: Readable<TValue>;
+}
+
+export type ReadableLike<TValue = any> = Readable<TValue> | ReadableProvider<TValue>;
 
 export type SetValue<TValue = any> = (value: TValue) => void;
 

@@ -1,7 +1,7 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
-import { type OwnedWritable, type Readable } from "../typings";
+import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
 import { onDisposeValue, type OnDisposeValue } from "./utils";
 
@@ -15,7 +15,7 @@ interface OnChanged<K, V> extends BatchTask<EventObject<ReactiveMapChanged<K, V>
   readonly delete_: Set<K>;
 }
 
-export class OwnedReactiveMap<K, V> extends Map<K, V> {
+export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvider<ReadonlyReactiveMap<K, V>> {
   /**
    * A Readable that emits the map itself whenever it changes.
    */

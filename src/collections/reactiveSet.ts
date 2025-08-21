@@ -1,7 +1,7 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
-import { type OwnedWritable, type Readable } from "../typings";
+import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
 import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 export interface ReactiveSetChanged<V> {
@@ -14,7 +14,7 @@ interface OnChanged<V> extends BatchTask<EventObject<ReactiveSetChanged<V>>> {
   readonly delete_: Set<V>;
 }
 
-export class OwnedReactiveSet<V> extends Set<V> {
+export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<ReadonlyReactiveSet<V>> {
   /**
    * A Readable that emits the set itself whenever it changes.
    */

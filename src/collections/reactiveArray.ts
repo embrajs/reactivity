@@ -1,13 +1,13 @@
 import { batchFlush, batchStart, tasks } from "../batch";
 import { type RemoveListener } from "../event";
 import { writable } from "../readable";
-import { type OwnedWritable, type Readable } from "../typings";
+import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
 import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 const nonEnumerable = { enumerable: false };
 
-export class OwnedReactiveArray<V> extends Array<V> {
+export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<ReadonlyReactiveArray<V>> {
   readonly [n: number]: V;
 
   /**

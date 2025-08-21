@@ -62,9 +62,9 @@ export const arrayShallowEqual = (arrA: any, arrB: any): boolean => {
 };
 
 export interface IsReadable {
-  <T extends Readable>($: T): $ is T;
   ($: unknown): $ is Readable;
   ($: any): $ is Readable;
+  <T extends Readable>($: T): $ is T extends Readable ? T : never;
 }
 
 /**
@@ -75,9 +75,9 @@ export interface IsReadable {
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
 
 export interface IsWritable {
-  <T extends Writable>($: T): $ is T;
   ($: unknown): $ is Writable;
   ($: any): $ is Writable;
+  <T extends Writable>($: T): $ is T extends Writable ? T : never;
 }
 
 /**

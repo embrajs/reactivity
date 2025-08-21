@@ -1,5 +1,5 @@
 import { batch, batchFlush, batchStart, tasks } from "./batch";
-import { type Disposer, type Get, type Readable } from "./typings";
+import { type ReadableLike, type Disposer, type Get, type Readable } from "./typings";
 import { isReadable, unsubscribe } from "./utils";
 
 export interface WatchEffect {
@@ -13,9 +13,12 @@ export const watch = (effect: WatchEffect): Disposer => {
 
   let cleanupEffect: Disposer | null | undefined | void;
 
-  const get = <T = any>($?: null | Readable<T> | undefined): T | undefined => {
+  const get: Get = ($?: ReadableLike): unknown => {
     if (!isReadable($)) {
-      return $ as T | undefined;
+      if (!isReadable($?.$)) {
+        return $;
+      }
+      $ = $.$;
     }
 
     if (!collectedDeps?.has($)) {

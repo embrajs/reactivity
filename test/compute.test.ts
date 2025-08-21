@@ -1,14 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { reactiveArray, reactiveMap, reactiveSet, watch, writable } from "../src";
+import { reactiveArray, reactiveMap, reactiveSet, compute, writable } from "../src";
 
-describe("watch", () => {
+describe("compute", () => {
   it("should get non-readable", () => {
     const s = writable(123);
     const spy = vi.fn();
-    watch(get => {
-      spy(get(s) + get(321));
+    const $ = compute(get => {
+      return get(s) + get(321);
     });
+    $.subscribe(spy);
+
     expect(spy).toBeCalledTimes(1);
     expect(spy).lastCalledWith(444);
 
@@ -25,9 +27,10 @@ describe("watch", () => {
 
     const spy = vi.fn();
 
-    watch(get => {
-      spy([...get(map1).values(), ...get(map2.$).values(), ...get(set), ...get(arr)]);
+    const $ = compute(get => {
+      return [...get(map1).values(), ...get(map2.$).values(), ...get(set), ...get(arr)];
     });
+    $.subscribe(spy);
 
     expect(spy).toBeCalledTimes(1);
     expect(spy).lastCalledWith([]);
