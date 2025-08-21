@@ -89,7 +89,7 @@
       <g transform="translate(0, 0)">
   <g class="stagger" style="animation-delay: 100ms">
     <text x="2" y="15" class="text">*</text>
-    <text x="315" y="34" class="text">2.52 kB</text>
+    <text x="315" y="34" class="text">2.54 kB</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
@@ -107,7 +107,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="39.284294234592444%">
+      <svg width="38.92828999211978%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 550ms" />
       </svg>
     </svg>
@@ -117,11 +117,11 @@
 <g transform="translate(0, 80)">
   <g class="stagger" style="animation-delay: 400ms">
     <text x="2" y="15" class="text">{ watch }</text>
-    <text x="315" y="34" class="text">351 B</text>
+    <text x="315" y="34" class="text">366 B</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="13.956262425447315%">
+      <svg width="14.420803782505912%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
       </svg>
     </svg>
@@ -131,11 +131,11 @@
 <g transform="translate(0, 120)">
   <g class="stagger" style="animation-delay: 550ms">
     <text x="2" y="15" class="text">{ compute, combine, derive }</text>
-    <text x="315" y="34" class="text">268 B</text>
+    <text x="315" y="34" class="text">284 B</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="10.656063618290258%">
+      <svg width="11.189913317572891%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 850ms" />
       </svg>
     </svg>
@@ -149,7 +149,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="51.25248508946322%">
+      <svg width="50.78802206461781%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1000ms" />
       </svg>
     </svg>

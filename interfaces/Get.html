@@ -68,8 +68,7 @@
                 <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
-                <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
-                ><span class="tsd-signature-symbol">&lt;</span
+                <span class="tsd-signature-type">ReadableLike</span><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span>
@@ -95,8 +94,7 @@
                   <ul class="tsd-parameter-list">
                     <li>
                       <span
-                        ><span class="tsd-kind-parameter">$</span>:
-                        <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                        ><span class="tsd-kind-parameter">$</span>: <span class="tsd-signature-type">ReadableLike</span
                         ><span class="tsd-signature-symbol">&lt;</span
                         ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
@@ -112,7 +110,7 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/8d4c827718b73ade482f4e50a36b8926d68cc941/src/typings.ts#L23"
+                        href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/typings.ts#L23"
                         >src/typings.ts:23</a
                       >
                     </li>
@@ -125,15 +123,20 @@
                 <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
                 <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">,</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">?:</span>
-                <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">ReadableLike</span
                 ><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span>
+                ><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
                 <span class="tsd-signature-symbol">|</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a
                 ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
@@ -148,63 +151,9 @@
                         <span class="tsd-signature-type">any</span></span
                       >
                     </li>
-                  </ul>
-                </section>
-                <div class="tsd-parameters">
-                  <h4 class="tsd-parameters-title">Parameters</h4>
-                  <ul class="tsd-parameter-list">
                     <li>
-                      <span
-                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">$</span>:
-                        <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
-                        ><span class="tsd-signature-symbol">&lt;</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
-                        ><span class="tsd-signature-symbol">&gt;</span></span
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <h4 class="tsd-returns-title">
-                  Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
-                </h4>
-                <aside class="tsd-sources">
-                  <ul>
-                    <li>
-                      Defined in
-                      <a
-                        href="https://github.com/embrajs/reactivity/blob/8d4c827718b73ade482f4e50a36b8926d68cc941/src/typings.ts#L24"
-                        >src/typings.ts:24</a
-                      >
-                    </li>
-                  </ul>
-                </aside>
-              </div>
-            </li>
-            <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="get-2">
-                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a>
-                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
-                ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
-                ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
-                ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#get-2" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </div>
-              <div class="tsd-description">
-                <section class="tsd-panel">
-                  <h4>Type Parameters</h4>
-                  <ul class="tsd-type-parameter-list">
-                    <li>
-                      <span id="gett-2"
-                        ><span class="tsd-kind-type-parameter">T</span> =
+                      <span id="getu"
+                        ><span class="tsd-kind-type-parameter">U</span> =
                         <span class="tsd-signature-type">any</span></span
                       >
                     </li>
@@ -216,85 +165,27 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">$</span>:
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a></span
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">ReadableLike</span
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
                       >
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
-                  Returns <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
-                  ><span class="tsd-signature-symbol">&lt;</span
-                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-2">T</a
-                  ><span class="tsd-signature-symbol">&gt;</span>
+                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+                  <span class="tsd-signature-symbol">|</span>
+                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
                 </h4>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/8d4c827718b73ade482f4e50a36b8926d68cc941/src/typings.ts#L25"
-                        >src/typings.ts:25</a
-                      >
-                    </li>
-                  </ul>
-                </aside>
-              </div>
-            </li>
-            <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="get-3">
-                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a>
-                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
-                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">?:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
-                ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
-                ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
-                ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#get-3" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </div>
-              <div class="tsd-description">
-                <section class="tsd-panel">
-                  <h4>Type Parameters</h4>
-                  <ul class="tsd-type-parameter-list">
-                    <li>
-                      <span id="gett-3"
-                        ><span class="tsd-kind-type-parameter">T</span> =
-                        <span class="tsd-signature-type">any</span></span
-                      >
-                    </li>
-                  </ul>
-                </section>
-                <div class="tsd-parameters">
-                  <h4 class="tsd-parameters-title">Parameters</h4>
-                  <ul class="tsd-parameter-list">
-                    <li>
-                      <span
-                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">$</span>:
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a></span
-                      >
-                    </li>
-                  </ul>
-                </div>
-                <h4 class="tsd-returns-title">
-                  Returns <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                  <a href="../types/Unwrap.html" class="tsd-signature-type tsd-kind-type-alias">Unwrap</a
-                  ><span class="tsd-signature-symbol">&lt;</span
-                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-3">T</a
-                  ><span class="tsd-signature-symbol">&gt;</span>
-                </h4>
-                <aside class="tsd-sources">
-                  <ul>
-                    <li>
-                      Defined in
-                      <a
-                        href="https://github.com/embrajs/reactivity/blob/8d4c827718b73ade482f4e50a36b8926d68cc941/src/typings.ts#L26"
-                        >src/typings.ts:26</a
+                        href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/typings.ts#L24"
+                        >src/typings.ts:24</a
                       >
                     </li>
                   </ul>

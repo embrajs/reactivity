@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>TraceConfig | @embra/reactivity - v0.0.1</title>
+    <title>ReadableProvider | @embra/reactivity - v0.0.1</title>
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,29 +55,55 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="" aria-current="page">TraceConfig</a></li>
+            <li><a href="" aria-current="page">ReadableProvider</a></li>
           </ul>
-          <h1>Interface TraceConfig</h1>
+          <h1>Interface ReadableProvider&lt;TValue&gt;</h1>
         </div>
         <div class="tsd-signature">
-          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">TraceConfig</span>
-          <span class="tsd-signature-symbol">{</span><br />    <a class="tsd-kind-property" href="#defaultexpand"
-            >defaultExpand</a
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#name">name</a
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#printstack"
-            >printStack</a
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
+          <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">ReadableProvider</span
+          ><span class="tsd-signature-symbol">&lt;</span
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a>
+          <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+          ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">{</span><br />    <a
+            class="tsd-kind-property"
+            href="#"
+            >$</a
+          ><span class="tsd-signature-symbol">:</span>
+          <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+          ><span class="tsd-signature-symbol">&lt;</span
+          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br /><span
+            class="tsd-signature-symbol"
+            >}</span
+          >
         </div>
+        <section class="tsd-panel">
+          <h4>Type Parameters</h4>
+          <ul class="tsd-type-parameter-list">
+            <li>
+              <span id="tvalue"
+                ><span class="tsd-kind-type-parameter">TValue</span> = <span class="tsd-signature-type">any</span></span
+              >
+            </li>
+          </ul>
+        </section>
+        <section class="tsd-panel">
+          <h4>Implemented by</h4>
+          <ul class="tsd-hierarchy">
+            <li>
+              <a href="OwnedReactiveArray.html" class="tsd-signature-type tsd-kind-interface">OwnedReactiveArray</a>
+            </li>
+            <li><a href="OwnedReactiveMap.html" class="tsd-signature-type tsd-kind-interface">OwnedReactiveMap</a></li>
+            <li><a href="OwnedReactiveSet.html" class="tsd-signature-type tsd-kind-interface">OwnedReactiveSet</a></li>
+          </ul>
+        </section>
         <aside class="tsd-sources">
           <ul>
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/dev/trace.ts#L6"
-                >src/dev/trace.ts:6</a
+                href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/typings.ts#L82"
+                >src/typings.ts:82</a
               >
             </li>
           </ul>
@@ -95,20 +121,10 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a href="#defaultexpand" class="tsd-index-link"
+                    <a href="#" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>default<wbr />Expand?</span></a
-                    >
-                    <a href="#name" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>name?</span></a
-                    >
-                    <a href="#printstack" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>print<wbr />Stack?</span></a
+                      ><span>$</span></a
                     >
                   </div>
                 </section>
@@ -125,93 +141,21 @@
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="defaultexpand">
-                <code class="tsd-tag">Optional</code><span>default<wbr />Expand</span
-                ><a href="#defaultexpand" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
+              <h3 class="tsd-anchor-link" id=""><code class="tsd-tag">Readonly</code><span>$</span></h3>
               <div class="tsd-signature">
-                <span class="tsd-kind-property">defaultExpand</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">boolean</span>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <div class="tsd-tag-default">
-                  <h4 class="tsd-anchor-link" id="default">
-                    Default<a href="#default" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </h4>
-                  <pre><code class="ts"><span class="hl-4">true</span>
-</code><button type="button">Copy</button></pre>
-                </div>
+                <span class="tsd-kind-property">$</span><span class="tsd-signature-symbol">:</span>
+                <a href="Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+                ><span class="tsd-signature-symbol">&gt;</span>
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/dev/trace.ts#L11"
-                      >src/dev/trace.ts:11</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="name">
-                <code class="tsd-tag">Optional</code><span>name</span
-                ><a href="#name" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">name</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">string</span>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/dev/trace.ts#L7"
-                      >src/dev/trace.ts:7</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="printstack">
-                <code class="tsd-tag">Optional</code><span>print<wbr />Stack</span
-                ><a href="#printstack" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">printStack</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">boolean</span>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <div class="tsd-tag-default">
-                  <h4 class="tsd-anchor-link" id="default-1">
-                    Default<a href="#default-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </h4>
-                  <pre><code class="ts"><span class="hl-4">true</span>
-</code><button type="button">Copy</button></pre>
-                </div>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/dev/trace.ts#L9"
-                      >src/dev/trace.ts:9</a
+                      href="https://github.com/embrajs/reactivity/blob/c89b32c7cbb6312adc1202f0c69e6ba468b04add/src/typings.ts#L83"
+                      >src/typings.ts:83</a
                     >
                   </li>
                 </ul>
@@ -257,18 +201,10 @@
                   >Properties
                 </summary>
                 <div>
-                  <a href="#defaultexpand"
+                  <a href="#"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>default<wbr />Expand</span></a
-                  ><a href="#name"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>name</span></a
-                  ><a href="#printstack"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>print<wbr />Stack</span></a
+                    ><span>$</span></a
                   >
                 </div>
               </details>
