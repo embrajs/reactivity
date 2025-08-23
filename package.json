@@ -6,6 +6,35 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "react": [
+        "dist/react.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      }
+    },
+    "./react": {
+      "require": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.js"
+      },
+      "import": {
+        "types": "./dist/react.d.mts",
+        "default": "./dist/react.mjs"
+      }
+    }
+  },
   "sideEffects": false,
   "files": [
     "src",
@@ -25,7 +54,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --coverage --coverage.reportsDirectory='./docs/coverage'",
-    "build": "tsup",
+    "build": "tsup --config tsup.config.ts && tsup --config tsup.react.config.ts",
     "build:min": "MINIFY=true tsup --env.NODE_ENV production && echo '' && gzip-size dist/index.mjs dist/index.js",
     "release": "commit-and-tag-version"
   },
@@ -40,7 +69,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
     "@vitest/coverage-v8": "^3.2.4",
     "@wopjs/eslint-config": "^0.1.35",
     "@wopjs/gzip-size": "^0.1.2",
@@ -49,9 +81,24 @@
     "export-size-svg": "^0.0.5",
     "jest-extended": "^6.0.0",
     "prettier": "^3.6.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "tsup": "^8.5.0",
     "typedoc": "^0.28.10",
     "typescript": "^5.9.2",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.2"
+  },
+  "peerDependencies": {
+    "@types/react": ">=18.0.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@types/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
   }
 }

@@ -1,6 +1,6 @@
 import { ReadableImpl } from "./readable";
 import { type ReadableLike, type Config, type Get, type OwnedReadable } from "./typings";
-import { isReadable } from "./utils";
+import { getReadable } from "./utils";
 
 export interface ComputeFn<TValue = any> {
   (get: Get): TValue;
@@ -10,16 +10,12 @@ export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>):
   let running: boolean | undefined;
 
   const get: Get = ($?: ReadableLike): unknown => {
-    if (!isReadable($)) {
-      if (!isReadable($?.$)) {
-        return $;
-      }
-      $ = $.$;
-    }
+    const readable = getReadable($);
+    if (!readable) return $;
 
-    self.addDep_($ as ReadableImpl);
+    self.addDep_(readable as ReadableImpl);
 
-    return $.get();
+    return readable.get();
   };
 
   const self = new ReadableImpl(self => {

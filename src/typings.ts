@@ -89,7 +89,7 @@ export type SetValue<TValue = any> = (value: TValue) => void;
 
 export type Subscriber<TValue = any> = (newValue: TValue) => void;
 
-export type Unwrap<T> = T extends Readable<infer TValue> ? TValue : T;
+export type Unwrap<T> = T extends ReadableLike<infer TValue> ? TValue : T;
 
 export type Version = number;
 

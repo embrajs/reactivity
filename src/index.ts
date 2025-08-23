@@ -7,6 +7,7 @@ export type {
   Writable,
   OwnedWritable,
   ReadableProvider,
+  ReadableLike,
   Config,
   Disposer,
   Equal,
@@ -35,6 +36,7 @@ export {
   unsubscribe,
   strictEqual,
   arrayShallowEqual,
+  getReadable,
 } from "./utils";
 
 export { type OnDisposeValue } from "./collections/utils";

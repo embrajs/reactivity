@@ -1,4 +1,4 @@
-import { type Writable, type Readable } from "./typings";
+import { type Writable, type Readable, type ReadableLike } from "./typings";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -105,3 +105,6 @@ export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>
     throw error;
   }
 };
+
+export const getReadable = <T = any>($: ReadableLike<T> | any): Readable<T> | undefined =>
+  isReadable($) ? $ : isReadable($?.$) ? $.$ : undefined;
