@@ -84,15 +84,14 @@
                 ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
               ></a>
             </h4>
-            <pre><code class="jsx">import { useDerive, useValue } from "@embra/reactivity/react";
+            <pre><code class="jsx">import { useDerived } from "@embra/reactivity/react";
 
 function App({ position3d$ }) {
-  const position2d$ = useDerive(
+  const position2d = useDerived(
     position3d$,
     ({ x, y }) => ({ x, y }),
     { equal: (p1, p2) => p1.x === p2.x && p1.y === p2.y }
   );
-  const position2d = useValue(position2d$);
 }
 </code><button type="button">Copy</button></pre>
           </div>
@@ -102,8 +101,8 @@ function App({ position3d$ }) {
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/f351e85fb9503664f26911a93ada7793f9688afe/src/react/useDerived.ts#L53"
-                >src/react/useDerived.ts:53</a
+                href="https://github.com/embrajs/reactivity/blob/19e2aa50596452a8c0637e52d103b192f1f78ecc/src/react/useDerived.ts#L52"
+                >src/react/useDerived.ts:52</a
               >
             </li>
           </ul>

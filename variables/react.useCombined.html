@@ -85,10 +85,10 @@
                 ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
               ></a>
             </h4>
-            <pre><code class="jsx">import { useCombine } from "@embra/reactivity/react";
+            <pre><code class="jsx">import { useCombined } from "@embra/reactivity/react";
 
 function App({ width$, height$ }) {
-  const size = useCombine(
+  const size = useCombined(
     [width$, height$],
     ([width, height]) => ({ width, height }),
     { equal: (s1, 22) => s1.width === s2.width && s1.height === s2.height }
@@ -102,7 +102,7 @@ function App({ width$, height$ }) {
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/f351e85fb9503664f26911a93ada7793f9688afe/src/react/useCombined.ts#L46"
+                href="https://github.com/embrajs/reactivity/blob/19e2aa50596452a8c0637e52d103b192f1f78ecc/src/react/useCombined.ts#L46"
                 >src/react/useCombined.ts:46</a
               >
             </li>
