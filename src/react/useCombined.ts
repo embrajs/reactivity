@@ -32,10 +32,10 @@ export interface UseCombined {
  *
  * @example
  * ```jsx
- * import { useCombine } from "@embra/reactivity/react";
+ * import { useCombined } from "@embra/reactivity/react";
  *
  * function App({ width$, height$ }) {
- *   const size = useCombine(
+ *   const size = useCombined(
  *     [width$, height$],
  *     ([width, height]) => ({ width, height }),
  *     { equal: (s1, 22) => s1.width === s2.width && s1.height === s2.height }

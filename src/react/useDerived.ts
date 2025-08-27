@@ -38,15 +38,14 @@ export interface UseDerived {
  *
  * @example
  * ```jsx
- * import { useDerive, useValue } from "@embra/reactivity/react";
+ * import { useDerived } from "@embra/reactivity/react";
  *
  * function App({ position3d$ }) {
- *   const position2d$ = useDerive(
+ *   const position2d = useDerived(
  *     position3d$,
  *     ({ x, y }) => ({ x, y }),
  *     { equal: (p1, p2) => p1.x === p2.x && p1.y === p2.y }
  *   );
- *   const position2d = useValue(position2d$);
  * }
  * ```
  */

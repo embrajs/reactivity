@@ -124,6 +124,31 @@ trace(count$);
 </details>
 
 <details>
+<summary>Framework agnostic. First-class support for React.</summary>
+
+`@embra/reactivity` is designed to be framework agnostic. It can be used with any framework or library that supports JavaScript. It also provides first-class support for React.
+
+```tsx
+import { writable } from "@embra/reactivity";
+import { useDerived, useCombined } from "@embra/reactivity/react";
+
+const count$ = writable(0);
+
+function Counter({ count$ }) {
+  const count = useDerived(count$);
+  return (
+    <div>
+      <button onClick={() => count$.set(count - 1)}>-</button>
+      <span>{count}</span>
+      <button onClick={() => count$.set(count + 1)}>+</button>
+    </div>
+  );
+}
+```
+
+</details>
+
+<details>
 <summary>Small bundle size. Focused on performance and simplicity.</summary>
 
 ![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)
