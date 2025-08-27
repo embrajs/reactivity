@@ -83,7 +83,16 @@
             href="#name"
             >name</a
           ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span
-          ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#ondisposevalue"
+            >onDisposeValue</a
+          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span
+          ><span class="tsd-kind-parameter">oldValue</span><span class="tsd-signature-symbol">:</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+          ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
+          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br /><span
+            class="tsd-signature-symbol"
+            >}</span
+          >
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
@@ -100,7 +109,7 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/19e2aa50596452a8c0637e52d103b192f1f78ecc/src/typings.ts#L6"
+                href="https://github.com/embrajs/reactivity/blob/ddbfaf8a1048c1a75c340353d971e36e6cd44e85/src/typings.ts#L6"
                 >src/typings.ts:6</a
               >
             </li>
@@ -128,6 +137,11 @@
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>name?</span></a
+                    >
+                    <a href="#ondisposevalue" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>on<wbr />Dispose<wbr />Value?</span></a
                     >
                   </div>
                 </section>
@@ -167,7 +181,7 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/19e2aa50596452a8c0637e52d103b192f1f78ecc/src/typings.ts#L11"
+                      href="https://github.com/embrajs/reactivity/blob/ddbfaf8a1048c1a75c340353d971e36e6cd44e85/src/typings.ts#L11"
                       >src/typings.ts:11</a
                     >
                   </li>
@@ -192,8 +206,79 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/19e2aa50596452a8c0637e52d103b192f1f78ecc/src/typings.ts#L15"
+                      href="https://github.com/embrajs/reactivity/blob/ddbfaf8a1048c1a75c340353d971e36e6cd44e85/src/typings.ts#L15"
                       >src/typings.ts:15</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="ondisposevalue">
+                <code class="tsd-tag">Optional</code> <code class="tsd-tag">Readonly</code
+                ><span>on<wbr />Dispose<wbr />Value</span
+                ><a href="#ondisposevalue" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">onDisposeValue</span><span class="tsd-signature-symbol">?:</span>
+                <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">oldValue</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+                ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span>
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>A callback invoked when a value is needed to be disposed.</p>
+                <p>A value is considered for disposal when:</p>
+                <ul>
+                  <li>it is replaced by another value (a new value is set).</li>
+                  <li>the Readable is disposed.</li>
+                </ul>
+              </div>
+              <div class="tsd-type-declaration">
+                <h4>Type declaration</h4>
+                <ul class="tsd-parameters">
+                  <li class="tsd-parameter-signature">
+                    <ul class="tsd-signatures">
+                      <li class="tsd-signature">
+                        <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">oldValue</span
+                        ><span class="tsd-signature-symbol">:</span>
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+                        ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                        <span class="tsd-signature-type">void</span>
+                      </li>
+                      <li class="tsd-description">
+                        <div class="tsd-parameters">
+                          <h4 class="tsd-parameters-title">Parameters</h4>
+                          <ul class="tsd-parameter-list">
+                            <li>
+                              <span
+                                ><span class="tsd-kind-parameter">oldValue</span>:
+                                <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a></span
+                              >
+                              <div class="tsd-comment tsd-typography">
+                                <p>The value that is needed to be disposed.</p>
+                              </div>
+                              <div class="tsd-comment tsd-typography"></div>
+                            </li>
+                          </ul>
+                        </div>
+                        <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              <div class="tsd-comment tsd-typography"></div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/embrajs/reactivity/blob/ddbfaf8a1048c1a75c340353d971e36e6cd44e85/src/typings.ts#L25"
+                      >src/typings.ts:25</a
                     >
                   </li>
                 </ul>
@@ -247,6 +332,10 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>name</span></a
+                  ><a href="#ondisposevalue"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>on<wbr />Dispose<wbr />Value</span></a
                   >
                 </div>
               </details>
