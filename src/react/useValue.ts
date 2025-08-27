@@ -1,8 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type Readable, type ReadableLike, type Unwrap, getReadable } from "@embra/reactivity";
+import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type Readable,
+  type ReadableLike,
+  type Unwrap,
+  getReadable,
+} from "@embra/reactivity";
 import { useDebugValue, useMemo, useSyncExternalStore } from "react";
 
-interface UseValue {
+export interface UseValue {
   /**
    * Accepts a {@link ReadableLike} and returns the latest value.
    * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
@@ -38,7 +43,7 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
  * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
  *
  * @example
- * ```jsx
+ * ```tsx
  * import { useValue } from "@embra/reactivity/react";
  *
  * function App({ count$ }) {

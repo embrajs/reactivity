@@ -1,4 +1,9 @@
-import { type Config, type ReadableLike } from "@embra/reactivity";
+import {
+  type Config,
+  type ReadableLike,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type Readable,
+} from "@embra/reactivity";
 
 import { useDerive } from "./useDerive";
 import { useValue } from "./useValue";
@@ -37,7 +42,7 @@ export interface UseDerived {
  * In other words, no extra care is needed to use this in React components. All args will be updated properly.
  *
  * @example
- * ```jsx
+ * ```tsx
  * import { useDerived } from "@embra/reactivity/react";
  *
  * function App({ position3d$ }) {

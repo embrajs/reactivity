@@ -47,5 +47,10 @@ export default defineConfig({
       code: "export { reactiveMap } from './src/collections/reactiveMap.ts';export { reactiveSet } from './src/collections/reactiveSet.ts';export { reactiveArray } from './src/collections/reactiveArray.ts'",
       externals: ["../batch", "../readable", "../utils"],
     },
+    {
+      title: "React Hooks",
+      code: "export * from './src/react/index.ts'",
+      externals: ["@embra/reactivity", "react"],
+    },
   ],
 });

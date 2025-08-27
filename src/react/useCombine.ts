@@ -1,5 +1,7 @@
 import {
   combine,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  type Readable,
   type Config,
   type MapReadablesToValues,
   type OwnedReadable,
@@ -39,7 +41,7 @@ export interface UseCombine {
  * In other words, no extra care is needed to use this in React components. All args will be updated properly.
  *
  * @example
- * ```jsx
+ * ```tsx
  * import { useCombine, useValue } from "@embra/reactivity/react";
  *
  * function App({ width$, height$ }) {
