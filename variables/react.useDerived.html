@@ -67,8 +67,8 @@
         </div>
         <div class="tsd-comment tsd-typography">
           <p>
-            Derive a new Readable from the given
-            <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
+            Derive a new <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> from the
+            given <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
           </p>
           <p>
             Note that changes to <code>transform</code> and <code>config</code> will not trigger re-derivation, and
@@ -84,15 +84,7 @@
                 ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
               ></a>
             </h4>
-            <pre><code class="jsx">import { useDerived } from "@embra/reactivity/react";
-
-function App({ position3d$ }) {
-  const position2d = useDerived(
-    position3d$,
-    ({ x, y }) => ({ x, y }),
-    { equal: (p1, p2) => p1.x === p2.x && p1.y === p2.y }
-  );
-}
+            <pre><code class="tsx"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">useDerived</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity/react&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">function</span><span class="hl-1"> </span><span class="hl-6">App</span><span class="hl-1">({ </span><span class="hl-2">position3d$</span><span class="hl-1"> }) {</span><br/><span class="hl-1">  </span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">position2d</span><span class="hl-1"> = </span><span class="hl-6">useDerived</span><span class="hl-1">(</span><br/><span class="hl-1">    </span><span class="hl-2">position3d$</span><span class="hl-1">,</span><br/><span class="hl-1">    ({ </span><span class="hl-2">x</span><span class="hl-1">, </span><span class="hl-2">y</span><span class="hl-1"> }) </span><span class="hl-4">=&gt;</span><span class="hl-1"> ({ </span><span class="hl-2">x</span><span class="hl-1">, </span><span class="hl-2">y</span><span class="hl-1"> }),</span><br/><span class="hl-1">    { </span><span class="hl-6">equal</span><span class="hl-2">:</span><span class="hl-1"> (</span><span class="hl-2">p1</span><span class="hl-1">, </span><span class="hl-2">p2</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-2">p1</span><span class="hl-1">.</span><span class="hl-2">x</span><span class="hl-1"> === </span><span class="hl-2">p2</span><span class="hl-1">.</span><span class="hl-2">x</span><span class="hl-1"> &amp;&amp; </span><span class="hl-2">p1</span><span class="hl-1">.</span><span class="hl-2">y</span><span class="hl-1"> === </span><span class="hl-2">p2</span><span class="hl-1">.</span><span class="hl-2">y</span><span class="hl-1"> }</span><br/><span class="hl-1">  );</span><br/><span class="hl-1">}</span>
 </code><button type="button">Copy</button></pre>
           </div>
         </div>
@@ -101,8 +93,8 @@ function App({ position3d$ }) {
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/ddbfaf8a1048c1a75c340353d971e36e6cd44e85/src/react/useDerived.ts#L52"
-                >src/react/useDerived.ts:52</a
+                href="https://github.com/embrajs/reactivity/blob/9687694d2f732015daf482f5b61570fb1b14483e/src/react/useDerived.ts#L57"
+                >src/react/useDerived.ts:57</a
               >
             </li>
           </ul>

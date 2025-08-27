@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>Get | @embra/reactivity - v0.0.2</title>
+    <title>UseValue | @embra/reactivity - v0.0.2</title>
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -55,37 +55,46 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="../modules/index.html">index</a></li>
-            <li><a href="" aria-current="page">Get</a></li>
+            <li><a href="../modules/react.html">react</a></li>
+            <li><a href="" aria-current="page">UseValue</a></li>
           </ul>
-          <h1>Interface Get</h1>
+          <h1>Interface UseValue</h1>
         </div>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="get">
-                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a>
+              <div class="tsd-signature tsd-anchor-link" id="usevalue">
+                <span class="tsd-kind-call-signature">UseValue</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet">T</a>
                 <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
                 <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                   >ReadableLike</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet">T</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
-                ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet">T</a
+                ><a href="#usevalue" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
               <div class="tsd-description">
+                <div class="tsd-comment tsd-typography">
+                  <p>
+                    Accepts a
+                    <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a> and returns
+                    the latest value. It only triggers re-rendering when new value emitted from $ (base on
+                    <a href="index.Readable.html#version" class="tsd-kind-property">Readable.$version</a> instead of
+                    React's <code>Object.is</code> comparison).
+                  </p>
+                </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="gett"
+                      <span id="usevaluet"
                         ><span class="tsd-kind-type-parameter">T</span> =
                         <span class="tsd-signature-type">any</span></span
                       >
@@ -101,22 +110,33 @@
                         <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                           >ReadableLike</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet">T</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
+                      <div class="tsd-comment tsd-typography">
+                        <p>
+                          A <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
+                        </p>
+                      </div>
+                      <div class="tsd-comment tsd-typography"></div>
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
-                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett">T</a>
+                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet">T</a>
                 </h4>
+                <p>
+                  the value of the
+                  <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>
+                </p>
+                <div class="tsd-comment tsd-typography"></div>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/9687694d2f732015daf482f5b61570fb1b14483e/src/typings.ts#L33"
-                        >src/typings.ts:33</a
+                        href="https://github.com/embrajs/reactivity/blob/9687694d2f732015daf482f5b61570fb1b14483e/src/react/useValue.ts#L18"
+                        >src/react/useValue.ts:18</a
                       >
                     </li>
                   </ul>
@@ -124,42 +144,51 @@
               </div>
             </li>
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="get-1">
-                <span class="tsd-kind-call-signature">Get</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+              <div class="tsd-signature tsd-anchor-link" id="usevalue-1">
+                <span class="tsd-kind-call-signature">UseValue</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet-1">T</a>
                 <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">,</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevalueu">U</a>
                 <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevalueu">U</a>
                 <span class="tsd-signature-symbol">|</span>
                 <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                   >ReadableLike</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet-1">T</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet-1">T</a>
                 <span class="tsd-signature-symbol">|</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a
-                ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevalueu">U</a
+                ><a href="#usevalue-1" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
               <div class="tsd-description">
+                <div class="tsd-comment tsd-typography">
+                  <p>
+                    Accepts a
+                    <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a> and returns
+                    the latest value. It only triggers re-rendering when new value emitted from $ (base on
+                    <a href="index.Readable.html#version" class="tsd-kind-property">Readable.$version</a> instead of
+                    React's <code>Object.is</code> comparison).
+                  </p>
+                </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="gett-1"
+                      <span id="usevaluet-1"
                         ><span class="tsd-kind-type-parameter">T</span> =
                         <span class="tsd-signature-type">any</span></span
                       >
                     </li>
                     <li>
-                      <span id="getu"
+                      <span id="usevalueu"
                         ><span class="tsd-kind-type-parameter">U</span> =
                         <span class="tsd-signature-type">any</span></span
                       >
@@ -172,29 +201,41 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">$</span>:
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevalueu">U</a>
                         <span class="tsd-signature-symbol">|</span>
                         <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                           >ReadableLike</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet-1">T</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
+                      <div class="tsd-comment tsd-typography">
+                        <p>
+                          A <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
+                        </p>
+                      </div>
+                      <div class="tsd-comment tsd-typography"></div>
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
-                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#gett-1">T</a>
+                  Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevaluet-1">T</a>
                   <span class="tsd-signature-symbol">|</span>
-                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#getu">U</a>
+                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#usevalueu">U</a>
                 </h4>
+                <p>
+                  the value of the
+                  <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>, or $ itself
+                  if $ is not a <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>
+                </p>
+                <div class="tsd-comment tsd-typography"></div>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/9687694d2f732015daf482f5b61570fb1b14483e/src/typings.ts#L34"
-                        >src/typings.ts:34</a
+                        href="https://github.com/embrajs/reactivity/blob/9687694d2f732015daf482f5b61570fb1b14483e/src/react/useValue.ts#L27"
+                        >src/react/useValue.ts:27</a
                       >
                     </li>
                   </ul>
