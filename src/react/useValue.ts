@@ -8,7 +8,7 @@ interface UseValue {
    * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
    *
    * @param $ A {@link ReadableLike}.
-   * @returns the value
+   * @returns the value of the {@link ReadableLike}
    */
   <T = any>($: ReadableLike<T>): T;
 
@@ -17,7 +17,7 @@ interface UseValue {
    * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
    *
    * @param $ A {@link ReadableLike}.
-   * @returns the value, or undefined if $ is undefined
+   * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
    */
   <T = any, U = any>($: ReadableLike<T> | U): T | U;
 }
@@ -30,7 +30,24 @@ const returnsNoop = () => noop;
 
 const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
 
-export const useValue: UseValue = <T>($?: ReadableLike<T>): Unwrap<T> | undefined => {
+/**
+ * Accepts a {@link ReadableLike} and returns the latest value.
+ * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
+ *
+ * @param $ A {@link ReadableLike}.
+ * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
+ *
+ * @example
+ * ```jsx
+ * import { useValue } from "@embra/reactivity/react";
+ *
+ * function App({ count$ }) {
+ *   const count = useValue(count$);
+ *   return <div>{count}</div>;
+ * }
+ * ```
+ */
+export const useValue: UseValue = <T, U>($?: ReadableLike<T> | U): Unwrap<T> | U => {
   const args = useMemo(() => {
     const readable = getReadable($);
     return (

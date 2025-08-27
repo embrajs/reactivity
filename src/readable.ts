@@ -81,7 +81,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
    */
   public equal_?: (newValue: TValue, oldValue: TValue) => boolean;
 
-  public readonly name?: string;
+  public name?: string;
 
   public set?: (value: TValue) => void;
 

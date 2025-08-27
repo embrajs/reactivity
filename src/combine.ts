@@ -1,37 +1,37 @@
 import { compute } from "./compute";
-import { type Config, type OwnedReadable, type Readable } from "./typings";
+import { type Config, type OwnedReadable, type ReadableLike } from "./typings";
 
-export type MapReadablesToValues<TDepValues extends readonly Readable[]> = {
-  [K in keyof TDepValues]: TDepValues[K] extends Readable<infer V> ? V : never;
+export type MapReadablesToValues<TDepValues extends readonly ReadableLike[]> = {
+  [K in keyof TDepValues]: TDepValues[K] extends ReadableLike<infer V> ? V : never;
 };
 
 export interface Combine {
   /**
-   * Combines an array of Readables into a single Readable with the array of values.
-   * @param deps An array of Readables to combine.
-   * @returns A Readable with the combined values.
+   * Combines an array of {@link ReadableLike}s into a single {@link Readable} with the array of values.
+   * @param deps An array of {@link ReadableLike}s to combine.
+   * @returns A {@link Readable} with the combined values.
    */
-  <TDep$s extends readonly Readable[] = Readable[]>(deps: TDep$s): OwnedReadable<MapReadablesToValues<TDep$s>>;
+  <TDeps extends readonly ReadableLike[] = ReadableLike[]>(deps: TDeps): OwnedReadable<MapReadablesToValues<TDeps>>;
   /**
-   * Combines an array of Readables into a single Readable with transformed value.
-   * @param deps An array of Readables to combine.
+   * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
+   * @param deps An array of {@link ReadableLike}s to combine.
    * @param transform A pure function that takes an array of values and returns a new value.
    * @param config custom config for the combined Readable.
-   * @returns A Readable with the transformed values.
+   * @returns A {@link Readable} with the transformed values.
    */
-  <TDep$s extends readonly Readable[] = Readable[], TValue = any>(
-    deps: TDep$s,
-    transform: (deps: MapReadablesToValues<TDep$s>) => TValue,
+  <TDeps extends readonly ReadableLike[] = ReadableLike[], TValue = any>(
+    deps: TDeps,
+    transform: (deps: MapReadablesToValues<TDeps>) => TValue,
     config?: Config<TValue>,
   ): OwnedReadable<TValue>;
 }
 
-export const combine: Combine = <TDep$s extends readonly Readable[], TValue = any>(
-  deps: TDep$s,
-  transform?: (deps: MapReadablesToValues<TDep$s>) => TValue,
+export const combine: Combine = <TDeps extends readonly ReadableLike[], TValue = any>(
+  deps: TDeps,
+  transform?: (deps: MapReadablesToValues<TDeps>) => TValue,
   config?: Config<TValue>,
 ) =>
   compute(
-    get => (transform ? transform(deps.map(get) as MapReadablesToValues<TDep$s>) : (deps.map(get) as TValue)),
+    get => (transform ? transform(deps.map(get) as MapReadablesToValues<TDeps>) : (deps.map(get) as TValue)),
     config,
   );
