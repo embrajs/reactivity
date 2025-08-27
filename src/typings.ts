@@ -13,6 +13,16 @@ export interface Config<TValue = any> {
    * Name for debugging.
    */
   readonly name?: string;
+  /**
+   * A callback invoked when a value is needed to be disposed.
+   *
+   * A value is considered for disposal when:
+   * - it is replaced by another value (a new value is set).
+   * - the Readable is disposed.
+   *
+   * @param oldValue The value that is needed to be disposed.
+   */
+  readonly onDisposeValue?: (oldValue: TValue) => void;
 }
 
 export type Disposer = () => void;

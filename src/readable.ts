@@ -143,6 +143,11 @@ export class ReadableImpl<TValue = any> implements BatchTask {
    */
   private _weakRefSelf_?: WeakRef<ReadableImpl<TValue>>;
 
+  /**
+   * @internal
+   */
+  private _onDisposeValue_?: (oldValue: TValue) => void;
+
   public constructor(
     resolveValue: (self: ReadableImpl<TValue>) => TValue,
     config?: Config<TValue>,
@@ -152,6 +157,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     this.equal_ = (config?.equal ?? strictEqual) || undefined;
     this.name = config?.name;
     this.deps_ = deps;
+    this._onDisposeValue_ = config?.onDisposeValue;
   }
 
   /** @internal */
@@ -192,6 +198,9 @@ export class ReadableImpl<TValue = any> implements BatchTask {
       }
       this.deps_.clear();
     }
+    if (this._onDisposeValue_ && !strictEqual(this._value_, UNIQUE_VALUE)) {
+      this._onDisposeValue_(this._value_);
+    }
   }
 
   public get(): TValue {
@@ -212,8 +221,12 @@ export class ReadableImpl<TValue = any> implements BatchTask {
         try {
           const value = this._resolveValue_(this);
           if (!this.equal_?.(value, this._value_)) {
+            const oldValue = this._value_;
             this._value_ = value;
             this._version_ = (this._version_ + 1) | 0;
+            if (this._onDisposeValue_ && !strictEqual(oldValue, UNIQUE_VALUE) && !strictEqual(oldValue, value)) {
+              this._onDisposeValue_(oldValue);
+            }
           }
         } catch (e) {
           this._valueMaybeDirty_ = true;

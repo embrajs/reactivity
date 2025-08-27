@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-import { compute, writable } from "../src";
+import { compute, readable, writable } from "../src";
 
 describe("readable", () => {
   describe("unsubscribe", () => {
@@ -103,6 +103,74 @@ describe("readable", () => {
     it("should handle null values", () => {
       const a = writable(null);
       expect(JSON.stringify(a)).toBe("null");
+    });
+  });
+
+  describe("toDisposeValue", () => {
+    it("should call onDisposeValue when value changes", async () => {
+      const onDisposeValue = vi.fn();
+      const obj1 = { a: 1 };
+      const obj2 = { a: 2 };
+      const obj3 = { a: 3 };
+
+      const [v$, set] = readable(obj1, { onDisposeValue });
+      expect(v$.value).toBe(obj1);
+      expect(onDisposeValue).toBeCalledTimes(0);
+
+      set(obj1);
+      expect(v$.value).toBe(obj1);
+      expect(onDisposeValue).toBeCalledTimes(0);
+
+      set(obj2);
+      expect(v$.value).toBe(obj2);
+      expect(onDisposeValue).toBeCalledTimes(1);
+      expect(onDisposeValue).lastCalledWith(obj1);
+
+      set(obj2);
+      expect(v$.value).toBe(obj2);
+      expect(onDisposeValue).toBeCalledTimes(1);
+
+      set(obj3);
+      expect(v$.value).toBe(obj3);
+      expect(onDisposeValue).toBeCalledTimes(2);
+      expect(onDisposeValue).lastCalledWith(obj2);
+
+      v$.dispose();
+      expect(onDisposeValue).toBeCalledTimes(3);
+      expect(onDisposeValue).lastCalledWith(obj3);
+    });
+
+    it("should call onDisposeValue when value changes (equal: false)", async () => {
+      const onDisposeValue = vi.fn();
+      const obj1 = { a: 1 };
+      const obj2 = { a: 2 };
+      const obj3 = { a: 3 };
+
+      const [v$, set] = readable(obj1, { onDisposeValue, equal: false });
+      expect(v$.value).toBe(obj1);
+      expect(onDisposeValue).toBeCalledTimes(0);
+
+      set(obj1);
+      expect(v$.value).toBe(obj1);
+      expect(onDisposeValue).toBeCalledTimes(0);
+
+      set(obj2);
+      expect(v$.value).toBe(obj2);
+      expect(onDisposeValue).toBeCalledTimes(1);
+      expect(onDisposeValue).lastCalledWith(obj1);
+
+      set(obj2);
+      expect(v$.value).toBe(obj2);
+      expect(onDisposeValue).toBeCalledTimes(1);
+
+      set(obj3);
+      expect(v$.value).toBe(obj3);
+      expect(onDisposeValue).toBeCalledTimes(2);
+      expect(onDisposeValue).lastCalledWith(obj2);
+
+      v$.dispose();
+      expect(onDisposeValue).toBeCalledTimes(3);
+      expect(onDisposeValue).lastCalledWith(obj3);
     });
   });
 });
