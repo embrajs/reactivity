@@ -14,7 +14,7 @@ A lightweight, composable and explicit reactivity system.
 ## Features
 
 <details>
-<summary>Plain reactivity. No proxies, no magic.</summary>
+<summary>⚡ Plain reactivity. No proxies, no magic.</summary>
 
 It does not convert the value with `Object.defineProperty` nor `Proxy`. Keeping everything as plain JavaScript value makes it easier to work with other libraries and easier for the JavaScript engine to optimize.
 
@@ -31,7 +31,7 @@ setCount(1);
 </details>
 
 <details>
-<summary>Explicit reactivity. No hidden dependencies, no surprises.</summary>
+<summary>🔍 Explicit reactivity. No hidden dependencies, no surprises.</summary>
 
 Unlike signal-based libraries, `@embra/reactivity` does not automatically track dependencies. You explicitly define what to watch and how to react to changes. This is easier to reason about dependencies and also reduce the cost of complex implicit dependency calculation.
 
@@ -64,7 +64,7 @@ watch(get => {
 </details>
 
 <details>
-<summary>Zero-cost ownership model. Type-safe lifecycle management.</summary>
+<summary>🛡️ Zero-cost ownership model. Type-safe lifecycle management.</summary>
 
 In practice, one of the biggest problems we face with reactivity libraries is the lifecycle management of reactive values. `@embra/reactivity` provides a zero-cost ownership model that allows you to create reactive values with explicit ownership.
 
@@ -96,9 +96,9 @@ count2$.set(2);
 </details>
 
 <details>
-<summary>Flexible abstractions of state and actions.</summary>
+<summary>🧩 Flexible abstractions of state and actions.</summary>
 
-In the days of Flux model, we often used a single store to hold the state and actions to mutate the state. This was nice for reasoning about the state, but it also introduced a lot of boilerplate code.
+In the days of Flux reducer model, we often used a single store to hold the state and actions to mutate the state. This was nice for reasoning about the state, but it also introduced a lot of boilerplate code.
 
 Later on, a pattern with state and action glued together was introduced, like `redux-actions`. `@embra/reactivity` takes this a step further by providing a more simple and flexible abstraction of state and actions.
 
@@ -124,23 +124,25 @@ trace(count$);
 </details>
 
 <details>
-<summary>Framework agnostic. First-class support for React.</summary>
+<summary>🏗️ Framework agnostic. First-class support for React.</summary>
 
 `@embra/reactivity` is designed to be framework agnostic. It can be used with any framework or library that supports JavaScript. It also provides first-class support for React.
 
 ```tsx
 import { writable } from "@embra/reactivity";
-import { useDerived, useCombined } from "@embra/reactivity/react";
+import { useValue, useDerived, useCombined } from "@embra/reactivity/react";
 
 const count$ = writable(0);
 
 function Counter({ count$ }) {
-  const count = useDerived(count$);
+  const count = useValue(count$);
+  const countDouble = useDerived(count$, count => count * 2);
   return (
     <div>
       <button onClick={() => count$.set(count - 1)}>-</button>
       <span>{count}</span>
       <button onClick={() => count$.set(count + 1)}>+</button>
+      <span>{countDouble}</span>
     </div>
   );
 }
@@ -149,7 +151,7 @@ function Counter({ count$ }) {
 </details>
 
 <details>
-<summary>Small bundle size. Focused on performance and simplicity.</summary>
+<summary>📦 Small bundle size. Focused on performance and simplicity.</summary>
 
 ![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)
 
