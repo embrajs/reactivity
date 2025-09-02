@@ -72,10 +72,8 @@
           <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
           ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">{</span><br />    <a
             class="tsd-kind-property"
-            href="#version"
-            >$version</a
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#get">get</a
+            href="#get"
+            >get</a
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">()</span>
           <span class="tsd-signature-symbol">=&gt;</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
@@ -92,6 +90,8 @@
             >value</a
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#version">version</a
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#reaction-1"
             >reaction</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">subscriber</span
@@ -99,8 +99,10 @@
           <a href="../types/index.Subscriber.html" class="tsd-signature-type tsd-kind-type-alias">Subscriber</a
           ><span class="tsd-signature-symbol">&lt;</span
           ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span>
+          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
+          <span class="tsd-kind-parameter">scheduler</span><span class="tsd-signature-symbol">?:</span>
+          <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
           <a href="../types/index.Disposer.html" class="tsd-signature-type tsd-kind-type-alias">Disposer</a
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#subscribe-1"
             >subscribe</a
@@ -109,22 +111,25 @@
           <a href="../types/index.Subscriber.html" class="tsd-signature-type tsd-kind-type-alias">Subscriber</a
           ><span class="tsd-signature-symbol">&lt;</span
           ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span>
+          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
+          <span class="tsd-kind-parameter">scheduler</span><span class="tsd-signature-symbol">?:</span>
+          <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
           <a href="../types/index.Disposer.html" class="tsd-signature-type tsd-kind-type-alias">Disposer</a
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#unsubscribe-1"
             >unsubscribe</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">subscriber</span
+          ><span class="tsd-signature-symbol">(</span><br />        <span class="tsd-kind-parameter">subscriber</span
           ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-symbol">(</span
           ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">args</span
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span
           ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span>
           <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">any</span
-          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br /><span
-            class="tsd-signature-symbol"
-            >}</span
-          >
+          ><span class="tsd-signature-symbol">,</span><br />        <span class="tsd-kind-parameter">scheduler</span
+          ><span class="tsd-signature-symbol">?:</span>
+          <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+          ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-signature-symbol">)</span
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+          ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
@@ -136,7 +141,7 @@
             </li>
           </ul>
         </section>
-        <section class="tsd-panel tsd-hierarchy" data-refl="151">
+        <section class="tsd-panel tsd-hierarchy" data-refl="159">
           <h4>Hierarchy (<a href="../hierarchy.html#index.Writable">View Summary</a>)</h4>
           <ul class="tsd-hierarchy">
             <li class="tsd-hierarchy-item">
@@ -162,8 +167,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L109"
-                >src/typings.ts:109</a
+                href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L113"
+                >src/typings.ts:113</a
               >
             </li>
           </ul>
@@ -181,11 +186,6 @@
                 <section class="tsd-index-section">
                   <h3 class="tsd-index-heading">Properties</h3>
                   <div class="tsd-index-list">
-                    <a href="#version" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>$version</span></a
-                    >
                     <a href="#get" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
@@ -205,6 +205,11 @@
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>value</span></a
+                    >
+                    <a href="#version" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>version</span></a
                     >
                   </div>
                 </section>
@@ -241,40 +246,6 @@
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="version">
-                <code class="tsd-tag">Readonly</code><span>$version</span
-                ><a href="#version" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">$version</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">number</span>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <p>
-                  A version representation of the value. If two versions of a $ is not equal(<code>Object.is</code>), it
-                  means the <code>value</code> has changed (event if the <code>value</code> is equal).
-                </p>
-              </div>
-              <aside class="tsd-sources">
-                <p>
-                  Inherited from <a href="index.Readable.html">Readable</a>.<a href="index.Readable.html#version"
-                    >$version</a
-                  >
-                </p>
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L46"
-                      >src/typings.ts:46</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="get">
                 <span>get</span
                 ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
@@ -295,8 +266,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L62"
-                      >src/typings.ts:62</a
+                      href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L63"
+                      >src/typings.ts:63</a
                     >
                   </li>
                 </ul>
@@ -321,8 +292,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L41"
-                      >src/typings.ts:41</a
+                      href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L42"
+                      >src/typings.ts:42</a
                     >
                   </li>
                 </ul>
@@ -349,8 +320,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L113"
-                      >src/typings.ts:113</a
+                      href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L117"
+                      >src/typings.ts:117</a
                     >
                   </li>
                 </ul>
@@ -376,8 +347,42 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L111"
-                      >src/typings.ts:111</a
+                      href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L115"
+                      >src/typings.ts:115</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="version">
+                <code class="tsd-tag">Readonly</code><span>version</span
+                ><a href="#version" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">version</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">number</span>
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>
+                  A version representation of the value. If two versions of a $ is not equal(<code>Object.is</code>), it
+                  means the <code>value</code> has changed (event if the <code>value</code> is equal).
+                </p>
+              </div>
+              <aside class="tsd-sources">
+                <p>
+                  Inherited from <a href="index.Readable.html">Readable</a>.<a href="index.Readable.html#version"
+                    >version</a
+                  >
+                </p>
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L47"
+                      >src/typings.ts:47</a
                     >
                   </li>
                 </ul>
@@ -409,8 +414,10 @@
                       >Subscriber</a
                     ><span class="tsd-signature-symbol">&lt;</span
                     ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span>
+                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">scheduler</span><span class="tsd-signature-symbol">?:</span>
+                    <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
                     <a href="../types/index.Disposer.html" class="tsd-signature-type tsd-kind-type-alias">Disposer</a
                     ><a href="#reaction-1" aria-label="Permalink" class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
@@ -434,6 +441,17 @@
                             ><span class="tsd-signature-symbol">&gt;</span></span
                           >
                         </li>
+                        <li>
+                          <span
+                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">scheduler</span>:
+                            <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface"
+                              >Scheduler</a
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>Optional scheduler to control when the subscriber is called.</p>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                     <h4 class="tsd-returns-title">
@@ -451,8 +469,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L70"
-                            >src/typings.ts:70</a
+                            href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L72"
+                            >src/typings.ts:72</a
                           >
                         </li>
                       </ul>
@@ -477,8 +495,10 @@
                       >Subscriber</a
                     ><span class="tsd-signature-symbol">&lt;</span
                     ><a class="tsd-signature-type tsd-kind-type-parameter" href="#tvalue">TValue</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span>
+                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">scheduler</span><span class="tsd-signature-symbol">?:</span>
+                    <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
                     <a href="../types/index.Disposer.html" class="tsd-signature-type tsd-kind-type-alias">Disposer</a
                     ><a href="#subscribe-1" aria-label="Permalink" class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
@@ -502,6 +522,17 @@
                             ><span class="tsd-signature-symbol">&gt;</span></span
                           >
                         </li>
+                        <li>
+                          <span
+                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">scheduler</span>:
+                            <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface"
+                              >Scheduler</a
+                            ></span
+                          >
+                          <div class="tsd-comment tsd-typography">
+                            <p>Optional scheduler to control when the subscriber is called.</p>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                     <h4 class="tsd-returns-title">
@@ -520,8 +551,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L76"
-                            >src/typings.ts:76</a
+                            href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L79"
+                            >src/typings.ts:79</a
                           >
                         </li>
                       </ul>
@@ -546,8 +577,11 @@
                     ><span class="tsd-kind-parameter">args</span><span class="tsd-signature-symbol">:</span>
                     <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span
                     ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
-                    <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                    <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">,</span>
+                    <span class="tsd-kind-parameter">scheduler</span><span class="tsd-signature-symbol">?:</span>
+                    <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface">Scheduler</a
+                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">void</span
                     ><a href="#unsubscribe-1" aria-label="Permalink" class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
                         <use href="../assets/icons.svg#icon-anchor"></use></svg
@@ -570,9 +604,19 @@
                             <span class="tsd-signature-symbol">=&gt;</span>
                             <span class="tsd-signature-type">any</span></span
                           >
+                          <div class="tsd-comment tsd-typography"><p>Optional subscriber function to remove.</p></div>
+                        </li>
+                        <li>
+                          <span
+                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">scheduler</span>:
+                            <a href="index.Scheduler.html" class="tsd-signature-type tsd-kind-interface"
+                              >Scheduler</a
+                            ></span
+                          >
                           <div class="tsd-comment tsd-typography">
                             <p>
-                              Optional subscriber function to remove. If not provided, all subscribers will be removed.
+                              Optional scheduler associated with the subscriber. If not provided, all subscribers will
+                              be removed.
                             </p>
                           </div>
                         </li>
@@ -590,8 +634,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/932441d82e1e8ecd396987206a7178aa44dedd45/src/typings.ts#L82"
-                            >src/typings.ts:82</a
+                            href="https://github.com/embrajs/reactivity/blob/7db5485a3c20f84a429347e84f26e7b75008ff6b/src/typings.ts#L86"
+                            >src/typings.ts:86</a
                           >
                         </li>
                       </ul>
@@ -640,11 +684,7 @@
                   >Properties
                 </summary>
                 <div>
-                  <a href="#version"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>$version</span></a
-                  ><a href="#get"
+                  <a href="#get"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>get</span></a
@@ -660,6 +700,10 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>value</span></a
+                  ><a href="#version"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>version</span></a
                   >
                 </div>
               </details>
