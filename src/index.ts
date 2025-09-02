@@ -19,6 +19,8 @@ export type {
 
 export { type Listener, type RemoveListener } from "./event";
 
+export { SyncScheduler, PromiseScheduler, type Scheduler } from "./schedulers";
+
 export { batch, batchFlush, batchStart } from "./batch";
 
 export { compute, type ComputeFn } from "./compute";

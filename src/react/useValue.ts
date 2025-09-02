@@ -2,6 +2,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type Readable,
   type ReadableLike,
+  type Scheduler,
   type Unwrap,
   getReadable,
 } from "@embra/reactivity";
@@ -10,7 +11,7 @@ import { useDebugValue, useMemo, useSyncExternalStore } from "react";
 export interface UseValue {
   /**
    * Accepts a {@link ReadableLike} and returns the latest value.
-   * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
+   * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.version} instead of React's `Object.is` comparison).
    *
    * @param $ A {@link ReadableLike}.
    * @returns the value of the {@link ReadableLike}
@@ -19,7 +20,7 @@ export interface UseValue {
 
   /**
    * Accepts a {@link ReadableLike} and returns the latest value.
-   * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
+   * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.version} instead of React's `Object.is` comparison).
    *
    * @param $ A {@link ReadableLike}.
    * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
@@ -37,7 +38,7 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
 
 /**
  * Accepts a {@link ReadableLike} and returns the latest value.
- * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.$version} instead of React's `Object.is` comparison).
+ * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.version} instead of React's `Object.is` comparison).
  *
  * @param $ A {@link ReadableLike}.
  * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
@@ -52,13 +53,14 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
  * }
  * ```
  */
-export const useValue: UseValue = <T, U>($?: ReadableLike<T> | U): Unwrap<T> | U => {
+export const useValue: UseValue = <T, U>($: ReadableLike<T> | U, scheduler?: Scheduler): Unwrap<T> | U => {
   const args = useMemo(() => {
     const readable = getReadable($);
     return (
-      readable && ([(onChange: () => void) => readable.subscribe(onChange), () => readable.$version, readable] as const)
+      readable &&
+      ([(onChange: () => void) => readable.subscribe(onChange, scheduler), () => readable.version, readable] as const)
     );
-  }, [$]);
+  }, [$, scheduler]);
 
   const [subscriber, getSnapshot, readable] = args ?? defaultArgs;
 

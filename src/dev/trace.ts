@@ -145,7 +145,7 @@ const traceReadable = <T extends Readable>($: T, config?: TraceConfig): T => {
 
     if ($.deps_) {
       for (const dep of $.deps_.keys()) {
-        deps.newDeps.set(dep, { value: dep.value, version: dep.$version });
+        deps.newDeps.set(dep, { value: dep.value, version: dep.version });
       }
 
       deps.print();
@@ -203,7 +203,7 @@ const traceReadableProvider = <T extends ReadableProvider>($: T, config?: TraceC
 
     // if ($.$.deps_) {
     //   for (const dep of $.$.deps_.keys()) {
-    //     deps.newDeps.set(dep, { value: dep.value, version: dep.$version });
+    //     deps.newDeps.set(dep, { value: dep.value, version: dep.version });
     //   }
 
     //   deps.print();
@@ -228,9 +228,9 @@ const traceWatch = <T extends WatchEffect | ComputeFn>(effect: T, config?: Trace
   return ((get: Get, ...args: [any]): any => {
     const myGet: Get = ($: any) => {
       if (isReadable($)) {
-        deps.newDeps.set($, { value: $.value, version: $.$version });
+        deps.newDeps.set($, { value: $.value, version: $.version });
       } else if (isReadable($?.$)) {
-        deps.newDeps.set($.$, { value: $.$.value, version: $.$.$version });
+        deps.newDeps.set($.$, { value: $.$.value, version: $.$.version });
       }
       return get($);
     };

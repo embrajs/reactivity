@@ -1,4 +1,6 @@
 import { batchFlush, batchStart, type BatchTask, tasks } from "./batch";
+import { type EventObject, off, on, send, size } from "./event";
+import { SyncScheduler, type Scheduler } from "./schedulers";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -10,7 +12,12 @@ import {
   type Version,
   type Writable,
 } from "./typings";
-import { BRAND, invokeEach, strictEqual, UNIQUE_VALUE } from "./utils";
+import { BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
+
+interface Subs<TValue> extends EventObject<TValue> {
+  lastVersion_: Version;
+  schedule_: () => void;
+}
 
 export type Deps = Map<ReadableImpl, Version>;
 
@@ -88,11 +95,11 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /**
    * @internal
    */
-  private _subs_?: Set<Subscriber<TValue>>;
+  public subs?: Map<Scheduler, Subs<TValue>>;
 
-  public get $version(): Version {
+  public get version(): Version {
     this.get();
-    return this._version_;
+    return this.version_;
   }
 
   public get value(): TValue {
@@ -106,158 +113,154 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /**
    * @internal
    */
-  private _lastSubInvokeVersion_: Version = -1;
+  private disposed_?: Error | true;
 
   /**
    * @internal
    */
-  private _disposed_?: Error | true;
+  private resolveValue_: (self: ReadableImpl<TValue>) => TValue;
 
   /**
    * @internal
    */
-  private _resolveValue_: (self: ReadableImpl<TValue>) => TValue;
+  private resolveValueError_: any;
 
   /**
    * @internal
    */
-  private _resolveValueError_: any;
+  private value_: TValue = UNIQUE_VALUE as TValue;
 
   /**
    * @internal
    */
-  private _value_: TValue = UNIQUE_VALUE as TValue;
+  private valueMaybeDirty_ = true;
 
   /**
    * @internal
    */
-  private _valueMaybeDirty_ = true;
+  private version_: Version = -1;
 
   /**
    * @internal
    */
-  private _version_: Version = -1;
+  private weakRefSelf_?: WeakRef<ReadableImpl<TValue>>;
 
   /**
    * @internal
    */
-  private _weakRefSelf_?: WeakRef<ReadableImpl<TValue>>;
-
-  /**
-   * @internal
-   */
-  private _onDisposeValue_?: (oldValue: TValue) => void;
+  private onDisposeValue_?: (oldValue: TValue) => void;
 
   public constructor(
     resolveValue: (self: ReadableImpl<TValue>) => TValue,
     config?: Config<TValue>,
     deps?: Map<ReadableImpl, Version>,
   ) {
-    this._resolveValue_ = resolveValue;
+    this.resolveValue_ = resolveValue;
     this.equal_ = (config?.equal ?? strictEqual) || undefined;
     this.name = config?.name;
     this.deps_ = deps;
-    this._onDisposeValue_ = config?.onDisposeValue;
+    this.onDisposeValue_ = config?.onDisposeValue;
   }
 
   /** @internal */
   public task_(): void {
-    if (this._subs_?.size && this._lastSubInvokeVersion_ !== this.$version) {
-      this._lastSubInvokeVersion_ = this.$version;
-      invokeEach(this._subs_, this.get());
+    if (this.subs) {
+      for (const [scheduler, subs] of this.subs) {
+        scheduler(subs.schedule_);
+      }
     }
   }
 
   public addDep_(dep: ReadableImpl): void {
-    if (strictEqual(this.deps_?.get(dep), dep.$version)) return;
+    if (strictEqual(this.deps_?.get(dep), dep.version)) return;
 
-    (this.deps_ ??= new Map()).set(dep, dep.$version);
+    (this.deps_ ??= new Map()).set(dep, dep.version);
 
-    if (!this._weakRefSelf_) {
-      registry.register(this, { d: this.deps_, r: (this._weakRefSelf_ = new WeakRef(this)) }, this.deps_);
+    if (!this.weakRefSelf_) {
+      registry.register(this, { d: this.deps_, r: (this.weakRefSelf_ = new WeakRef(this)) }, this.deps_);
     }
 
-    (dep.dependents_ ??= new Set()).add(this._weakRefSelf_);
+    (dep.dependents_ ??= new Set()).add(this.weakRefSelf_);
   }
 
   public dispose(): void {
-    if (this._disposed_) return;
+    if (this.disposed_) return;
     if (process.env.NODE_ENV !== "production") {
-      this._disposed_ = new Error("[embra] Readable disposed at:");
+      this.disposed_ = new Error("[embra] Readable disposed at:");
     } else {
-      this._disposed_ = true;
+      this.disposed_ = true;
     }
     tasks.delete(this);
     this.dependents_ = undefined;
     if (this.deps_) {
       registry.unregister(this.deps_);
-      if (this._weakRefSelf_) {
+      if (this.weakRefSelf_) {
         for (const dep of this.deps_.keys()) {
-          dep.dependents_?.delete(this._weakRefSelf_);
+          dep.dependents_?.delete(this.weakRefSelf_);
         }
       }
       this.deps_.clear();
     }
-    if (this._onDisposeValue_ && !strictEqual(this._value_, UNIQUE_VALUE)) {
-      this._onDisposeValue_(this._value_);
+    if (this.onDisposeValue_ && !strictEqual(this.value_, UNIQUE_VALUE)) {
+      this.onDisposeValue_(this.value_);
     }
   }
 
   public get(): TValue {
-    if (this._valueMaybeDirty_) {
+    if (this.valueMaybeDirty_) {
       // reset state immediately so that recursive notify_ calls can mark this as dirty again
-      this._valueMaybeDirty_ = false;
+      this.valueMaybeDirty_ = false;
       let changed = !this.deps_;
       if (this.deps_) {
         for (const [dep, version] of this.deps_) {
-          if (!strictEqual(dep.$version, version)) {
+          if (!strictEqual(dep.version, version)) {
             changed = true;
             break;
           }
         }
       }
       if (changed) {
-        this._resolveValueError_ = UNIQUE_VALUE;
+        this.resolveValueError_ = UNIQUE_VALUE;
         try {
-          const value = this._resolveValue_(this);
-          if (!this.equal_?.(value, this._value_)) {
-            const oldValue = this._value_;
-            this._value_ = value;
-            this._version_ = (this._version_ + 1) | 0;
-            if (this._onDisposeValue_ && !strictEqual(oldValue, UNIQUE_VALUE) && !strictEqual(oldValue, value)) {
-              this._onDisposeValue_(oldValue);
+          const value = this.resolveValue_(this);
+          if (!this.equal_?.(value, this.value_)) {
+            const oldValue = this.value_;
+            this.value_ = value;
+            this.version_ = (this.version_ + 1) | 0;
+            if (this.onDisposeValue_ && !strictEqual(oldValue, UNIQUE_VALUE) && !strictEqual(oldValue, value)) {
+              this.onDisposeValue_(oldValue);
             }
           }
         } catch (e) {
-          this._valueMaybeDirty_ = true;
-          this._resolveValueError_ = e;
+          this.valueMaybeDirty_ = true;
+          this.resolveValueError_ = e;
           throw e;
         }
       }
     }
-    if (!strictEqual(this._resolveValueError_, UNIQUE_VALUE)) {
-      throw this._resolveValueError_;
+    if (!strictEqual(this.resolveValueError_, UNIQUE_VALUE)) {
+      throw this.resolveValueError_;
     }
     if (process.env.NODE_ENV !== "production") {
-      if (strictEqual(UNIQUE_VALUE, this._value_)) {
+      if (strictEqual(UNIQUE_VALUE, this.value_)) {
         throw new Error("Cycle detected");
       }
     }
-    return this._value_;
+    return this.value_;
   }
 
   /**
    * @internal
    */
   public notify_(): void {
-    if (this._disposed_) {
-      console.error(new Error("disposed"));
+    if (this.disposed_) {
+      console.error(this, new Error("disposed"));
       if (process.env.NODE_ENV !== "production") {
-        console.error(this._disposed_);
+        console.error(this.disposed_);
       }
     }
 
-    this._valueMaybeDirty_ = true;
+    this.valueMaybeDirty_ = true;
 
     const isFirst = batchStart();
 
@@ -276,28 +279,46 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   }
 
   /** @internal */
-  public onReaction_(subscriber: Subscriber<TValue>): void {
-    if (!this._subs_?.size) {
+  public onReaction_(subscriber: Subscriber<TValue>, scheduler: Scheduler = SyncScheduler): void {
+    let subs = this.subs?.get(scheduler);
+    if (!subs) {
+      (this.subs ??= new Map()).set(
+        scheduler,
+        (subs = {
+          lastVersion_: this.version,
+          schedule_: ((scheduler: Scheduler) => {
+            const subs = this.subs?.get(scheduler);
+            if (subs && size(subs)) {
+              const value = this.get();
+              if (subs.lastVersion_ !== this.version_) {
+                subs.lastVersion_ = this.version_;
+                send(subs, value);
+              }
+            }
+          }).bind(0, scheduler),
+        }),
+      );
+    } else if (!size(subs)) {
       // start tracking last first on first subscription
-      this._lastSubInvokeVersion_ = this.$version;
+      subs.lastVersion_ = this.version;
     }
-    (this._subs_ ??= new Set()).add(subscriber);
+    on(subs, subscriber);
   }
 
-  public reaction(subscriber: Subscriber<TValue>): Disposer {
-    this.onReaction_(subscriber);
+  public reaction(subscriber: Subscriber<TValue>, scheduler?: Scheduler): Disposer {
+    this.onReaction_(subscriber, scheduler);
     return () => this.unsubscribe(subscriber);
   }
 
   public removeDep_(dep: ReadableImpl): void {
     this.deps_?.delete(dep);
-    if (this._weakRefSelf_) {
-      dep.dependents_?.delete(this._weakRefSelf_);
+    if (this.weakRefSelf_) {
+      dep.dependents_?.delete(this.weakRefSelf_);
     }
   }
 
-  public subscribe(subscriber: Subscriber<TValue>): Disposer {
-    const disposer = this.reaction(subscriber);
+  public subscribe(subscriber: Subscriber<TValue>, scheduler?: Scheduler): Disposer {
+    const disposer = this.reaction(subscriber, scheduler);
     subscriber(this.get());
     return disposer;
   }
@@ -329,8 +350,21 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     return "" + this.toJSON();
   }
 
-  public unsubscribe(subscriber?: (...args: any[]) => any): void {
-    subscriber ? this._subs_?.delete(subscriber) : this._subs_?.clear();
+  public unsubscribe(subscriber?: (...args: any[]) => any, scheduler?: Scheduler): void {
+    if (this.subs) {
+      if (subscriber) {
+        if (scheduler) {
+          const subs = this.subs.get(scheduler);
+          subs && off(subs, subscriber);
+        } else {
+          for (const subs of this.subs.values()) {
+            off(subs, subscriber);
+          }
+        }
+      } else {
+        this.subs.clear();
+      }
+    }
   }
 
   public valueOf(): TValue {

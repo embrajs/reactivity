@@ -1,3 +1,4 @@
+import { type Scheduler } from "./schedulers";
 import { type BRAND } from "./utils";
 
 /**
@@ -43,7 +44,7 @@ export interface Readable<TValue = any> {
    * A version representation of the value.
    * If two versions of a $ is not equal(`Object.is`), it means the `value` has changed (event if the `value` is equal).
    */
-  readonly $version: Version;
+  readonly version: Version;
   /**
    * @internal
    */
@@ -61,25 +62,28 @@ export interface Readable<TValue = any> {
    */
   get: () => TValue;
   /** @internal */
-  onReaction_(subscriber: Subscriber<TValue>): void;
+  onReaction_(subscriber: Subscriber<TValue>, scheduler?: Scheduler): void;
   /**
    * Subscribe to value changes without immediate emission.
    * @param subscriber
+   * @param scheduler Optional scheduler to control when the subscriber is called.
    * @returns a disposer function that cancels the subscription
    */
-  reaction(subscriber: Subscriber<TValue>): Disposer;
+  reaction(subscriber: Subscriber<TValue>, scheduler?: Scheduler): Disposer;
   /**
    * Subscribe to value changes with immediate emission.
    * @param subscriber
+   * @param scheduler Optional scheduler to control when the subscriber is called.
    * @returns a disposer function that cancels the subscription
    */
-  subscribe(subscriber: Subscriber<TValue>): Disposer;
+  subscribe(subscriber: Subscriber<TValue>, scheduler?: Scheduler): Disposer;
   /**
    * Remove the given subscriber or all subscribers if no subscriber is provided.
    * @param subscriber Optional subscriber function to remove.
+   * @param scheduler Optional scheduler associated with the subscriber.
    * If not provided, all subscribers will be removed.
    */
-  unsubscribe(subscriber?: (...args: any[]) => any): void;
+  unsubscribe(subscriber?: (...args: any[]) => any, scheduler?: Scheduler): void;
 }
 
 export interface OwnedReadable<TValue = any> extends Readable<TValue> {
