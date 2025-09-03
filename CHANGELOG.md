@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.4](https://github.com/embrajs/reactivity/compare/v0.0.3...v0.0.4) (2025-09-03)
+
+
+### Features
+
+* add schedulers ([7db5485](https://github.com/embrajs/reactivity/commit/7db5485a3c20f84a429347e84f26e7b75008ff6b))
+
+
+### Bug Fixes
+
+* rename ([dbe6d35](https://github.com/embrajs/reactivity/commit/dbe6d356474a38864465cff01c4c1a8423f43d04))
+
 ## [0.0.3](https://github.com/embrajs/reactivity/compare/v0.0.2...v0.0.3) (2025-08-27)
 
 
