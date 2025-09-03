@@ -1,4 +1,4 @@
-import { batch, batchFlush, batchStart, tasks } from "./batch";
+import { batch, batchFlush, batchStart, batchTasks } from "./batch";
 import { type Disposer, type Get, type Readable, type ReadableLike } from "./typings";
 import { getReadable, unsubscribe } from "./utils";
 
@@ -30,12 +30,12 @@ export const watch = (effect: WatchEffect): Disposer => {
       unsubscribe(collectedDeps, subscription);
       collectedDeps?.clear();
     }
-    tasks.add(runner);
+    batchTasks.add(runner);
   };
 
   const dispose = () => {
     disposed = true;
-    tasks.delete(runner);
+    batchTasks.delete(runner);
     effect = null as any; // enable gc
     unsubscribe(collectedDeps, subscription);
     collectedDeps = undefined;
@@ -80,7 +80,7 @@ export const watch = (effect: WatchEffect): Disposer => {
       isBatchTop && batchFlush();
     }
   };
-  runner.task_ = runner;
+  runner.batchTask_ = runner;
 
   runner();
 

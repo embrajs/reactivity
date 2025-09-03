@@ -1,4 +1,4 @@
-import { batchFlush, batchStart, tasks } from "../batch";
+import { batchFlush, batchStart, batchTasks } from "../batch";
 import { type RemoveListener } from "../event";
 import { writable } from "../readable";
 import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
@@ -162,7 +162,7 @@ export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<
       }
       if (delete_.size) {
         const isBatchTop = batchStart();
-        tasks.add(this.onDisposeValue_!);
+        batchTasks.add(this.onDisposeValue_!);
         isBatchTop && batchFlush();
       }
     }

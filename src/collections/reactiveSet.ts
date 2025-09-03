@@ -1,4 +1,4 @@
-import { batchFlush, batchStart, type BatchTask, tasks } from "../batch";
+import { batchFlush, batchStart, type BatchTask, batchTasks } from "../batch";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { writable } from "../readable";
 import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
@@ -33,7 +33,7 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
       (this._onChanged_ ??= {
         delete_: new Set<V>(),
         upsert_: new Set<V>(),
-        task_: () => {
+        batchTask_: () => {
           if (this._onChanged_ && size(this._onChanged_)) {
             const { upsert_, delete_ } = this._onChanged_;
             if (upsert_.size > 0 || delete_.size > 0) {
@@ -92,7 +92,7 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
       }
       if (delete_.size) {
         const isBatchTop = batchStart();
-        tasks.add(this.onDisposeValue_);
+        batchTasks.add(this.onDisposeValue_);
         isBatchTop && batchFlush();
       }
     }
@@ -106,7 +106,7 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
       if (this._onChanged_) {
         this._onChanged_.upsert_.add(value);
         this._onChanged_.delete_.delete(value);
-        tasks.add(this._onChanged_);
+        batchTasks.add(this._onChanged_);
       }
       super.add(value);
       this._notify_();
@@ -120,12 +120,12 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
       const isBatchTop = batchStart();
       if (this.onDisposeValue_) {
         this.onDisposeValue_.delete_.add(value);
-        tasks.add(this.onDisposeValue_);
+        batchTasks.add(this.onDisposeValue_);
       }
       if (this._onChanged_) {
         this._onChanged_.delete_.add(value);
         this._onChanged_.upsert_.delete(value);
-        tasks.add(this._onChanged_);
+        batchTasks.add(this._onChanged_);
       }
       this._notify_();
       isBatchTop && batchFlush();
@@ -140,12 +140,12 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
         for (const value of this) {
           if (this.onDisposeValue_) {
             this.onDisposeValue_.delete_.add(value);
-            tasks.add(this.onDisposeValue_);
+            batchTasks.add(this.onDisposeValue_);
           }
           if (this._onChanged_) {
             this._onChanged_.delete_.add(value);
             this._onChanged_.upsert_.delete(value);
-            tasks.add(this._onChanged_);
+            batchTasks.add(this._onChanged_);
           }
         }
       }

@@ -1,3 +1,6 @@
-import { type Scheduler } from "./interface";
+import { type Scheduler, type SchedulerTask } from "./interface";
 
-export const SyncScheduler: Scheduler = (callback: () => void): void => callback();
+/**
+ * The default {@link Scheduler} that runs updates synchronously.
+ */
+export const SyncScheduler: Scheduler = (task: SchedulerTask): void => task.schedulerTask_(SyncScheduler);

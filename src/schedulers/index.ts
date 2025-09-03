@@ -1,3 +1,4 @@
 export * from "./interface";
-export * from "./SyncScheduler";
-export * from "./PromiseScheduler";
+export { asyncScheduler } from "./AsyncScheduler";
+export { SyncScheduler } from "./SyncScheduler";
+export { MicrotaskScheduler } from "./MicrotaskScheduler";

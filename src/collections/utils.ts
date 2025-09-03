@@ -13,7 +13,7 @@ export function onDisposeValue<V>(
   return on(
     (this.onDisposeValue_ ??= {
       delete_: new Set<V>(),
-      task_: () => {
+      batchTask_: () => {
         if (this.onDisposeValue_ && size(this.onDisposeValue_)) {
           const { delete_ } = this.onDisposeValue_;
           if (delete_.size) {

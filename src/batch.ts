@@ -2,20 +2,20 @@ import { context } from "./context";
 import { UNIQUE_VALUE } from "./utils";
 
 export type BatchTask<O extends object = object> = O & {
-  task_: () => void;
+  batchTask_: () => void;
 };
 
-export const tasks: Set<BatchTask> = /* @__PURE__ */ (() => context.tasks_)();
+export const batchTasks: Set<BatchTask> = /* @__PURE__ */ (() => context.batchTask_)();
 
 export const batchStart = (): boolean => !context.batching_ && (context.batching_ = true);
 
 export const batchFlush = (): void => {
   if (context.batching_) {
     let error: unknown = UNIQUE_VALUE;
-    for (const task of tasks) {
-      tasks.delete(task);
+    for (const task of batchTasks) {
+      batchTasks.delete(task);
       try {
-        task.task_();
+        task.batchTask_();
       } catch (e) {
         error = e;
       }

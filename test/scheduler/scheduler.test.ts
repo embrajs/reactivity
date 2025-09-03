@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { writable, PromiseScheduler, SyncScheduler } from "../../src";
+import { writable, MicrotaskScheduler, SyncScheduler } from "../../src";
 
 describe("scheduler", () => {
   it("should only unsubscribe the given subscriber with the given scheduler", async () => {
     const a = writable(1);
     const spy = vi.fn();
-    a.reaction(spy, PromiseScheduler);
+    a.reaction(spy, MicrotaskScheduler);
     a.reaction(spy); // sync
 
     expect(spy).toBeCalledTimes(0);
@@ -32,7 +32,7 @@ describe("scheduler", () => {
 
     spy.mockClear();
 
-    a.unsubscribe(spy, PromiseScheduler);
+    a.unsubscribe(spy, MicrotaskScheduler);
 
     a.set(3);
     expect(spy).toBeCalledTimes(0);
@@ -44,7 +44,7 @@ describe("scheduler", () => {
   it("should unsubscribe the given subscriber with all schedulers when scheduler is not given", async () => {
     const a = writable(1);
     const spy = vi.fn();
-    a.reaction(spy, PromiseScheduler);
+    a.reaction(spy, MicrotaskScheduler);
     a.reaction(spy); // sync
 
     expect(spy).toBeCalledTimes(0);

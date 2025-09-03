@@ -1,4 +1,4 @@
-import { batchFlush, batchStart, type BatchTask, tasks } from "./batch";
+import { batchFlush, batchStart, type BatchTask, batchTasks } from "./batch";
 import { type EventObject, off, on, send, size } from "./event";
 import { SyncScheduler, type Scheduler } from "./schedulers";
 import {
@@ -16,7 +16,6 @@ import { BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
 
 interface Subs<TValue> extends EventObject<TValue> {
   lastVersion_: Version;
-  schedule_: () => void;
 }
 
 export type Deps = Map<ReadableImpl, Version>;
@@ -95,7 +94,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /**
    * @internal
    */
-  public subs?: Map<Scheduler, Subs<TValue>>;
+  public subs_?: Map<Scheduler, Subs<TValue>>;
 
   public get version(): Version {
     this.get();
@@ -138,7 +137,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /**
    * @internal
    */
-  private version_: Version = -1;
+  public version_: Version = -1;
 
   /**
    * @internal
@@ -163,10 +162,22 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   }
 
   /** @internal */
-  public task_(): void {
-    if (this.subs) {
-      for (const [scheduler, subs] of this.subs) {
-        scheduler(subs.schedule_);
+  public batchTask_(): void {
+    if (this.subs_) {
+      for (const scheduler of this.subs_.keys()) {
+        scheduler(this);
+      }
+    }
+  }
+
+  /** @internal */
+  public schedulerTask_(scheduler: Scheduler): void {
+    const subs = this.subs_?.get(scheduler);
+    if (subs && size(subs)) {
+      const value = this.get();
+      if (subs.lastVersion_ !== this.version_) {
+        subs.lastVersion_ = this.version_;
+        send(subs, value);
       }
     }
   }
@@ -190,8 +201,8 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     } else {
       this.disposed_ = true;
     }
-    tasks.delete(this);
-    this.dependents_ = undefined;
+    batchTasks.delete(this);
+    this.dependents_ = this.subs_ = undefined;
     if (this.deps_) {
       registry.unregister(this.deps_);
       if (this.weakRefSelf_) {
@@ -264,12 +275,12 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 
     const isFirst = batchStart();
 
-    tasks.add(this);
+    batchTasks.add(this);
 
     if (this.dependents_) {
       for (const ref of this.dependents_) {
         const dependent = ref.deref();
-        if (dependent && !tasks.has(dependent)) {
+        if (dependent && !batchTasks.has(dependent)) {
           dependent.notify_();
         }
       }
@@ -280,24 +291,9 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 
   /** @internal */
   public onReaction_(subscriber: Subscriber<TValue>, scheduler: Scheduler = SyncScheduler): void {
-    let subs = this.subs?.get(scheduler);
+    let subs = this.subs_?.get(scheduler);
     if (!subs) {
-      (this.subs ??= new Map()).set(
-        scheduler,
-        (subs = {
-          lastVersion_: this.version,
-          schedule_: ((scheduler: Scheduler) => {
-            const subs = this.subs?.get(scheduler);
-            if (subs && size(subs)) {
-              const value = this.get();
-              if (subs.lastVersion_ !== this.version_) {
-                subs.lastVersion_ = this.version_;
-                send(subs, value);
-              }
-            }
-          }).bind(0, scheduler),
-        }),
-      );
+      (this.subs_ ??= new Map()).set(scheduler, (subs = { lastVersion_: this.version }));
     } else if (!size(subs)) {
       // start tracking last first on first subscription
       subs.lastVersion_ = this.version;
@@ -351,18 +347,18 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   }
 
   public unsubscribe(subscriber?: (...args: any[]) => any, scheduler?: Scheduler): void {
-    if (this.subs) {
+    if (this.subs_) {
       if (subscriber) {
         if (scheduler) {
-          const subs = this.subs.get(scheduler);
+          const subs = this.subs_.get(scheduler);
           subs && off(subs, subscriber);
         } else {
-          for (const subs of this.subs.values()) {
+          for (const subs of this.subs_.values()) {
             off(subs, subscriber);
           }
         }
       } else {
-        this.subs.clear();
+        this.subs_.clear();
       }
     }
   }

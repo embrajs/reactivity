@@ -1,5 +1,6 @@
 {
   "addDep_": "_d",
+  "batchTask_": "_k",
   "batching_": "_c",
   "data_": "_a",
   "delete_": "_l",
@@ -15,10 +16,9 @@
   "resolveValue_": "_r",
   "resolveValueError_": "_R",
   "schedule_": "s",
+  "schedulerTask_": "_j",
   "single_": "_s",
   "subs_": "_S",
-  "task_": "_k",
-  "tasks_": "_t",
   "upsert_": "_u",
   "value_": "_V",
   "valueMaybeDirty_": "_M",
