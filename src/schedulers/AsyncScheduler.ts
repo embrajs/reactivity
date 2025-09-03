@@ -3,7 +3,7 @@ import { type Scheduler, type SchedulerFlush, type SchedulerTask } from "./inter
 /**
  * Creates an async {@link Scheduler}.
  * @param defer - A function that defers the execution of the {@link SchedulerFlush} function.
- * @returns- A {@link Scheduler}
+ * @returns A {@link Scheduler}
  *
  * @example
  * ```ts

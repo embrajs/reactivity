@@ -13,7 +13,7 @@ export interface UseDerived {
    * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
    * @param dep - The {@link ReadableLike} to derive from.
    * @param transform A pure function that takes an input value and returns a new value.
-   * @param config custom config for the combined {@link Readable}.
+   * @param config custom config for the derived {@link Readable}.
    * @returns Transformed value from the given {@link ReadableLike}.
    */
   <TDepValue, TValue>(
@@ -25,7 +25,7 @@ export interface UseDerived {
    * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
    * @param dep - The {@link ReadableLike} to derive from, or a non-Readable value that will be returned as-is.
    * @param transform A pure function that takes an input value and returns a new value.
-   * @param config custom config for the combined {@link Readable}.
+   * @param config custom config for the derived {@link Readable}.
    * @returns Transformed value from the given {@link ReadableLike}, or `dep` itself if `dep` is not a {@link ReadableLike}.
    */
   <TDepValue, TValue, U>(

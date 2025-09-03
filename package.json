@@ -10,6 +10,9 @@
     "*": {
       "react": [
         "dist/react.d.ts"
+      ],
+      "debug": [
+        "dist/debug.d.ts"
       ]
     }
   },
@@ -33,6 +36,16 @@
         "types": "./dist/react.d.mts",
         "default": "./dist/react.mjs"
       }
+    },
+    "./debug": {
+      "require": {
+        "types": "./dist/debug.d.ts",
+        "default": "./dist/debug.js"
+      },
+      "import": {
+        "types": "./dist/debug.d.mts",
+        "default": "./dist/debug.mjs"
+      }
     }
   },
   "sideEffects": false,
@@ -54,7 +67,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --coverage --coverage.reportsDirectory='./docs/coverage'",
-    "build": "tsup --config tsup.config.ts && tsup --config tsup.react.config.ts",
+    "build": "tsup --config tsup.debug.config.ts && tsup --config tsup.config.ts && tsup --config tsup.react.config.ts",
     "build:min": "MINIFY=true tsup --env.NODE_ENV production && echo '' && gzip-size dist/index.mjs dist/index.js",
     "release": "commit-and-tag-version"
   },

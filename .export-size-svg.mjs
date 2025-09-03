@@ -24,11 +24,6 @@ export default defineConfig({
   },
   exports: [
     {
-      title: "*",
-      code: "export * from './src/index.ts'",
-      externals: ["./dev"],
-    },
-    {
       title: "{ readable, writable } (core)",
       code: "export { readable, writable } from './src/index.ts'",
     },
@@ -43,9 +38,13 @@ export default defineConfig({
       externals: ["./readable", "./utils"],
     },
     {
-      title: "{ reactiveMap, reactiveSet, reactiveArray }",
+      title: "{ reactiveMap, reactiveSet, reactiveArray } (collections)",
       code: "export { reactiveMap } from './src/collections/reactiveMap.ts';export { reactiveSet } from './src/collections/reactiveSet.ts';export { reactiveArray } from './src/collections/reactiveArray.ts'",
       externals: ["../batch", "../readable", "../utils"],
+    },
+    {
+      title: "{ MicrotaskScheduler, asyncScheduler } (schedulers)",
+      code: "export { MicrotaskScheduler, asyncScheduler } from './src/schedulers/index.ts'",
     },
     {
       title: "React Hooks",

@@ -1,10 +1,4 @@
-import {
-  type Config,
-  type MapReadablesToValues,
-  type ReadableLike,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  type Readable,
-} from "@embra/reactivity";
+import { type Config, type MapReadablesToValues, type ReadableLike } from "@embra/reactivity";
 
 import { useCombine } from "./useCombine";
 import { useValue } from "./useValue";

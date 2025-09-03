@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     coverage: {
       include: ["src/**"],
-      exclude: ["src/dev/**"],
+      exclude: ["src/debug/**"],
       reporter: ["html", "text", "json-summary"],
     },
     poolOptions: {

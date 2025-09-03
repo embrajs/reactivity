@@ -1,4 +1,4 @@
-import { customFormatter } from "./dev";
+import { customFormatter } from "@embra/reactivity/debug";
 
 export type {
   Get,
@@ -65,8 +65,6 @@ export {
   type ReactiveArray,
   type ReadonlyReactiveArray,
 } from "./collections/reactiveArray";
-
-export { customFormatter, trace, type Trace, type TraceConfig } from "./dev";
 
 if (process.env.NODE_ENV !== "production") {
   /* @__PURE__ */ customFormatter();

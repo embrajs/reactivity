@@ -197,7 +197,7 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvide
   /** @internal */
   private _notify_() {
     if (this._disposed_) {
-      console.error(new Error("disposed"));
+      console.error(this, new Error("disposed"));
       if (process.env.NODE_ENV !== "production") {
         console.error(this._disposed_);
       }

@@ -3,9 +3,11 @@ import { defineConfig } from "tsup";
 import mangleCache from "./mangle-cache.json";
 
 export default defineConfig({
-  clean: true,
+  clean: false,
   dts: true,
-  entry: ["src/index.ts"],
+  entry: {
+    index: "src/index.ts",
+  },
   esbuildOptions: options => {
     options.sourcesContent = false;
     options.mangleProps = /[^_]_$/;
@@ -16,5 +18,18 @@ export default defineConfig({
   sourcemap: true,
   splitting: false,
   target: "esnext",
-  treeshake: true,
+  treeshake: false, // side effects `customFormatter`
+  esbuildPlugins: [
+    {
+      name: "replace-imports",
+      setup(build) {
+        build.onResolve({ filter: /^@embra\/reactivity\/debug$/ }, () => {
+          return {
+            path: build.initialOptions.define?.TSUP_FORMAT === '"cjs"' ? "./debug" : "./debug.mjs",
+            external: true,
+          };
+        });
+      },
+    },
+  ],
 });

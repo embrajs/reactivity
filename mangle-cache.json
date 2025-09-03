@@ -13,6 +13,7 @@
   "notify_": "_y",
   "onDisposeValue_": "_v",
   "onReaction_": "_o",
+  "removeDep_": "_f",
   "resolveValue_": "_r",
   "resolveValueError_": "_R",
   "schedule_": "s",

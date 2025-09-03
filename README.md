@@ -105,7 +105,8 @@ Later on, a pattern with state and action glued together was introduced, like `r
 In the following example, we create a Writable `count$` which looks like a `Writable<number>`, but internally it is derived from a larger application state `appState$`. This allows other modules to depend on a `Writable<number>` without knowing the details of the application state.
 
 ```ts
-import { writable, derive, toWritable, trace } from "@embra/reactivity";
+import { writable, derive, toWritable } from "@embra/reactivity";
+import { trace } from "@embra/reactivity/debug";
 
 const appState$ = writable({
   count: 0,
@@ -203,7 +204,9 @@ npm add @embra/reactivity
 `@embra/reactivity` provides a `trace()` function to help debug reactive values and watches. It tracks value and dependency changes and logs them to the console.
 
 ```js
-import { trace, writable, watch } from "@embra/reactivity";
+import { writable, watch } from "@embra/reactivity";
+import { trace } from "@embra/reactivity/debug";
+
 const count$ = writable(0);
 
 // trace a reactive value
@@ -222,6 +225,6 @@ count$.set(1);
 It is enabled in development by default. You can also enable it manually by calling `customFormatter()`.
 
 ```js
-import { customFormatter } from "@embra/reactivity";
+import { customFormatter } from "@embra/reactivity/debug";
 customFormatter();
 ```

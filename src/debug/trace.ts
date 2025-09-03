@@ -21,7 +21,8 @@ export interface Trace {
  * Console logs trace information about the provided Readable or WatchEffect.
  * @example
  * ```ts
- * import { trace, writable, watch } from "@embra/reactivity";
+ * import { writable, watch } from "@embra/reactivity";
+ * import { trace } from "@embra/reactivity/debug";
  * const count$ = writable(0);
  *
  * trace(count$);

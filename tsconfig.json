@@ -13,7 +13,8 @@
     "noUnusedParameters": true,
     "outDir": "dist",
     "paths": {
-      "@embra/reactivity": ["src"]
+      "@embra/reactivity": ["src"],
+      "@embra/reactivity/debug": ["src/debug"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

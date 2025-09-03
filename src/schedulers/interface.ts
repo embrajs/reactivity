@@ -3,6 +3,7 @@ export interface SchedulerTask {
 }
 
 export interface Scheduler {
+  /** @internal */
   (task: SchedulerTask): void;
 }
 

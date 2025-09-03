@@ -67,33 +67,23 @@ export interface CreateReadable {
 
 /** @internal */
 export class ReadableImpl<TValue = any> implements BatchTask {
-  /**
-   * @internal
-   */
+  /** @internal */
   public readonly [BRAND]: BRAND = BRAND;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public dependents_?: Set<WeakRef<ReadableImpl>>;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public deps_?: Map<ReadableImpl, Version>;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public equal_?: (newValue: TValue, oldValue: TValue) => boolean;
 
   public name?: string;
 
   public set?: (value: TValue) => void;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public subs_?: Map<Scheduler, Subs<TValue>>;
 
   public get version(): Version {
@@ -109,44 +99,28 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     this.set?.(value);
   }
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private disposed_?: Error | true;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private resolveValue_: (self: ReadableImpl<TValue>) => TValue;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private resolveValueError_: any;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private value_: TValue = UNIQUE_VALUE as TValue;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private valueMaybeDirty_ = true;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public version_: Version = -1;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private weakRefSelf_?: WeakRef<ReadableImpl<TValue>>;
 
-  /**
-   * @internal
-   */
+  /** @internal */
   private onDisposeValue_?: (oldValue: TValue) => void;
 
   public constructor(
@@ -260,9 +234,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     return this.value_;
   }
 
-  /**
-   * @internal
-   */
+  /** @internal */
   public notify_(): void {
     if (this.disposed_) {
       console.error(this, new Error("disposed"));
@@ -306,6 +278,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     return () => this.unsubscribe(subscriber);
   }
 
+  /** @internal */
   public removeDep_(dep: ReadableImpl): void {
     this.deps_?.delete(dep);
     if (this.weakRefSelf_) {

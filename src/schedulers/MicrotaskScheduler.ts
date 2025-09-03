@@ -1,4 +1,4 @@
-import { asyncScheduler } from "./AsyncScheduler";
+import { asyncScheduler } from "./asyncScheduler";
 import { type Scheduler, type SchedulerFlush } from "./interface";
 
 /**
