@@ -2,7 +2,7 @@
   "$schema": "https://typedoc.org/schema.json",
   "cleanOutputDir": true,
   "customCss": "./assets/docs.css",
-  "entryPoints": ["./src/index.ts", "./src/react/index.ts"],
+  "entryPoints": ["./src/index.ts", "./src/react/index.ts", "./src/debug/index.ts"],
   "excludeInternal": true,
   "excludePrivate": true,
   "excludeProtected": true,
