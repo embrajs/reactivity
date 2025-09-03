@@ -157,6 +157,20 @@
 </code><button type="button">Copy</button></pre>
           </details>
           <details>
+            <summary>⏳ Scheduler mechanism for controlled updates.</summary>
+            <p>
+              <code>@embra/reactivity</code> includes a scheduler mechanism and built-in schedulers that lets you
+              control when reactive updates are processed. This is useful for batching updates and deferring
+              computations.
+            </p>
+            <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">writable</span><span class="hl-1">, </span><span class="hl-2">MicrotaskScheduler</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">rapidChangeCount$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><br/><span class="hl-2">rapidChangeCount$</span><span class="hl-1">.</span><span class="hl-6">reaction</span><span class="hl-1">(</span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-2">log</span><span class="hl-1">, </span><span class="hl-2">MicrotaskScheduler</span><span class="hl-1">);</span><br/><br/><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">2</span><span class="hl-1">);</span><br/><br/><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-8">Promise</span><span class="hl-1">.</span><span class="hl-6">resolve</span><span class="hl-1">();</span><br/><span class="hl-10">// Logs &quot;2&quot; once after a microtask tick, reducing unnecessary computations.</span>
+</code><button type="button">Copy</button></pre>
+
+            <p>You can also provide your owned custom scheduler function easily.</p>
+            <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">writable</span><span class="hl-1">, </span><span class="hl-2">asyncScheduler</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">MicrotaskScheduler</span><span class="hl-1"> = </span><span class="hl-6">asyncScheduler</span><span class="hl-1">(</span><span class="hl-2">flush</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-8">Promise</span><span class="hl-1">.</span><span class="hl-6">resolve</span><span class="hl-1">().</span><span class="hl-6">then</span><span class="hl-1">(</span><span class="hl-2">flush</span><span class="hl-1">));</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">AnimationFrameScheduler</span><span class="hl-1"> = </span><span class="hl-6">asyncScheduler</span><span class="hl-1">(</span><span class="hl-2">requestAnimationFrame</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+          </details>
+          <details>
             <summary>🏗️ Framework agnostic. First-class support for React.</summary>
             <p>
               <code>@embra/reactivity</code> is designed to be framework agnostic. It can be used with any framework or

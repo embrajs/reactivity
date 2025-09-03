@@ -82,6 +82,17 @@
             </h4>
             <p>A <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.</p>
           </div>
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-scheduler">
+              Param: scheduler<a href="#param-scheduler" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>
+              An optional <a href="../interfaces/index.Scheduler.html" class="tsd-kind-interface">Scheduler</a> to
+              control the update frequency. If not provided, updates are applied synchronously.
+            </p>
+          </div>
           <div class="tsd-tag-returns">
             <h4 class="tsd-anchor-link" id="returns">
               Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
@@ -103,14 +114,23 @@
             <pre><code class="tsx"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">useValue</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity/react&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">function</span><span class="hl-1"> </span><span class="hl-6">App</span><span class="hl-1">({ </span><span class="hl-2">count$</span><span class="hl-1"> }) {</span><br/><span class="hl-1">  </span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">count</span><span class="hl-1"> = </span><span class="hl-6">useValue</span><span class="hl-1">(</span><span class="hl-2">count$</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">return</span><span class="hl-1"> </span><span class="hl-11">&lt;</span><span class="hl-12">div</span><span class="hl-11">&gt;</span><span class="hl-4">{</span><span class="hl-2">count</span><span class="hl-4">}</span><span class="hl-11">&lt;/</span><span class="hl-12">div</span><span class="hl-11">&gt;</span><span class="hl-1">;</span><br/><span class="hl-1">}</span>
 </code><button type="button">Copy</button></pre>
           </div>
+          <div class="tsd-tag-example">
+            <h4 class="tsd-anchor-link" id="example-1">
+              Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <pre><code class="tsx"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">useValue</span><span class="hl-1">, </span><span class="hl-2">MicrotaskScheduler</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity/react&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">function</span><span class="hl-1"> </span><span class="hl-6">App</span><span class="hl-1">({ </span><span class="hl-2">rapidChangeCount$</span><span class="hl-1"> }) {</span><br/><span class="hl-1">  </span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">count</span><span class="hl-1"> = </span><span class="hl-6">useValue</span><span class="hl-1">(</span><span class="hl-2">rapidChangeCount$</span><span class="hl-1">, </span><span class="hl-2">MicrotaskScheduler</span><span class="hl-1">); </span><span class="hl-10">// update at most once per microtask</span><br/><span class="hl-1">  </span><span class="hl-0">return</span><span class="hl-1"> </span><span class="hl-11">&lt;</span><span class="hl-12">div</span><span class="hl-11">&gt;</span><span class="hl-4">{</span><span class="hl-2">count</span><span class="hl-4">}</span><span class="hl-11">&lt;/</span><span class="hl-12">div</span><span class="hl-11">&gt;</span><span class="hl-1">;</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+          </div>
         </div>
         <aside class="tsd-sources">
           <ul>
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/2e067b96ad8e2a6008a9366abe4617854899900c/src/react/useValue.ts#L56"
-                >src/react/useValue.ts:56</a
+                href="https://github.com/embrajs/reactivity/blob/08df86c689329776fc7e84b3144aee7df712c0e3/src/react/useValue.ts#L67"
+                >src/react/useValue.ts:67</a
               >
             </li>
           </ul>
