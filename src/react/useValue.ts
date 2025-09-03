@@ -41,6 +41,7 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
  * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.version} instead of React's `Object.is` comparison).
  *
  * @param $ A {@link ReadableLike}.
+ * @param scheduler - An optional {@link Scheduler} to control the update frequency. If not provided, updates are applied synchronously.
  * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}
  *
  * @example
@@ -49,6 +50,16 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
  *
  * function App({ count$ }) {
  *   const count = useValue(count$);
+ *   return <div>{count}</div>;
+ * }
+ * ```
+ *
+ * @example
+ * ```tsx
+ * import { useValue, MicrotaskScheduler } from "@embra/reactivity/react";
+ *
+ * function App({ rapidChangeCount$ }) {
+ *   const count = useValue(rapidChangeCount$, MicrotaskScheduler); // update at most once per microtask
  *   return <div>{count}</div>;
  * }
  * ```

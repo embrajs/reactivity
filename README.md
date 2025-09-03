@@ -124,6 +124,37 @@ trace(count$);
 </details>
 
 <details>
+<summary>⏳ Scheduler mechanism for controlled updates.</summary>
+
+`@embra/reactivity` includes a scheduler mechanism and built-in schedulers that lets you control when reactive updates are processed.
+This is useful for batching updates and deferring computations.
+
+```ts
+import { writable, MicrotaskScheduler } from "@embra/reactivity";
+
+const rapidChangeCount$ = writable(0);
+
+rapidChangeCount$.reaction(console.log, MicrotaskScheduler);
+
+count$.set(1);
+count$.set(2);
+
+await Promise.resolve();
+// Logs "2" once after a microtask tick, reducing unnecessary computations.
+```
+
+You can also provide your owned custom scheduler function easily.
+
+```ts
+import { writable, asyncScheduler } from "@embra/reactivity";
+
+const MicrotaskScheduler = asyncScheduler(flush => Promise.resolve().then(flush));
+const AnimationFrameScheduler = asyncScheduler(requestAnimationFrame);
+```
+
+</details>
+
+<details>
 <summary>🏗️ Framework agnostic. First-class support for React.</summary>
 
 `@embra/reactivity` is designed to be framework agnostic. It can be used with any framework or library that supports JavaScript. It also provides first-class support for React.
