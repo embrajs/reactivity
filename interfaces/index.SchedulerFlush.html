@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>ReactiveMap | @embra/reactivity - v0.0.3</title>
+    <title>SchedulerFlush | @embra/reactivity - v0.0.3</title>
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -56,44 +56,42 @@
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li><a href="../modules/index.html">index</a></li>
-            <li><a href="" aria-current="page">ReactiveMap</a></li>
+            <li><a href="" aria-current="page">SchedulerFlush</a></li>
           </ul>
-          <h1>Type Alias ReactiveMap&lt;K, V&gt;</h1>
+          <h1>Interface SchedulerFlush</h1>
         </div>
-        <div class="tsd-signature">
-          <span class="tsd-kind-type-alias">ReactiveMap</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">Omit</span><span class="tsd-signature-symbol">&lt;</span
-          ><a href="../interfaces/index.OwnedReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
-            >OwnedReactiveMap</a
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span>
-          <span class="tsd-signature-type">&quot;dispose&quot;</span><span class="tsd-signature-symbol">&gt;</span>
-        </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>A function that flushes all scheduled Readables (All subscribers of the Readables will be called).</p>
+          </div>
+        </section>
         <section class="tsd-panel">
-          <h4>Type Parameters</h4>
-          <ul class="tsd-type-parameter-list">
-            <li>
-              <span id="k"><span class="tsd-kind-type-parameter">K</span></span>
-            </li>
-            <li>
-              <span id="v"><span class="tsd-kind-type-parameter">V</span></span>
+          <ul class="tsd-signatures">
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="schedulerflush">
+                <span class="tsd-kind-call-signature">SchedulerFlush</span><span class="tsd-signature-symbol">()</span
+                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                ><a href="#schedulerflush" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </div>
+              <div class="tsd-description">
+                <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/2e067b96ad8e2a6008a9366abe4617854899900c/src/schedulers/interface.ts#L13"
+                        >src/schedulers/interface.ts:13</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
             </li>
           </ul>
         </section>
-        <aside class="tsd-sources">
-          <ul>
-            <li>
-              Defined in
-              <a
-                href="https://github.com/embrajs/reactivity/blob/2e067b96ad8e2a6008a9366abe4617854899900c/src/collections/reactiveMap.ts#L209"
-                >src/collections/reactiveMap.ts:209</a
-              >
-            </li>
-          </ul>
-        </aside>
       </div>
       <div class="col-sidebar">
         <div class="page-menu">
