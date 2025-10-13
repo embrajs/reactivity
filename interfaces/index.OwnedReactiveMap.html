@@ -80,11 +80,11 @@
             >this</span
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span>
           <span class="tsd-kind-property">onDisposeValue_</span><span class="tsd-signature-symbol">?:</span>
-          <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
           <a href="index.OnDisposeValue.html" class="tsd-signature-type tsd-kind-interface">OnDisposeValue</a
           ><span class="tsd-signature-symbol">&lt;</span
           ><span class="tsd-signature-type tsd-kind-type-parameter">V</span
-          ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">}</span
+          ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+          <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">}</span
           ><span class="tsd-signature-symbol">,</span><br />        <span class="tsd-kind-parameter">fn</span
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
           ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
@@ -168,8 +168,8 @@
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
           ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
+          <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#has-1">has</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">key</span
           ><span class="tsd-signature-symbol">:</span>
@@ -277,7 +277,7 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L18"
+                href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L18"
                 >src/collections/reactiveMap.ts:18</a
               >
             </li>
@@ -437,12 +437,12 @@
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><br />    <span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-symbol">{</span> <span class="tsd-kind-property">onDisposeValue_</span
-                ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">null</span>
-                <span class="tsd-signature-symbol">|</span>
+                ><span class="tsd-signature-symbol">?:</span>
                 <a href="index.OnDisposeValue.html" class="tsd-signature-type tsd-kind-interface">OnDisposeValue</a
                 ><span class="tsd-signature-symbol">&lt;</span
                 ><span class="tsd-signature-type tsd-kind-type-parameter">V</span
-                ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">}</span
+                ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">}</span
                 ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">fn</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
@@ -483,13 +483,13 @@
                         ><br />    <span class="tsd-kind-parameter">this</span
                         ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{</span>
                         <span class="tsd-kind-property">onDisposeValue_</span
-                        ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">null</span>
-                        <span class="tsd-signature-symbol">|</span>
+                        ><span class="tsd-signature-symbol">?:</span>
                         <a href="index.OnDisposeValue.html" class="tsd-signature-type tsd-kind-interface"
                           >OnDisposeValue</a
                         ><span class="tsd-signature-symbol">&lt;</span
                         ><span class="tsd-signature-type tsd-kind-type-parameter">V</span
-                        ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">}</span
+                        ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">}</span
                         ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">fn</span
                         ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
                         ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
@@ -519,13 +519,13 @@
                                 <span class="tsd-signature-symbol">{</span>
                                 <span class="tsd-kind-property">onDisposeValue_</span
                                 ><span class="tsd-signature-symbol">?:</span>
-                                <span class="tsd-signature-type">null</span>
-                                <span class="tsd-signature-symbol">|</span>
                                 <a href="index.OnDisposeValue.html" class="tsd-signature-type tsd-kind-interface"
                                   >OnDisposeValue</a
                                 ><span class="tsd-signature-symbol">&lt;</span
                                 ><span class="tsd-signature-type tsd-kind-type-parameter">V</span
                                 ><span class="tsd-signature-symbol">&gt;</span>
+                                <span class="tsd-signature-symbol">|</span>
+                                <span class="tsd-signature-type">null</span>
                                 <span class="tsd-signature-symbol">}</span></span
                               >
                             </li>
@@ -562,7 +562,7 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L72"
+                      href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L72"
                       >src/collections/reactiveMap.ts:72</a
                     >
                   </li>
@@ -646,7 +646,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L22"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L22"
                             >src/collections/reactiveMap.ts:22</a
                           >
                         </li>
@@ -734,7 +734,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L141"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L141"
                             >src/collections/reactiveMap.ts:141</a
                           >
                         </li>
@@ -787,7 +787,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L123"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L123"
                             >src/collections/reactiveMap.ts:123</a
                           >
                         </li>
@@ -821,7 +821,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L84"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L84"
                             >src/collections/reactiveMap.ts:84</a
                           >
                         </li>
@@ -970,8 +970,8 @@
                     ><span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span>
                     <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
                     ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">undefined</span> <span class="tsd-signature-symbol">|</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
+                    <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span
                     ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
                         <use href="../assets/icons.svg#icon-anchor"></use></svg
@@ -997,9 +997,8 @@
                       </ul>
                     </div>
                     <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">undefined</span>
-                      <span class="tsd-signature-symbol">|</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
+                      Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
+                      <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span>
                     </h4>
                     <p>
                       Returns the element associated with the specified key. If no element is associated with the
@@ -1164,7 +1163,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L32"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L32"
                             >src/collections/reactiveMap.ts:32</a
                           >
                         </li>
@@ -1221,7 +1220,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L163"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L163"
                             >src/collections/reactiveMap.ts:163</a
                           >
                         </li>
@@ -1285,7 +1284,7 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/ada4f953155a2d94e4079cd1a789cf2a948c4297/src/collections/reactiveMap.ts#L105"
+                            href="https://github.com/embrajs/reactivity/blob/026bbaf6c8da1406c33705b2875ae1f4a5a5602f/src/collections/reactiveMap.ts#L105"
                             >src/collections/reactiveMap.ts:105</a
                           >
                         </li>
