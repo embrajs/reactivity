@@ -78,7 +78,7 @@ export const useValue: UseValue = <T, U>($: ReadableLike<T> | U, scheduler?: Sch
   const version = useSyncExternalStore(
     subscriber,
     getSnapshot,
-    // It is safe to use the same value getter for server snapshot since val() can
+    // It is safe to use the same value getter for server snapshot since Readable() can
     // be initialized with a default value.
     getSnapshot,
   );
