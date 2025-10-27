@@ -9,10 +9,6 @@ export default defineConfig({
       exclude: ["src/debug/**"],
       reporter: ["html", "text", "json-summary"],
     },
-    poolOptions: {
-      forks: {
-        execArgv: ["--expose-gc"],
-      },
-    },
+    execArgv: ["--expose-gc"],
   },
 });
