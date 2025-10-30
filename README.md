@@ -59,9 +59,11 @@ watch(get => {
 
 ### 🛡️ Zero-cost ownership model. Type-safe lifecycle management.
 
-In practice, one of the biggest problems we face with reactivity libraries is the lifecycle management of reactive values. `@embra/reactivity` provides a zero-cost ownership model that allows you to create reactive values with explicit ownership.
+In practice, one of the biggest problems we encountered with reactivity libraries is the lifecycle management of reactive values. In `@embra/reactivity`, the reactive dependencies are weakly referenced, so generally you don't need to manually dispose of them. However, explicit lifecycle management is still a good practice to avoid unexpected behaviors.
 
-By default, created reactive values are with type `OwnedReadable` or `OwnedWritable`, which exposes a `dispose()` method to clean up the value and its dependencies. When passing the reactive value to a function, you can use `Readable` or `Writable` types to hide the `dispose()` method, ensuring that the value is not disposed of accidentally.
+`@embra/reactivity` provides a zero-cost ownership model that allows you to create reactive values with explicit ownership.
+
+By default, created reactive values are with type `OwnedReadable` or `OwnedWritable`, which exposes a `dispose()` method to clear their subscribers. When passing the reactive value to other modules, you can use `Readable` or `Writable` types to hide the `dispose()` method, ensuring that the value is not disposed of accidentally.
 
 ```ts
 import { writable, readable, type Readable, type OwnedWritable } from "@embra/reactivity";
