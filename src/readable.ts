@@ -123,15 +123,10 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /** @internal */
   private onDisposeValue_?: (oldValue: TValue) => void;
 
-  public constructor(
-    resolveValue: (self: ReadableImpl<TValue>) => TValue,
-    config?: Config<TValue>,
-    deps?: Map<ReadableImpl, Version>,
-  ) {
+  public constructor(resolveValue: (self: ReadableImpl<TValue>) => TValue, config?: Config<TValue>) {
     this.resolveValue_ = resolveValue;
     this.equal_ = (config?.equal ?? strictEqual) || undefined;
     this.name = config?.name;
-    this.deps_ = deps;
     this.onDisposeValue_ = config?.onDisposeValue;
   }
 
