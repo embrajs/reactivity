@@ -139,14 +139,19 @@
             ></a>
           </h3>
           <p>
-            In practice, one of the biggest problems we face with reactivity libraries is the lifecycle management of
-            reactive values. <code>@embra/reactivity</code> provides a zero-cost ownership model that allows you to
-            create reactive values with explicit ownership.
+            In practice, one of the biggest problems we encountered with reactivity libraries is the lifecycle
+            management of reactive values. In <code>@embra/reactivity</code>, the reactive dependencies are weakly
+            referenced, so generally you don't need to manually dispose of them. However, explicit lifecycle management
+            is still a good practice to avoid unexpected behaviors.
+          </p>
+          <p>
+            <code>@embra/reactivity</code> provides a zero-cost ownership model that allows you to create reactive
+            values with explicit ownership.
           </p>
           <p>
             By default, created reactive values are with type <code>OwnedReadable</code> or <code>OwnedWritable</code>,
-            which exposes a <code>dispose()</code> method to clean up the value and its dependencies. When passing the
-            reactive value to a function, you can use <code>Readable</code> or <code>Writable</code> types to hide the
+            which exposes a <code>dispose()</code> method to clear their subscribers. When passing the reactive value to
+            other modules, you can use <code>Readable</code> or <code>Writable</code> types to hide the
             <code>dispose()</code> method, ensuring that the value is not disposed of accidentally.
           </p>
           <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">writable</span><span class="hl-1">, </span><span class="hl-2">readable</span><span class="hl-1">, </span><span class="hl-0">type</span><span class="hl-1"> </span><span class="hl-2">Readable</span><span class="hl-1">, </span><span class="hl-0">type</span><span class="hl-1"> </span><span class="hl-2">OwnedWritable</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">count$</span><span class="hl-1">: </span><span class="hl-8">OwnedWritable</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">&gt; = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><br/><span class="hl-10">// Hide the setter by typing</span><br/><span class="hl-4">function</span><span class="hl-1"> </span><span class="hl-6">logCount</span><span class="hl-1">(</span><span class="hl-2">count$</span><span class="hl-1">: </span><span class="hl-8">Readable</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">&gt;) {</span><br/><span class="hl-1">  </span><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">subscribe</span><span class="hl-1">(</span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-2">log</span><span class="hl-1">);</span><br/><br/><span class="hl-1">  </span><span class="hl-10">// @ts-expect-error</span><br/><span class="hl-1">  </span><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">2</span><span class="hl-1">);</span><br/><span class="hl-1">}</span><br/><span class="hl-6">logCount</span><span class="hl-1">(</span><span class="hl-2">count$</span><span class="hl-1">);</span><br/><br/><span class="hl-10">// Hide the setter in runtime</span><br/><span class="hl-4">const</span><span class="hl-1"> [</span><span class="hl-5">count2$</span><span class="hl-1">, </span><span class="hl-5">setCount</span><span class="hl-1">] = </span><span class="hl-6">readable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-6">setCount</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><br/><span class="hl-10">// @ts-expect-error</span><br/><span class="hl-2">count2$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">2</span><span class="hl-1">);</span>
