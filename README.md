@@ -146,6 +146,12 @@ const AnimationFrameScheduler = asyncScheduler(requestAnimationFrame);
 
 `@embra/reactivity` is designed to be framework agnostic. It can be used with any framework or library that supports JavaScript. It also provides first-class support for React.
 
+- Reactive values as component props are just simpler and more efficient.
+  - `value` = `Readable`
+  - `value` + `onChange` = `Writable`
+  - `state` + `action` = `toWritable(derive(rootState$, selector), action)` (See [State and Actions](#-flexible-abstractions-of-state-and-actions))
+- A lot of re-renderings can be avoided when passing reactive values down the props. You only need to subscribe to the reactive values that are actually used in the component.
+
 ```tsx
 import { writable } from "@embra/reactivity";
 import { useValue, useDerived, useCombined } from "@embra/reactivity/react";
