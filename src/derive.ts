@@ -22,6 +22,17 @@ export interface Derive {
   ): OwnedReadable<TValue>;
 }
 
+/**
+ * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
+ *
+ * Unlike `compute`, the signature of the `transform` function is pure,
+ * which makes it easier to reuse functions that are not aware of the reactive system.
+ *
+ * @param dep - The {@link ReadableLike} to derive from.
+ * @param transform - A pure function that takes an input value and returns a new value.
+ * @param config - Optional custom {@link Config}.
+ * @returns A {@link OwnedReadable} with transformed value from the given {@link ReadableLike}.
+ */
 export const derive: Derive = <TDepValue, TValue>(
   dep: ReadableLike<TDepValue>,
   transform?: (depValue: TDepValue) => TValue,

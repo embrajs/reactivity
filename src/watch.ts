@@ -6,6 +6,25 @@ export interface WatchEffect {
   (get: Get, dispose: Disposer): (() => void) | undefined | void;
 }
 
+/**
+ * Watch a reactive effect and re-run it when its dependencies change.
+ *
+ * @param effect - The reactive effect to watch.
+ * @returns A disposer function to stop watching the effect.
+ *
+ * @example
+ * ```ts
+ * import { watch, writable, reactiveMap } from "./watch";
+ *
+ * const count$ = writable(0);
+ * const map$ = reactiveMap();
+ *
+ * watch((get) => {
+ *   console.log(get(count$));
+ *   console.log(get(map$).get("key"));
+ * });
+ * ```
+ */
 export const watch = (effect: WatchEffect): Disposer => {
   let running: boolean | undefined;
   let disposed: boolean | undefined;

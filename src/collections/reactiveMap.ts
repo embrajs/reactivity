@@ -234,5 +234,16 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
+/**
+ * @param entries - Initial entries for the reactive map.
+ * @returns A new instance of {@link OwnedReactiveMap}.
+ *
+ * @example
+ * ```ts
+ * import { reactiveMap } from "@embra/reactivity";
+ *
+ * const map$ = reactiveMap([["key", "value"]]);
+ * ```
+ */
 export const reactiveMap = <K, V>(entries?: Iterable<readonly [K, V]> | null): OwnedReactiveMap<K, V> =>
   new OwnedReactiveMap(entries);

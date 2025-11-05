@@ -336,6 +336,13 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   }
 }
 
+/**
+ * Creates an {@link OwnedReadable}.
+ *
+ * @param value - Initial value.
+ * @param config - Optional custom {@link Config}.
+ * @returns A tuple containing the {@link OwnedReadable} and a setter function.
+ */
 export const readable: CreateReadable = <TValue = any>(
   value?: TValue,
   config?: Config<TValue | undefined>,
@@ -398,6 +405,13 @@ export interface CreateWritable {
   <TValue = any>(value?: TValue, config?: Config<TValue | undefined>): OwnedWritable<TValue>;
 }
 
+/**
+ * Creates an {@link OwnedWritable}.
+ *
+ * @param value - Initial value.
+ * @param config - Optional custom {@link Config}.
+ * @returns The created {@link OwnedWritable}.
+ */
 export const writable: CreateWritable = <TValue = any>(
   value?: TValue,
   config?: Config<TValue>,

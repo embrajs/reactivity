@@ -86,6 +86,9 @@ export interface Readable<TValue = any> {
   unsubscribe(subscriber?: (...args: any[]) => any, scheduler?: Scheduler): void;
 }
 
+/**
+ * An OwnedReadable is a {@link Readable} with a `dispose` method that removes all subscribers and locks the Readable.
+ */
 export interface OwnedReadable<TValue = any> extends Readable<TValue> {
   /**
    * Remove all subscribers and lock.
@@ -93,10 +96,16 @@ export interface OwnedReadable<TValue = any> extends Readable<TValue> {
   dispose(): void;
 }
 
+/**
+ * A Readable provider is an object that provides a {@link Readable} `$` property.
+ */
 export interface ReadableProvider<TValue = any> {
   readonly $: Readable<TValue>;
 }
 
+/**
+ * A {@link Readable} or a {@link ReadableProvider}.
+ */
 export type ReadableLike<TValue = any> = Readable<TValue> | ReadableProvider<TValue>;
 
 export type SetValue<TValue = any> = (value: TValue) => void;
@@ -108,7 +117,7 @@ export type Unwrap<T> = T extends ReadableLike<infer TValue> ? TValue : T;
 export type Version = number;
 
 /**
- * A Readable with a writable `value` property and a `set` method.
+ * A Writable is a {@link Readable} with a writable `value` property and a `set` method that updates the value.
  */
 export interface Writable<TValue = any> extends Readable<TValue> {
   /** Current value of the Writable */
@@ -117,6 +126,9 @@ export interface Writable<TValue = any> extends Readable<TValue> {
   set: (value: TValue) => void;
 }
 
+/**
+ * An OwnedWritable is a {@link Writable} with a `dispose` method that removes all subscribers and locks the Writable.
+ */
 export interface OwnedWritable<TValue = any> extends Writable<TValue> {
   /**
    * Remove all subscribers and lock.

@@ -205,4 +205,15 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
+/**
+ * @param values - Initial values for the reactive set.
+ * @returns A new instance of {@link OwnedReactiveSet}.
+ *
+ * @example
+ * ```ts
+ * import { reactiveSet } from "@embra/reactivity";
+ *
+ * const set$ = reactiveSet([1, 2, 3]);
+ * ```
+ */
 export const reactiveSet = <V>(values?: Iterable<V> | null): OwnedReactiveSet<V> => new OwnedReactiveSet(values);

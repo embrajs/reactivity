@@ -26,6 +26,14 @@ export interface Combine {
   ): OwnedReadable<TValue>;
 }
 
+/**
+ * Combine an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
+ *
+ * @param deps - An array of {@link ReadableLike}s to combine.
+ * @param transform - A pure function that takes an array of values and returns a new value.
+ * @param config - Optional custom {@link Config}.
+ * @returns A {@link OwnedReadable} with transformed value.
+ */
 export const combine: Combine = <TDeps extends readonly ReadableLike[], TValue = any>(
   deps: TDeps,
   transform?: (deps: MapReadablesToValues<TDeps>) => TValue,

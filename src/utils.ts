@@ -106,5 +106,11 @@ export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>
   }
 };
 
+/**
+ * Get the {@link Readable} from a possible {@link ReadableLike}.
+ *
+ * @param $ - The value to extract the Readable from.
+ * @returns The extracted {@link Readable} or `undefined` if not found.
+ */
 export const getReadable = <T = any>($: ReadableLike<T> | any): Readable<T> | undefined =>
   isReadable($) ? $ : isReadable($?.$) ? $.$ : undefined;

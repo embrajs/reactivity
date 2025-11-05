@@ -225,6 +225,17 @@ export interface ReadonlyReactiveArray<V> extends ReadonlyArray<V> {
   onDisposeValue(fn: (value: V) => void): RemoveListener;
 }
 
+/**
+ * @param values - Initial values for the reactive array.
+ * @returns A new instance of {@link OwnedReactiveArray}.
+ *
+ * @example
+ * ```ts
+ * import { reactiveArray } from "@embra/reactivity";
+ *
+ * const arr$ = reactiveArray([1, 2, 3]);
+ * ```
+ */
 export const reactiveArray = <V>(values?: Iterable<V> | null): OwnedReactiveArray<V> => {
   const arr = new OwnedReactiveArray<V>();
   if (values) {
