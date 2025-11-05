@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.6](https://github.com/embrajs/reactivity/compare/v0.0.5...v0.0.6) (2025-11-05)
+
+
+### Features
+
+* add isReadableLike and isReadableProvider ([b5c2a98](https://github.com/embrajs/reactivity/commit/b5c2a987799b2a6727b09f72b322010964d96355))
+
 ## [0.0.5](https://github.com/embrajs/reactivity/compare/v0.0.4...v0.0.5) (2025-11-05)
 
 ## [0.0.4](https://github.com/embrajs/reactivity/compare/v0.0.3...v0.0.4) (2025-09-03)
