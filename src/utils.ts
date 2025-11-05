@@ -1,4 +1,4 @@
-import { type Writable, type Readable, type ReadableLike } from "./interface";
+import { type Writable, type Readable, type ReadableLike, type ReadableProvider } from "./interface";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;
@@ -74,11 +74,13 @@ export interface IsReadable {
 }
 
 /**
- * Checks if $ is is a Readable. A Writable is also a Readable.
+ * Checks if $ is is a {@link Readable}.
+ *
+ * Note that a {@link Writable} is also a {@link Readable}.
  *
  * @function
  * @category Readable
- * @returns `true` if $ is Readable.
+ * @returns `true` if $ is {@link Readable}.
  */
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
 
@@ -89,11 +91,11 @@ export interface IsWritable {
 }
 
 /**
- * Checks if $ is is a Writable.
+ * Checks if $ is is a {@link Writable}.
  *
  * @function
  * @category Writable
- * @returns `true` if $ is Readable.
+ * @returns `true` if $ is {@link Writable}.
  */
 export const isWritable: IsWritable = ($: unknown): $ is Writable => isReadable($) && !!($ as Writable).set;
 
@@ -117,6 +119,24 @@ export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>
 };
 
 /**
+ * Check if $ is a {@link ReadableProvider}.
+ *
+ * @category Readable
+ * @param $ - The value to check.
+ * @returns `true` if $ is a {@link ReadableProvider}.
+ */
+export const isReadableProvider = <T = any>($: any): $ is ReadableProvider<T> => isReadable($?.$);
+
+/**
+ * Check if $ is a {@link ReadableLike}.
+ *
+ * @category Readable
+ * @param $ - The value to check.
+ * @returns `true` if $ is a {@link ReadableLike}.
+ */
+export const isReadableLike = <T = any>($: any): $ is ReadableLike<T> => isReadable($) || isReadableProvider($);
+
+/**
  * Get the {@link Readable} from a possible {@link ReadableLike}.
  *
  * @category Readable
@@ -124,4 +144,4 @@ export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>
  * @returns The extracted {@link Readable} or `undefined` if not found.
  */
 export const getReadable = <T = any>($: ReadableLike<T> | any): Readable<T> | undefined =>
-  isReadable($) ? $ : isReadable($?.$) ? $.$ : undefined;
+  isReadable($) ? $ : isReadableProvider($) ? $.$ : undefined;

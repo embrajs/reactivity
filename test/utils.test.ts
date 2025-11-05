@@ -9,6 +9,8 @@ import {
   strictEqual,
   unsubscribe,
   writable,
+  isReadableLike,
+  isReadableProvider,
 } from "../src";
 
 describe("utils", () => {
@@ -147,6 +149,90 @@ describe("utils", () => {
       const notReadable = { value: "not readable" };
       expect(isWritable(notReadable)).toBe(false);
       expect(isWritable(undefined)).toBe(false);
+    });
+  });
+
+  describe("isReadableProvider", () => {
+    it("should return true for ReadableProvider instances", () => {
+      const a = writable("a");
+      const provider = { $: a };
+      expect(isReadableProvider(provider)).toBe(true);
+    });
+
+    it("should return false for Readable instances", () => {
+      const a = writable("a");
+      expect(isReadableProvider(a)).toBe(false);
+    });
+
+    it("should return false for objects without $ property", () => {
+      const notProvider = { value: "not a provider" };
+      expect(isReadableProvider(notProvider)).toBe(false);
+    });
+
+    it("should return false for objects with $ property that is not Readable", () => {
+      const notProvider = { $: "not readable" };
+      expect(isReadableProvider(notProvider)).toBe(false);
+    });
+
+    it("should return false for null and undefined", () => {
+      expect(isReadableProvider(null)).toBe(false);
+      expect(isReadableProvider(undefined)).toBe(false);
+    });
+
+    it("should return false for primitive values", () => {
+      expect(isReadableProvider(42)).toBe(false);
+      expect(isReadableProvider("string")).toBe(false);
+      expect(isReadableProvider(true)).toBe(false);
+    });
+  });
+
+  describe("isReadableLike", () => {
+    it("should return true for ReadableLike instances", () => {
+      const a = writable("a");
+      const provider = { $: a };
+      expect(isReadableLike(a)).toBe(true);
+      expect(isReadableLike(provider)).toBe(true);
+    });
+
+    it("should return true for Readable instances", () => {
+      const a = writable("a");
+      expect(isReadableLike(a)).toBe(true);
+
+      const [b] = readable("b");
+      expect(isReadableLike(b)).toBe(true);
+    });
+
+    it("should return true for computed values", () => {
+      const a = writable("a");
+      const b = compute(get => get(a) + "b");
+      expect(isReadableLike(b)).toBe(true);
+    });
+
+    it("should return true for ReadableProvider instances", () => {
+      const a = writable("a");
+      const provider = { $: a };
+      expect(isReadableLike(provider)).toBe(true);
+    });
+
+    it("should return false for objects without $ property that are not Readable", () => {
+      const notReadableLike = { value: "not readable" };
+      expect(isReadableLike(notReadableLike)).toBe(false);
+    });
+
+    it("should return false for objects with $ property that is not Readable", () => {
+      const notReadableLike = { $: "not readable" };
+      expect(isReadableLike(notReadableLike)).toBe(false);
+    });
+
+    it("should return false for null and undefined", () => {
+      expect(isReadableLike(null)).toBe(false);
+      expect(isReadableLike(undefined)).toBe(false);
+    });
+
+    it("should return false for primitive values", () => {
+      expect(isReadableLike(42)).toBe(false);
+      expect(isReadableLike("string")).toBe(false);
+      expect(isReadableLike(true)).toBe(false);
     });
   });
 });

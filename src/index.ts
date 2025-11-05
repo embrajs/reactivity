@@ -35,6 +35,8 @@ export {
   type IsReadable,
   isWritable,
   type IsWritable,
+  isReadableLike,
+  isReadableProvider,
   unsubscribe,
   strictEqual,
   arrayShallowEqual,
