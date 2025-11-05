@@ -29,8 +29,8 @@ export interface Combine {
 /**
  * Combine an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
  *
- * Unlike `compute`, the signature of the `transform` function is pure,
- * which makes it easier to reuse functions that are not aware of the reactive system.
+ * Unlike {@link compute}, the signature of the `transform` function is pure,
+ * which makes it easier to use functions that are not aware of the reactive system.
  *
  * @function
  * @category Derivations

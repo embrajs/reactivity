@@ -25,8 +25,8 @@ export interface Derive {
 /**
  * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
  *
- * Unlike `compute`, the signature of the `transform` function is pure,
- * which makes it easier to reuse functions that are not aware of the reactive system.
+ * Unlike {@link compute}, the signature of the `transform` function is pure,
+ * which makes it easier to use functions that are not aware of the reactive system.
  *
  * @function
  * @category Derivations
