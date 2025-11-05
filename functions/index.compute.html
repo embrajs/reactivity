@@ -90,6 +90,7 @@
                 ></a>
               </div>
               <div class="tsd-description">
+                <div class="tsd-comment tsd-typography"><p>Computes a derived value based on other Readables.</p></div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
@@ -110,6 +111,7 @@
                         ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
+                      <div class="tsd-comment tsd-typography"><p>The function that computes the value.</p></div>
                     </li>
                     <li>
                       <span
@@ -120,6 +122,12 @@
                         ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
+                      <div class="tsd-comment tsd-typography">
+                        <p>
+                          Optional custom
+                          <a href="../interfaces/index.Config.html" class="tsd-kind-interface">Config</a>.
+                        </p>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -131,13 +139,29 @@
                   ><a class="tsd-signature-type tsd-kind-type-parameter" href="#computetvalue">TValue</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
+                <p>
+                  An <a href="../interfaces/index.OwnedReadable.html" class="tsd-kind-interface">OwnedReadable</a> that
+                  computes its value based on other Readables.
+                </p>
+                <div class="tsd-comment tsd-typography">
+                  <div class="tsd-tag-example">
+                    <h4 class="tsd-anchor-link" id="example">
+                      Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                        ><svg viewBox="0 0 24 24" aria-hidden="true">
+                          <use href="../assets/icons.svg#icon-anchor"></use></svg
+                      ></a>
+                    </h4>
+                    <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">compute</span><span class="hl-1">, </span><span class="hl-2">writable</span><span class="hl-1">, </span><span class="hl-2">reactiveMap</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v1$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v2$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">map$</span><span class="hl-1"> = </span><span class="hl-6">reactiveMap</span><span class="hl-1">([[</span><span class="hl-3">&quot;s&quot;</span><span class="hl-1">, </span><span class="hl-7">42</span><span class="hl-1">]]);</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">sum$</span><span class="hl-1"> = </span><span class="hl-6">compute</span><span class="hl-1">(</span><span class="hl-2">get</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-2">v1$</span><span class="hl-1">) + </span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-2">v2$</span><span class="hl-1">) + </span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-2">map$</span><span class="hl-1">).</span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-3">&quot;s&quot;</span><span class="hl-1">) || </span><span class="hl-7">0</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+                  </div>
+                </div>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/bc659a5f35c777860ca1b8f1729ac76eb4a7352b/src/compute.ts#L9"
-                        >src/compute.ts:9</a
+                        href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/compute.ts#L27"
+                        >src/compute.ts:27</a
                       >
                     </li>
                   </ul>
