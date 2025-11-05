@@ -9,6 +9,7 @@ export interface WatchEffect {
 /**
  * Watch a reactive effect and re-run it when its dependencies change.
  *
+ * @category SideEffects
  * @param effect - The reactive effect to watch.
  * @returns A disposer function to stop watching the effect.
  *

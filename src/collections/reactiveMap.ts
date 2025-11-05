@@ -15,9 +15,16 @@ interface OnChanged<K, V> extends BatchTask<EventObject<ReactiveMapChanged<K, V>
   readonly delete_: Set<K>;
 }
 
+/**
+ * OwnedReactiveMap extends the standard Map interface with reactive capabilities.
+ *
+ * @category ReactiveMap
+ */
 export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvider<ReadonlyReactiveMap<K, V>> {
   /**
-   * A Readable that emits the map itself whenever it changes.
+   * A Readable that emits the Map itself whenever it changes.
+   *
+   * @group Readable
    */
   public get $(): Readable<ReadonlyReactiveMap<K, V>> {
     return (this._$ ??= writable(this, { equal: false }));
@@ -26,8 +33,19 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvide
   /**
    * Subscribe to changes in the map.
    *
+   * @group Events
    * @param fn - The function to call when the map is changed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveMap } from "@embra/reactivity";
+   *
+   * const map = reactiveMap<number, string>();
+   * const disposer = map.onChanged((changed) => {
+   *   console.log("Map changed:", changed);
+   * });
+   * ```
    */
   public onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): RemoveListener {
     return on(
@@ -67,8 +85,20 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvide
    *
    * Note that for performance reasons, it does not handle the case where multiple keys map to the same value.
    *
+   * @function
+   * @group Events
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveMap } from "@embra/reactivity";
+   *
+   * const map = reactiveMap<number, string>();
+   * const disposer = map.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
   public readonly onDisposeValue = onDisposeValue;
 
@@ -207,15 +237,41 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvide
   }
 }
 
+/**
+ * ReactiveMap is {@link OwnedReactiveMap} without the `dispose` method.
+ *
+ * @category ReactiveMap
+ */
 export type ReactiveMap<K, V> = Omit<OwnedReactiveMap<K, V>, "dispose">;
 
+/**
+ * ReadonlyReactiveMap is a readonly interface for {@link ReactiveMap}.
+ *
+ * @category ReactiveMap
+ */
 export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
+  /**
+   * A Readable that emits the Map itself whenever it changes.
+   *
+   * @group Readable
+   */
   readonly $: Readable<ReadonlyMap<K, V>>;
   /**
    * Subscribe to changes in the map.
    *
+   * @group Events
    * @param fn - The function to call when the map is changed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveMap } from "@embra/reactivity";
+   *
+   * const map = reactiveMap<number, string>();
+   * const disposer = map.onChanged((changed) => {
+   *   console.log("Map changed:", changed);
+   * });
+   * ```
    */
   onChanged(fn: (changed: ReactiveMapChanged<K, V>) => void): RemoveListener;
   /**
@@ -229,13 +285,28 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
    *
    * Note that for performance reasons, it does not handle the case where multiple keys map to the same value.
    *
+   * @function
+   * @group Events
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveMap } from "@embra/reactivity";
+   *
+   * const map = reactiveMap<number, string>();
+   * const disposer = map.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
-  onDisposeValue(fn: (value: V) => void): RemoveListener;
+  readonly onDisposeValue: (fn: (value: V) => void) => RemoveListener;
 }
 
 /**
+ * Creates a new {@link OwnedReactiveMap}.
+ *
+ * @category ReactiveMap
  * @param entries - Initial entries for the reactive map.
  * @returns A new instance of {@link OwnedReactiveMap}.
  *

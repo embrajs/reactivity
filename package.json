@@ -64,6 +64,7 @@
     "lint:fix": "eslint --fix && prettier --write .",
     "ts-check": "tsc --noEmit",
     "docs": "typedoc --options typedoc.json && prettier --ignore-path .prettierignore --write docs && export-size-svg",
+    "docs:watch": "typedoc --options typedoc.json --watch",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ci": "vitest --coverage --coverage.reportsDirectory='./docs/coverage'",

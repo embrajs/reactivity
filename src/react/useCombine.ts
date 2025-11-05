@@ -25,7 +25,7 @@ export interface UseCombine {
    * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
    * @param transform - A pure function that takes multiple values and returns a new value.
    * @param config - Optional custom {@link Config}.
-   * @returns An {@link OwnReadable} with the transformed values.
+   * @returns An {@link OwnedReadable} with the transformed values.
    */
   <TDeps extends readonly ReadableLike[], TValue>(
     deps: TDeps,
@@ -39,10 +39,11 @@ export interface UseCombine {
  *
  * Note that changes to `transform` and `config` will not trigger re-derivation; `useCombine` always uses the latest `transform` and `config` in the derivation.
  *
+ * @category Hooks
  * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
  * @param transform - Optional pure function that takes multiple values and returns a new value.
  * @param config - Optional custom {@link Config}.
- * @returns An {@link OwnReadable} with the transformed values.
+ * @returns An {@link OwnedReadable} with the transformed values.
  *
  * @example
  * ```tsx

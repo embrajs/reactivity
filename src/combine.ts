@@ -32,6 +32,8 @@ export interface Combine {
  * Unlike `compute`, the signature of the `transform` function is pure,
  * which makes it easier to reuse functions that are not aware of the reactive system.
  *
+ * @function
+ * @category Derivations
  * @param deps - An array of {@link ReadableLike}s to combine.
  * @param transform - Optional pure function that takes multiple values and returns a new value.
  * @param config - Optional custom {@link Config}.

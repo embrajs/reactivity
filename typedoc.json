@@ -2,12 +2,20 @@
   "$schema": "https://typedoc.org/schema.json",
   "cleanOutputDir": true,
   "customCss": "./assets/docs.css",
+  "defaultCategory": "~Typings",
   "entryPoints": ["./src/index.ts", "./src/react/index.ts", "./src/debug/index.ts"],
+  "excludeExternals": true,
   "excludeInternal": true,
   "excludePrivate": true,
   "excludeProtected": true,
+  "favicon": "./assets/embra.svg",
+  "groupOrder": ["Readable", "Events", "Properties", "Accessors", "Methods", "*"],
   "hideGenerator": true,
   "includeVersion": true,
+  "navigation": {
+    "includeCategories": true
+  },
   "out": "docs",
+  "sortEntryPoints": false,
   "visibilityFilters": {}
 }

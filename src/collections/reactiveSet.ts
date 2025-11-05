@@ -14,9 +14,16 @@ interface OnChanged<V> extends BatchTask<EventObject<ReactiveSetChanged<V>>> {
   readonly delete_: Set<V>;
 }
 
+/**
+ * OwnedReactiveSet extends the standard Set interface with reactive capabilities.
+ *
+ * @category ReactiveSet
+ */
 export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<ReadonlyReactiveSet<V>> {
   /**
-   * A Readable that emits the set itself whenever it changes.
+   * A Readable that emits the Set itself whenever it changes.
+   *
+   * @group Readable
    */
   public get $(): Readable<ReadonlyReactiveSet<V>> {
     return (this._$ ??= writable(this, { equal: false }));
@@ -25,8 +32,19 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
   /**
    * Subscribe to changes in the set.
    *
+   * @group Events
    * @param fn - The function to call when the set is changed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveSet } from "@embra/reactivity";
+   *
+   * const set = reactiveSet<number>();
+   * const disposer = set.onChanged((changed) => {
+   *   console.log("Set changed:", changed);
+   * });
+   * ```
    */
   public onChanged(fn: (changed: ReactiveSetChanged<V>) => void): RemoveListener {
     return on(
@@ -64,8 +82,20 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
    * - it is cleared from the set.
    * - the set is disposed.
    *
+   * @function
+   * @group Events
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveSet } from "@embra/reactivity";
+   *
+   * const set = reactiveSet<number>();
+   * const disposer = set.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
   public readonly onDisposeValue = onDisposeValue;
 
@@ -180,15 +210,41 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
   }
 }
 
+/**
+ * ReactiveSet is {@link OwnedReactiveSet} without the `dispose` method.
+ *
+ * @category ReactiveSet
+ */
 export type ReactiveSet<V> = Omit<OwnedReactiveSet<V>, "dispose">;
 
+/**
+ * ReadonlyReactiveSet is a readonly interface for {@link ReactiveSet}.
+ *
+ * @category ReactiveSet
+ */
 export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
+  /**
+   * A Readable that emits the Set itself whenever it changes.
+   *
+   * @group Readable
+   */
   readonly $: Readable<ReadonlySet<V>>;
   /**
    * Subscribe to changes in the set.
    *
+   * @group Events
    * @param fn - The function to call when the set is changed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveSet } from "@embra/reactivity";
+   *
+   * const set = reactiveSet<number>();
+   * const disposer = set.onChanged((changed) => {
+   *   console.log("Set changed:", changed);
+   * });
+   * ```
    */
   onChanged(fn: (changed: ReactiveSetChanged<V>) => void): RemoveListener;
   /**
@@ -200,13 +256,28 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
    * - it is cleared from the set.
    * - the set is disposed.
    *
+   * @function
+   * @group Events
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveSet } from "@embra/reactivity";
+   *
+   * const set = reactiveSet<number>();
+   * const disposer = set.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
-  onDisposeValue(fn: (value: V) => void): RemoveListener;
+  readonly onDisposeValue: (fn: (value: V) => void) => RemoveListener;
 }
 
 /**
+ * Creates a new {@link OwnedReactiveSet}.
+ *
+ * @category ReactiveSet
  * @param values - Initial values for the reactive set.
  * @returns A new instance of {@link OwnedReactiveSet}.
  *

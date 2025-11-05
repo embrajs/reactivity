@@ -9,6 +9,7 @@ export interface ComputeFn<TValue = any> {
 /**
  * Computes a derived value based on other Readables.
  *
+ * @category Derivations
  * @param fn - The function that computes the value.
  * @param config - Optional custom {@link Config}.
  * @returns An {@link OwnedReadable} that computes its value based on other Readables.

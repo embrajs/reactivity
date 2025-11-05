@@ -28,6 +28,8 @@ export interface Derive {
  * Unlike `compute`, the signature of the `transform` function is pure,
  * which makes it easier to reuse functions that are not aware of the reactive system.
  *
+ * @function
+ * @category Derivations
  * @param dep - The {@link ReadableLike} to derive from.
  * @param transform - Optional pure function that takes an input value and returns a new value.
  * @param config - Optional custom {@link Config}.

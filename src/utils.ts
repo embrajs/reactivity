@@ -10,6 +10,8 @@ export type UNIQUE_VALUE = typeof UNIQUE_VALUE;
 /**
  * Remove the given subscriber.
  * Remove all if no subscriber provided.
+ *
+ * @category Readable
  * @param $
  * @param subscriber
  */
@@ -30,11 +32,15 @@ export const unsubscribe = (
 
 /**
  * `Object.is`
+ *
+ * @category Comparers
  */
 export const strictEqual = Object.is;
 
 /**
  * Shallow compare two arrays.
+ *
+ * @category Comparers
  * @param arrA - any value
  * @param arrB - any value
  * @returns `false` if any of:
@@ -70,6 +76,8 @@ export interface IsReadable {
 /**
  * Checks if $ is is a Readable. A Writable is also a Readable.
  *
+ * @function
+ * @category Readable
  * @returns `true` if $ is Readable.
  */
 export const isReadable: IsReadable = ($: unknown): $ is Readable => ($ as Readable | undefined)?.[BRAND] === BRAND;
@@ -83,6 +91,8 @@ export interface IsWritable {
 /**
  * Checks if $ is is a Writable.
  *
+ * @function
+ * @category Writable
  * @returns `true` if $ is Readable.
  */
 export const isWritable: IsWritable = ($: unknown): $ is Writable => isReadable($) && !!($ as Writable).set;
@@ -109,6 +119,7 @@ export const invokeEach: InvokeEach = <T>(iterable: Iterable<(value?: T) => any>
 /**
  * Get the {@link Readable} from a possible {@link ReadableLike}.
  *
+ * @category Readable
  * @param $ - The value to extract the Readable from.
  * @returns The extracted {@link Readable} or `undefined` if not found.
  */

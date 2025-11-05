@@ -40,6 +40,7 @@ const defaultArgs = [returnsNoop, returnsNoop as () => any] as const;
  * Accepts a {@link ReadableLike} and returns the latest value.
  * It only triggers re-rendering when new value emitted from $ (base on {@link Readable.version} instead of React's `Object.is` comparison).
  *
+ * @category Hooks
  * @param $ A {@link ReadableLike}.
  * @param scheduler - An optional {@link Scheduler} to control the update frequency. If not provided, updates are applied synchronously.
  * @returns the value of the {@link ReadableLike}, or $ itself if $ is not a {@link ReadableLike}

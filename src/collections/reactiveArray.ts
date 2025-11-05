@@ -7,6 +7,11 @@ import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 const nonEnumerable = { enumerable: false };
 
+/**
+ * OwnedReactiveArray extends the standard Array interface with reactive capabilities.
+ *
+ * @category ReactiveArray
+ */
 export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<ReadonlyReactiveArray<V>> {
   readonly [n: number]: V;
 
@@ -19,7 +24,9 @@ export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<
   declare public readonly length: number;
 
   /**
-   * A Readable that emits the set itself whenever it changes.
+   * A Readable that emits the Array itself whenever it changes.
+   *
+   * @group Readable
    */
   public get $(): Readable<ReadonlyReactiveArray<V>> {
     return (this._$ ??= writable(this, { equal: false }));
@@ -34,10 +41,22 @@ export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<
    * - it is cleared from the array.
    * - the array is disposed.
    *
+   * @group Events
+   * @function
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveArray } from "@embra/reactivity";
+   *
+   * const arr = reactiveArray<number>();
+   * const disposer = arr.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
-  public readonly onDisposeValue = onDisposeValue;
+  public readonly onDisposeValue: (fn: (value: V) => void) => RemoveListener = onDisposeValue;
 
   public constructor(arrayLength?: number);
   public constructor(arrayLength: number);
@@ -190,9 +209,24 @@ export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<
   }
 }
 
+/**
+ * ReactiveArray is {@link OwnedReactiveArray} without the `dispose` method.
+ *
+ * @category ReactiveArray
+ */
 export type ReactiveArray<V> = Omit<OwnedReactiveArray<V>, "dispose">;
 
+/**
+ * ReadonlyReactiveArray is a readonly interface for {@link ReactiveArray}.
+ *
+ * @category ReactiveArray
+ */
 export interface ReadonlyReactiveArray<V> extends ReadonlyArray<V> {
+  /**
+   * A Readable that emits the Array itself whenever it changes.
+   *
+   * @group Readable
+   */
   readonly $: Readable<readonly V[]>;
   /**
    * Gets the length of the array.
@@ -209,6 +243,10 @@ export interface ReadonlyReactiveArray<V> extends ReadonlyArray<V> {
    * @param value The value to write into the array.
    */
   set(index: number, value: V): this;
+  /**
+   * Updates the length of the array.
+   * @param value The new length of the array.
+   */
   setLength(value: number): void;
   /**
    * Subscribe to events when a value is needed to be disposed.
@@ -219,13 +257,28 @@ export interface ReadonlyReactiveArray<V> extends ReadonlyArray<V> {
    * - it is cleared from the array.
    * - the array is disposed.
    *
+   * @group Events
+   * @function
    * @param fn - The function to call when a value is needed to be disposed.
    * @returns A disposer function to unsubscribe from the event.
+   *
+   * @example
+   * ```ts
+   * import { reactiveArray } from "@embra/reactivity";
+   *
+   * const arr = reactiveArray<number>();
+   * const disposer = arr.onDisposeValue((value) => {
+   *   console.log("Value disposed:", value);
+   * });
+   * ```
    */
-  onDisposeValue(fn: (value: V) => void): RemoveListener;
+  readonly onDisposeValue: (fn: (value: V) => void) => RemoveListener;
 }
 
 /**
+ * Creates a new {@link OwnedReactiveArray}.
+ *
+ * @category ReactiveArray
  * @param values - Initial values for the reactive array.
  * @returns A new instance of {@link OwnedReactiveArray}.
  *

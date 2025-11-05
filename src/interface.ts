@@ -37,6 +37,8 @@ export interface Get {
 
 /**
  * A Readable is a reactive value that can be read and subscribed to.
+ *
+ * @category Readable
  */
 export interface Readable<TValue = any> {
   readonly name?: string;
@@ -92,6 +94,8 @@ export interface Readable<TValue = any> {
 
 /**
  * An OwnedReadable is a {@link Readable} with a `dispose` method that removes all subscribers and locks the Readable.
+ *
+ * @category Readable
  */
 export interface OwnedReadable<TValue = any> extends Readable<TValue> {
   /**
@@ -102,6 +106,8 @@ export interface OwnedReadable<TValue = any> extends Readable<TValue> {
 
 /**
  * A Readable provider is an object that provides a {@link Readable} `$` property.
+ *
+ * @category Readable
  */
 export interface ReadableProvider<TValue = any> {
   readonly $: Readable<TValue>;
@@ -109,6 +115,8 @@ export interface ReadableProvider<TValue = any> {
 
 /**
  * A {@link Readable} or a {@link ReadableProvider}.
+ *
+ * @category Readable
  */
 export type ReadableLike<TValue = any> = Readable<TValue> | ReadableProvider<TValue>;
 
@@ -122,6 +130,8 @@ export type Version = number;
 
 /**
  * A Writable is a {@link Readable} with a writable `value` property and a `set` method that updates the value.
+ *
+ * @category Writable
  */
 export interface Writable<TValue = any> extends Readable<TValue> {
   /** Current value of the Writable */
@@ -132,6 +142,8 @@ export interface Writable<TValue = any> extends Readable<TValue> {
 
 /**
  * An OwnedWritable is a {@link Writable} with a `dispose` method that removes all subscribers and locks the Writable.
+ *
+ * @category Writable
  */
 export interface OwnedWritable<TValue = any> extends Writable<TValue> {
   /**

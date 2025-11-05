@@ -40,6 +40,7 @@ export interface UseDerived {
  *
  * Note that changes to `transform` and `config` will not trigger re-derivation, and `useDerive` always uses the latest `transform` and `config` in the derivation.
  *
+ * @category Hooks
  * @param dep - The {@link ReadableLike} to derive from, or a non-Readable value that will be returned as-is.
  * @param transform Optional pure function that takes an input value and returns a new value.
  * @param config - Optional custom {@link Config}.

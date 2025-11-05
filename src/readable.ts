@@ -345,6 +345,8 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 /**
  * Creates an {@link OwnedReadable}.
  *
+ * @function
+ * @category Readable
  * @param value - Initial value.
  * @param config - Optional custom {@link Config}.
  * @returns A tuple containing the {@link OwnedReadable} and a setter function.
@@ -376,6 +378,9 @@ export interface ToWritable {
 
 /**
  * Converts a Readable to a Writable By adding a setter function.
+ *
+ * @function
+ * @category Writable
  * @param $
  * @param set a function that sets the value of Readable.
  * @returns The same Readable with the new setter.
@@ -414,6 +419,8 @@ export interface CreateWritable {
 /**
  * Creates an {@link OwnedWritable}.
  *
+ * @function
+ * @category Writable
  * @param value - Initial value.
  * @param config - Optional custom {@link Config}.
  * @returns The created {@link OwnedWritable}.
