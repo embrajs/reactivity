@@ -9,7 +9,7 @@ import { useCombined } from "../../src/react";
 describe("useCombined", () => {
   it("should get useCombined value from Readables", () => {
     const v$ = writable(1);
-    const { result } = renderHook(() => useCombined([v$], ([value]) => value + 1));
+    const { result } = renderHook(() => useCombined([v$], value => value + 1));
 
     expect(result.current).toBe(2);
   });
@@ -30,7 +30,7 @@ describe("useCombined", () => {
   it("should update after value changes", () => {
     const v1$ = writable("a1");
     const v2$ = writable("a2");
-    const { result } = renderHook(() => useCombined([v1$, v2$], ([v1, v2]) => `#${v1}-${v2}`));
+    const { result } = renderHook(() => useCombined([v1$, v2$], (v1, v2) => `#${v1}-${v2}`));
 
     expect(result.current).toBe("#a1-a2");
 
@@ -42,14 +42,7 @@ describe("useCombined", () => {
   it("should support function as value", () => {
     const v1$ = writable((): string => "a1");
     const v2$ = writable((): string => "a2");
-    const { result } = renderHook(() =>
-      useCombined(
-        [v1$, v2$],
-        ([fn1, fn2]) =>
-          () =>
-            `#${fn1()}-${fn2()}`,
-      ),
-    );
+    const { result } = renderHook(() => useCombined([v1$, v2$], (fn1, fn2) => () => `#${fn1()}-${fn2()}`));
 
     expect(result.current()).toBe("#a1-a2");
 
@@ -63,7 +56,7 @@ describe("useCombined", () => {
     let renderingCount = 0;
     const { result } = renderHook(() => {
       renderingCount += 1;
-      return useCombined([v$], ([value]) => value + 1);
+      return useCombined([v$], value => value + 1);
     });
 
     act(() => v$.set(1));
@@ -106,7 +99,7 @@ describe("useCombined", () => {
     let renderingCount = 0;
     const { result } = renderHook(() => {
       renderingCount += 1;
-      return useCombined([v$], ([value]) => value.a % 2);
+      return useCombined([v$], value => value.a % 2);
     });
 
     act(() => v$.set({ a: 1 }));
@@ -129,7 +122,7 @@ describe("useCombined", () => {
     let renderingCount = 0;
     const { result } = renderHook(() => {
       renderingCount += 1;
-      const value = useCombined([v$], ([value]) => ({ value: value + 1 }));
+      const value = useCombined([v$], value => ({ value: value + 1 }));
       v$.set(2);
       return value;
     });

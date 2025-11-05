@@ -17,7 +17,7 @@ describe("combine", () => {
   it("should combine an array of Readables into a single Readable with transformed value", () => {
     const dep1$ = writable(1);
     const dep2$ = writable(2);
-    const combined$ = combine([dep1$, dep2$], ([v1, v2]) => v1 + v2);
+    const combined$ = combine([dep1$, dep2$], (v1, v2) => v1 + v2);
 
     expect(combined$.value).toBe(3);
 

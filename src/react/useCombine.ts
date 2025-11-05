@@ -16,20 +16,20 @@ import { useIsomorphicLayoutEffect } from "./utils";
 export interface UseCombine {
   /**
    * Combines an array of {@link ReadableLike}s into a single {@link Readable} with the array of values.
-   * @param deps An array of {@link ReadableLike}s to combine.
+   * @param deps An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
    * @returns A {@link Readable} with the combined values.
    */
   <TDeps extends readonly ReadableLike[]>(deps: TDeps): OwnedReadable<MapReadablesToValues<TDeps>>;
   /**
    * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
-   * @param deps An array of {@link ReadableLike}s to combine.
-   * @param transform A pure function that takes an array of values and returns a new value.
-   * @param config custom config for the combined Readable.
-   * @returns A {@link Readable} with the transformed values.
+   * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
+   * @param transform - A pure function that takes multiple values and returns a new value.
+   * @param config - Optional custom {@link Config}.
+   * @returns An {@link OwnReadable} with the transformed values.
    */
   <TDeps extends readonly ReadableLike[], TValue>(
     deps: TDeps,
-    transform: (deps: MapReadablesToValues<TDeps>) => TValue,
+    transform: (...deps: MapReadablesToValues<TDeps>) => TValue,
     config?: Config<TValue>,
   ): OwnedReadable<TValue>;
 }
@@ -37,8 +37,12 @@ export interface UseCombine {
 /**
  * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
  *
- * Note that changes to `transform` and `config` will not trigger re-derivation, and `useCombine` always uses the latest `transform` and `config` in the derivation.
- * In other words, no extra care is needed to use this in React components. All args will be updated properly.
+ * Note that changes to `transform` and `config` will not trigger re-derivation; `useCombine` always uses the latest `transform` and `config` in the derivation.
+ *
+ * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
+ * @param transform - Optional pure function that takes multiple values and returns a new value.
+ * @param config - Optional custom {@link Config}.
+ * @returns An {@link OwnReadable} with the transformed values.
  *
  * @example
  * ```tsx
@@ -56,13 +60,17 @@ export interface UseCombine {
  */
 export const useCombine: UseCombine = <TDeps extends readonly ReadableLike[], TValue>(
   deps: TDeps,
-  transform?: (deps: MapReadablesToValues<TDeps>) => TValue,
+  transform?: (...deps: MapReadablesToValues<TDeps>) => TValue,
   config?: Config<TValue>,
 ): OwnedReadable<TValue> => {
   const transformRef = useRef(transform);
   const computed = useMemo(
     () =>
-      combine(deps, deps => (transformRef.current ? transformRef.current(deps) : (deps as unknown as TValue)), config),
+      combine(
+        deps,
+        (...deps) => (transformRef.current ? transformRef.current(...deps) : (deps as unknown as TValue)),
+        config,
+      ),
     deps,
   );
   useIsomorphicLayoutEffect(() => {
