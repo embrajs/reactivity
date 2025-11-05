@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>reactiveMap | @embra/reactivity - v0.0.5</title>
+    <title>isReadableProvider | @embra/reactivity - v0.0.5</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,57 +57,47 @@
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li><a href="../modules/index.html">index</a></li>
-            <li><a href="" aria-current="page">reactiveMap</a></li>
+            <li><a href="" aria-current="page">isReadableProvider</a></li>
           </ul>
-          <h1>Function reactiveMap</h1>
+          <h1>Function isReadableProvider</h1>
         </div>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="reactivemap">
-                <span class="tsd-kind-call-signature">reactiveMap</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapk">K</a
-                ><span class="tsd-signature-symbol">,</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapv">V</a
-                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                ><br />    <span class="tsd-kind-parameter">entries</span><span class="tsd-signature-symbol">?:</span>
-                <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span
-                ><span class="tsd-signature-keyword">readonly</span> <span class="tsd-signature-symbol">[</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapk">K</a
-                ><span class="tsd-signature-symbol">,</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapv">V</a
-                ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">,</span>
-                <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">,</span>
-                <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>
-                <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span
-                ><span class="tsd-signature-symbol">,</span><br /><span class="tsd-signature-symbol">)</span
-                ><span class="tsd-signature-symbol">:</span>
-                <a href="../interfaces/index.OwnedReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
-                  >OwnedReactiveMap</a
+              <div class="tsd-signature tsd-anchor-link" id="isreadableprovider">
+                <span class="tsd-kind-call-signature">isReadableProvider</span
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapk">K</a
-                ><span class="tsd-signature-symbol">,</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapv">V</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadableprovidert">T</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span
+                ><span class="tsd-signature-symbol">:</span> <span class="tsd-kind-parameter">$</span>
+                <span class="tsd-signature-keyword">is</span>
+                <a href="../interfaces/index.ReadableProvider.html" class="tsd-signature-type tsd-kind-interface"
+                  >ReadableProvider</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadableprovidert">T</a
                 ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#reactivemap" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#isreadableprovider" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
               <div class="tsd-description">
                 <div class="tsd-comment tsd-typography">
                   <p>
-                    Creates a new
-                    <a href="../interfaces/index.OwnedReactiveMap.html" class="tsd-kind-interface">OwnedReactiveMap</a>.
+                    Check if $ is a
+                    <a href="../interfaces/index.ReadableProvider.html" class="tsd-kind-interface">ReadableProvider</a>.
                   </p>
                 </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="reactivemapk"><span class="tsd-kind-type-parameter">K</span></span>
-                    </li>
-                    <li>
-                      <span id="reactivemapv"><span class="tsd-kind-type-parameter">V</span></span>
+                      <span id="isreadableprovidert"
+                        ><span class="tsd-kind-type-parameter">T</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
                     </li>
                   </ul>
                 </section>
@@ -116,54 +106,31 @@
                   <ul class="tsd-parameter-list">
                     <li>
                       <span
-                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">entries</span>:
-                        <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span
-                        ><span class="tsd-signature-keyword">readonly</span> <span class="tsd-signature-symbol">[</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapk">K</a
-                        ><span class="tsd-signature-symbol">,</span>
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapv">V</a
-                        ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">,</span>
-                        <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">,</span>
-                        <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>
-                        <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span></span
+                        ><span class="tsd-kind-parameter">$</span>: <span class="tsd-signature-type">any</span></span
                       >
-                      <div class="tsd-comment tsd-typography"><p>Initial entries for the reactive map.</p></div>
+                      <div class="tsd-comment tsd-typography"><p>The value to check.</p></div>
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
-                  Returns
-                  <a href="../interfaces/index.OwnedReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
-                    >OwnedReactiveMap</a
+                  Returns <span class="tsd-kind-parameter">$</span> <span class="tsd-signature-keyword">is</span>
+                  <a href="../interfaces/index.ReadableProvider.html" class="tsd-signature-type tsd-kind-interface"
+                    >ReadableProvider</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapk">K</a
-                  ><span class="tsd-signature-symbol">,</span>
-                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#reactivemapv">V</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadableprovidert">T</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
                 <p>
-                  A new instance of
-                  <a href="../interfaces/index.OwnedReactiveMap.html" class="tsd-kind-interface">OwnedReactiveMap</a>.
+                  <code>true</code> if $ is a
+                  <a href="../interfaces/index.ReadableProvider.html" class="tsd-kind-interface">ReadableProvider</a>.
                 </p>
-                <div class="tsd-comment tsd-typography">
-                  <div class="tsd-tag-example">
-                    <h4 class="tsd-anchor-link" id="example">
-                      Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
-                        ><svg viewBox="0 0 24 24" aria-hidden="true">
-                          <use href="../assets/icons.svg#icon-anchor"></use></svg
-                      ></a>
-                    </h4>
-                    <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">reactiveMap</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">map$</span><span class="hl-1"> = </span><span class="hl-6">reactiveMap</span><span class="hl-1">([[</span><span class="hl-3">&quot;key&quot;</span><span class="hl-1">, </span><span class="hl-3">&quot;value&quot;</span><span class="hl-1">]]);</span>
-</code><button type="button">Copy</button></pre>
-                  </div>
-                </div>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/b5c2a987799b2a6727b09f72b322010964d96355/src/collections/reactiveMap.ts#L320"
-                        >src/collections/reactiveMap.ts:320</a
+                        href="https://github.com/embrajs/reactivity/blob/b5c2a987799b2a6727b09f72b322010964d96355/src/utils.ts#L128"
+                        >src/utils.ts:128</a
                       >
                     </li>
                   </ul>
