@@ -1,5 +1,5 @@
 import { type ComputeFn } from "../compute";
-import { type ReadableProvider, type Get, type Readable } from "../typings";
+import { type ReadableProvider, type Get, type Readable } from "../interface";
 import { isReadable, isWritable } from "../utils";
 import { type WatchEffect } from "../watch";
 

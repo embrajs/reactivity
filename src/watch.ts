@@ -1,5 +1,5 @@
 import { batch, batchFlush, batchStart, batchTasks } from "./batch";
-import { type Disposer, type Get, type Readable, type ReadableLike } from "./typings";
+import { type Disposer, type Get, type Readable, type ReadableLike } from "./interface";
 import { getReadable, unsubscribe } from "./utils";
 
 export interface WatchEffect {
@@ -45,6 +45,7 @@ export const watch = (effect: WatchEffect): Disposer => {
   };
 
   const subscription = () => {
+    /** c8 ignore else -- @preserve */
     if (!running) {
       unsubscribe(collectedDeps, subscription);
       collectedDeps?.clear();
@@ -92,6 +93,7 @@ export const watch = (effect: WatchEffect): Disposer => {
         dispose();
       }
 
+      /** c8 ignore else -- @preserve */
       if (isTopRunner) {
         running = false;
       }

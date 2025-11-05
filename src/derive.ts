@@ -1,5 +1,5 @@
 import { compute } from "./compute";
-import { type ReadableLike, type Config, type OwnedReadable } from "./typings";
+import { type ReadableLike, type Config, type OwnedReadable } from "./interface";
 
 export interface Derive {
   /**
@@ -29,7 +29,7 @@ export interface Derive {
  * which makes it easier to reuse functions that are not aware of the reactive system.
  *
  * @param dep - The {@link ReadableLike} to derive from.
- * @param transform - A pure function that takes an input value and returns a new value.
+ * @param transform - Optional pure function that takes an input value and returns a new value.
  * @param config - Optional custom {@link Config}.
  * @returns A {@link OwnedReadable} with transformed value from the given {@link ReadableLike}.
  */

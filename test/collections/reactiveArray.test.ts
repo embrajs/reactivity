@@ -751,6 +751,14 @@ describe("ReactiveArray", () => {
       arr.dispose();
       expect(listener).toHaveBeenCalledTimes(0);
     });
+
+    it("should do nothing on empty array", () => {
+      const arr = reactiveArray();
+      const listener = vi.fn();
+      arr.onDisposeValue(listener);
+      arr.dispose();
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("$ (reactive property)", () => {

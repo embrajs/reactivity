@@ -32,6 +32,23 @@ describe("readable", () => {
       expect(spyA).toBeCalledTimes(0);
       expect(spyB).toBeCalledTimes(1);
     });
+
+    it("should do nothing if no subscribe", () => {
+      const a = writable("a");
+      const spy = vi.fn();
+      a.unsubscribe(spy);
+      a.set("b");
+      expect(spy).toBeCalledTimes(0);
+    });
+  });
+
+  describe("disposed", () => {
+    it("should mark disposed correctly", () => {
+      const a = writable("a");
+      expect(a.disposed).toBe(false);
+      a.dispose();
+      expect(a.disposed).toBe(true);
+    });
   });
 
   describe.each(["test", "production"])("dispose [%s]", NODE_ENV => {

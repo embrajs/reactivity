@@ -15,7 +15,7 @@ export type {
   SetValue,
   Version,
   Unwrap,
-} from "./typings";
+} from "./interface";
 
 export { type Listener, type RemoveListener } from "./event";
 
@@ -66,6 +66,7 @@ export {
   type ReadonlyReactiveArray,
 } from "./collections/reactiveArray";
 
+/** c8 ignore else -- @preserve */
 if (process.env.NODE_ENV !== "production") {
   /* @__PURE__ */ customFormatter();
 }

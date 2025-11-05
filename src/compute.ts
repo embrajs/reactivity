@@ -1,5 +1,5 @@
+import { type ReadableLike, type Config, type Get, type OwnedReadable } from "./interface";
 import { ReadableImpl } from "./readable";
-import { type ReadableLike, type Config, type Get, type OwnedReadable } from "./typings";
 import { getReadable } from "./utils";
 
 export interface ComputeFn<TValue = any> {
@@ -49,6 +49,7 @@ export const compute = <TValue>(fn: ComputeFn<TValue>, config?: Config<TValue>):
     try {
       return fn(get);
     } finally {
+      /** c8 ignore else -- @preserve */
       if (isFirst) {
         running = false;
       }

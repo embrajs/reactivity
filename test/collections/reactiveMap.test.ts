@@ -640,5 +640,13 @@ describe("ReactiveMap", () => {
       map.delete("bar");
       expect(listener).toHaveBeenCalledTimes(0);
     });
+
+    it("should do nothing on empty map", () => {
+      const map = reactiveMap();
+      const listener = vi.fn();
+      map.onDisposeValue(listener);
+      map.dispose();
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
   });
 });

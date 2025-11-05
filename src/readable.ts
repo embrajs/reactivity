@@ -1,6 +1,5 @@
 import { batchFlush, batchStart, type BatchTask, batchTasks } from "./batch";
 import { type EventObject, off, on, send, size } from "./event";
-import { SyncScheduler, type Scheduler } from "./schedulers";
 import {
   type OwnedReadable,
   type OwnedWritable,
@@ -11,7 +10,8 @@ import {
   type Subscriber,
   type Version,
   type Writable,
-} from "./typings";
+} from "./interface";
+import { SyncScheduler, type Scheduler } from "./schedulers";
 import { BRAND, strictEqual, UNIQUE_VALUE } from "./utils";
 
 interface Subs<TValue> extends EventObject<TValue> {
@@ -99,6 +99,10 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     this.set?.(value);
   }
 
+  public get disposed(): boolean {
+    return !!this.disposed_;
+  }
+
   /** @internal */
   private disposed_?: Error | true;
 
@@ -174,6 +178,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
     this.dependents_ = this.subs_ = undefined;
     if (this.deps_) {
       registry.unregister(this.deps_);
+      /** c8 ignore else -- @preserve */
       if (this.weakRefSelf_) {
         for (const dep of this.deps_.keys()) {
           dep.dependents_?.delete(this.weakRefSelf_);
@@ -276,6 +281,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
   /** @internal */
   public removeDep_(dep: ReadableImpl): void {
     this.deps_?.delete(dep);
+    /** c8 ignore else -- @preserve */
     if (this.weakRefSelf_) {
       dep.dependents_?.delete(this.weakRefSelf_);
     }

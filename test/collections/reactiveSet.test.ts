@@ -550,5 +550,13 @@ describe("ReactiveSet", () => {
       set.delete(2);
       expect(listener).toHaveBeenCalledTimes(0);
     });
+
+    it("should do nothing on empty set", () => {
+      const set = reactiveSet();
+      const listener = vi.fn();
+      set.onDisposeValue(listener);
+      set.dispose();
+      expect(listener).toHaveBeenCalledTimes(0);
+    });
   });
 });

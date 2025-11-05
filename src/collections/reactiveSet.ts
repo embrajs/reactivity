@@ -1,7 +1,7 @@
 import { batchFlush, batchStart, type BatchTask, batchTasks } from "../batch";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
+import { type ReadableProvider, type OwnedWritable, type Readable } from "../interface";
 import { writable } from "../readable";
-import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
 import { onDisposeValue, type OnDisposeValue } from "./utils";
 
 export interface ReactiveSetChanged<V> {
@@ -36,6 +36,7 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
         batchTask_: () => {
           if (this._onChanged_ && size(this._onChanged_)) {
             const { upsert_, delete_ } = this._onChanged_;
+            /** c8 ignore else -- @preserve */
             if (upsert_.size > 0 || delete_.size > 0) {
               const changedData = {
                 upsert: [...upsert_],
@@ -136,17 +137,17 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
   public override clear(): void {
     if (this.size) {
       const isBatchTop = batchStart();
-      if (this.onDisposeValue_ || this._onChanged_) {
+      if (this.onDisposeValue_) {
         for (const value of this) {
-          if (this.onDisposeValue_) {
-            this.onDisposeValue_.delete_.add(value);
-            batchTasks.add(this.onDisposeValue_);
-          }
-          if (this._onChanged_) {
-            this._onChanged_.delete_.add(value);
-            this._onChanged_.upsert_.delete(value);
-            batchTasks.add(this._onChanged_);
-          }
+          this.onDisposeValue_.delete_.add(value);
+          batchTasks.add(this.onDisposeValue_);
+        }
+      }
+      if (this._onChanged_) {
+        for (const value of this) {
+          this._onChanged_.delete_.add(value);
+          this._onChanged_.upsert_.delete(value);
+          batchTasks.add(this._onChanged_);
         }
       }
       super.clear();

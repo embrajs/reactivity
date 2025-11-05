@@ -12,8 +12,8 @@ export interface UseDerived {
   /**
    * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
    * @param dep - The {@link ReadableLike} to derive from.
-   * @param transform A pure function that takes an input value and returns a new value.
-   * @param config custom config for the derived {@link Readable}.
+   * @param transform - A pure function that takes an input value and returns a new value.
+   * @param config - Optional custom {@link Config}.
    * @returns Transformed value from the given {@link ReadableLike}.
    */
   <TDepValue, TValue>(
@@ -25,7 +25,7 @@ export interface UseDerived {
    * Derive a new {@link Readable} with transformed value from the given {@link ReadableLike}.
    * @param dep - The {@link ReadableLike} to derive from, or a non-Readable value that will be returned as-is.
    * @param transform A pure function that takes an input value and returns a new value.
-   * @param config custom config for the derived {@link Readable}.
+   * @param config - Optional custom {@link Config}.
    * @returns Transformed value from the given {@link ReadableLike}, or `dep` itself if `dep` is not a {@link ReadableLike}.
    */
   <TDepValue, TValue, U>(
@@ -39,7 +39,11 @@ export interface UseDerived {
  * Derive a new {@link Readable} from the given {@link ReadableLike}.
  *
  * Note that changes to `transform` and `config` will not trigger re-derivation, and `useDerive` always uses the latest `transform` and `config` in the derivation.
- * In other words, no extra care is needed to use this in React components. All args will be updated properly.
+ *
+ * @param dep - The {@link ReadableLike} to derive from, or a non-Readable value that will be returned as-is.
+ * @param transform Optional pure function that takes an input value and returns a new value.
+ * @param config - Optional custom {@link Config}.
+ * @returns Transformed value from the given {@link ReadableLike}, or `dep` itself if `dep` is not a {@link ReadableLike}.
  *
  * @example
  * ```tsx

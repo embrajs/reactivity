@@ -1,4 +1,4 @@
-import { type Writable, type Readable, type ReadableLike } from "./typings";
+import { type Writable, type Readable, type ReadableLike } from "./interface";
 
 export const BRAND = /* @__PURE__ */ Symbol.for("@embra/reactivity");
 export type BRAND = typeof BRAND;

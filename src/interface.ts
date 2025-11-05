@@ -54,6 +54,10 @@ export interface Readable<TValue = any> {
    */
   deps_?: Map<Readable, Version>;
   /**
+   * Indicates whether the Readable has been disposed.
+   */
+  readonly disposed: boolean;
+  /**
    * Current value of the $.
    */
   readonly value: TValue;

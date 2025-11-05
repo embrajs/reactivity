@@ -1,7 +1,7 @@
 import { batchFlush, batchStart, batchTasks } from "../batch";
 import { type RemoveListener } from "../event";
+import { type ReadableProvider, type OwnedWritable, type Readable } from "../interface";
 import { writable } from "../readable";
-import { type ReadableProvider, type OwnedWritable, type Readable } from "../typings";
 import { strictEqual } from "../utils";
 import { onDisposeValue, type OnDisposeValue } from "./utils";
 

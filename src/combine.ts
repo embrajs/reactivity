@@ -1,5 +1,5 @@
 import { compute } from "./compute";
-import { type Config, type OwnedReadable, type ReadableLike } from "./typings";
+import { type Config, type OwnedReadable, type ReadableLike } from "./interface";
 
 export type MapReadablesToValues<TDepValues extends readonly ReadableLike[]> = {
   [K in keyof TDepValues]: TDepValues[K] extends ReadableLike<infer V> ? V : never;
