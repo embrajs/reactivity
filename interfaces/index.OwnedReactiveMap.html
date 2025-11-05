@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <title>OwnedReactiveMap | @embra/reactivity - v0.0.5</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -60,6 +61,11 @@
           </ul>
           <h1>Interface OwnedReactiveMap&lt;K, V&gt;</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>OwnedReactiveMap extends the standard Map interface with reactive capabilities.</p>
+          </div>
+        </section>
         <div class="tsd-signature">
           <span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">OwnedReactiveMap</span
           ><span class="tsd-signature-symbol">&lt;</span
@@ -68,10 +74,7 @@
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">{</span><br />    <a
             class="tsd-kind-property"
-            href="#tostringtag"
-            >&quot;[toStringTag]&quot;</a
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#ondisposevalue"
+            href="#ondisposevalue"
             >onDisposeValue</a
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">&lt;</span
           ><span class="tsd-signature-type tsd-kind-type-parameter">V</span
@@ -93,8 +96,6 @@
           ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-signature-symbol">)</span>
           <span class="tsd-signature-symbol">=&gt;</span>
           <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias">RemoveListener</a
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#size">size</a
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span
           ><span class="tsd-signature-symbol">;</span><br />    <span class="tsd-signature-keyword">get</span>
           <a class="tsd-kind-get-signature" href="#-1">$</a><span class="tsd-signature-symbol">()</span
           ><span class="tsd-signature-symbol">:</span>
@@ -106,15 +107,6 @@
           ><span class="tsd-signature-symbol">,</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#iterator-1"
-            >&quot;[iterator]&quot;</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">MapIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><span class="tsd-signature-symbol">[</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
           ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#clear-1"
             >clear</a
           ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
@@ -132,57 +124,6 @@
             >dispose</a
           ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
           <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#entries-1"
-            >entries</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">MapIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><span class="tsd-signature-symbol">[</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#foreach-1"
-            >forEach</a
-          ><span class="tsd-signature-symbol">(</span><br />        <span class="tsd-kind-parameter">callbackfn</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">key</span
-          ><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">map</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-          <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
-          ><span class="tsd-signature-symbol">,</span><br />        <span class="tsd-kind-parameter">thisArg</span
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">any</span
-          ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#get-1">get</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">key</span
-          ><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-          <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#has-1">has</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">key</span
-          ><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#keys-1"
-            >keys</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">MapIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
             class="tsd-kind-call-signature"
             href="#onchanged-1"
             >onChanged</a
@@ -218,14 +159,7 @@
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#values-1"
-            >values</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">MapIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br /><span
+          <span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">;</span><br /><span
             class="tsd-signature-symbol"
             >}</span
           >
@@ -241,7 +175,7 @@
             </li>
           </ul>
         </section>
-        <section class="tsd-panel tsd-hierarchy" data-refl="465">
+        <section class="tsd-panel tsd-hierarchy" data-refl="546">
           <h4>Hierarchy</h4>
           <ul class="tsd-hierarchy">
             <li class="tsd-hierarchy-item">
@@ -277,8 +211,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L18"
-                >src/collections/reactiveMap.ts:18</a
+                href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L23"
+                >src/collections/reactiveMap.ts:23</a
               >
             </li>
           </ul>
@@ -294,27 +228,7 @@
               </summary>
               <div class="tsd-accordion-details">
                 <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Properties</h3>
-                  <div class="tsd-index-list">
-                    <a href="#tostringtag" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>[to<wbr />String<wbr />Tag]</span></a
-                    >
-                    <a href="#ondisposevalue" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>on<wbr />Dispose<wbr />Value</span></a
-                    >
-                    <a href="#size" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>size</span></a
-                    >
-                  </div>
-                </section>
-                <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Accessors</h3>
+                  <h3 class="tsd-index-heading">Readable</h3>
                   <div class="tsd-index-list">
                     <a href="#" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Accessor">
@@ -324,13 +238,23 @@
                   </div>
                 </section>
                 <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Methods</h3>
+                  <h3 class="tsd-index-heading">Events</h3>
                   <div class="tsd-index-list">
-                    <a href="#iterator" class="tsd-index-link"
+                    <a href="#ondisposevalue" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>on<wbr />Dispose<wbr />Value</span></a
+                    >
+                    <a href="#onchanged" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>[iterator]</span></a
+                      ><span>on<wbr />Changed</span></a
                     >
+                  </div>
+                </section>
+                <section class="tsd-index-section">
+                  <h3 class="tsd-index-heading">Methods</h3>
+                  <div class="tsd-index-list">
                     <a href="#clear" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use></svg
@@ -346,36 +270,6 @@
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>dispose</span></a
                     >
-                    <a href="#entries" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>entries</span></a
-                    >
-                    <a href="#foreach" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>for<wbr />Each</span></a
-                    >
-                    <a href="#get" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>get</span></a
-                    >
-                    <a href="#has" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>has</span></a
-                    >
-                    <a href="#keys" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>keys</span></a
-                    >
-                    <a href="#onchanged" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>on<wbr />Changed</span></a
-                    >
                     <a href="#rename" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use></svg
@@ -386,11 +280,6 @@
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>set</span></a
                     >
-                    <a href="#values" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>values</span></a
-                    >
                   </div>
                 </section>
               </div>
@@ -398,34 +287,75 @@
           </section>
         </section>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Properties">
+          <summary class="tsd-accordion-summary" data-key="section-Readable">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <use href="../assets/icons.svg#icon-chevronDown"></use>
             </svg>
-            <h2>Properties</h2>
+            <h2>Readable</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="tostringtag">
-                <code class="tsd-tag">Readonly</code><span>[to<wbr />String<wbr />Tag]</span
-                ><a href="#tostringtag" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">&quot;[toStringTag]&quot;</span
-                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span>
-              </div>
-              <aside class="tsd-sources">
-                <p>Inherited from Map.[toStringTag]</p>
-                <ul>
-                  <li>Defined in node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts:137</li>
-                </ul>
-              </aside>
+              <h3 class="tsd-anchor-link" id=""><span>$</span></h3>
+              <ul class="tsd-signatures">
+                <li>
+                  <div class="tsd-signature" id="-1">
+                    <span class="tsd-signature-keyword">get</span> <span class="tsd-kind-get-signature">$</span
+                    ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
+                    <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                    ><span class="tsd-signature-symbol">&lt;</span
+                    ><a href="index.ReadonlyReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
+                      >ReadonlyReactiveMap</a
+                    ><span class="tsd-signature-symbol">&lt;</span
+                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+                    ><span class="tsd-signature-symbol">,</span>
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>A Readable that emits the Map itself whenever it changes.</p>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                      ><span class="tsd-signature-symbol">&lt;</span
+                      ><a href="index.ReadonlyReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
+                        >ReadonlyReactiveMap</a
+                      ><span class="tsd-signature-symbol">&lt;</span
+                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+                      ><span class="tsd-signature-symbol">,</span>
+                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                      ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
+                    </h4>
+                    <aside class="tsd-sources">
+                      <p>Implementation of ReadableProvider.$</p>
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L29"
+                            >src/collections/reactiveMap.ts:29</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
             </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Events">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Events</h2>
+          </summary>
+          <section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="ondisposevalue">
-                <code class="tsd-tag">Readonly</code><span>on<wbr />Dispose<wbr />Value</span
+                <code class="tsd-tag">Readonly</code> <code class="tsd-tag">Function</code
+                ><span>on<wbr />Dispose<wbr />Value</span
                 ><a href="#ondisposevalue" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
@@ -557,544 +487,29 @@
                   </li>
                 </ul>
               </div>
+              <div class="tsd-comment tsd-typography">
+                <div class="tsd-tag-example">
+                  <h4 class="tsd-anchor-link" id="example">
+                    Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </h4>
+                  <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">reactiveMap</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">map</span><span class="hl-1"> = </span><span class="hl-6">reactiveMap</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">, </span><span class="hl-8">string</span><span class="hl-1">&gt;();</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">disposer</span><span class="hl-1"> = </span><span class="hl-2">map</span><span class="hl-1">.</span><span class="hl-6">onDisposeValue</span><span class="hl-1">((</span><span class="hl-2">value</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-6">log</span><span class="hl-1">(</span><span class="hl-3">&quot;Value disposed:&quot;</span><span class="hl-1">, </span><span class="hl-2">value</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                </div>
+              </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L73"
-                      >src/collections/reactiveMap.ts:73</a
+                      href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L103"
+                      >src/collections/reactiveMap.ts:103</a
                     >
                   </li>
                 </ul>
               </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="size">
-                <code class="tsd-tag">Readonly</code><span>size</span
-                ><a href="#size" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">size</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">number</span>
-              </div>
-              <div class="tsd-comment tsd-typography">
-                <div class="tsd-tag-returns">
-                  <h4 class="tsd-anchor-link" id="returns">
-                    Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </h4>
-                  <p>the number of elements in the Map.</p>
-                </div>
-              </div>
-              <aside class="tsd-sources">
-                <p>Inherited from Map.size</p>
-                <ul>
-                  <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:45</li>
-                </ul>
-              </aside>
-            </section>
-          </section>
-        </details>
-        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Accessors">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <use href="../assets/icons.svg#icon-chevronDown"></use>
-            </svg>
-            <h2>Accessors</h2>
-          </summary>
-          <section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id=""><span>$</span></h3>
-              <ul class="tsd-signatures">
-                <li>
-                  <div class="tsd-signature" id="-1">
-                    <span class="tsd-signature-keyword">get</span> <span class="tsd-kind-get-signature">$</span
-                    ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-                    <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a href="index.ReadonlyReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
-                      >ReadonlyReactiveMap</a
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">,</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>A Readable that emits the map itself whenever it changes.</p>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a href="index.ReadonlyReactiveMap.html" class="tsd-signature-type tsd-kind-interface"
-                        >ReadonlyReactiveMap</a
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                      ><span class="tsd-signature-symbol">,</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Implementation of ReadableProvider.$</p>
-                      <ul>
-                        <li>
-                          Defined in
-                          <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L22"
-                            >src/collections/reactiveMap.ts:22</a
-                          >
-                        </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-          </section>
-        </details>
-        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Methods">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <use href="../assets/icons.svg#icon-chevronDown"></use>
-            </svg>
-            <h2>Methods</h2>
-          </summary>
-          <section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="iterator">
-                <span>[iterator]</span
-                ><a href="#iterator" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="iterator-1">
-                    <span class="tsd-kind-call-signature">&quot;[iterator]&quot;</span
-                    ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">MapIterator</span><span class="tsd-signature-symbol">&lt;</span
-                    ><span class="tsd-signature-symbol">[</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">,</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#iterator-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Returns an iterable of entries in the map.</p></div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">MapIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                      ><span class="tsd-signature-symbol">,</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.[iterator]</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:143</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="clear">
-                <span>clear</span
-                ><a href="#clear" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="clear-1">
-                    <span class="tsd-kind-call-signature">clear</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-                    ><a href="#clear-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-                    <aside class="tsd-sources">
-                      <p>Overrides Map.clear</p>
-                      <ul>
-                        <li>
-                          Defined in
-                          <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L142"
-                            >src/collections/reactiveMap.ts:142</a
-                          >
-                        </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="delete">
-                <span>delete</span
-                ><a href="#delete" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="delete-1">
-                    <span class="tsd-kind-call-signature">delete</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">boolean</span
-                    ><a href="#delete-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">key</span>:
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <p>
-                      true if an element in the Map existed and has been removed, or false if the element does not
-                      exist.
-                    </p>
-                    <aside class="tsd-sources">
-                      <p>Overrides Map.delete</p>
-                      <ul>
-                        <li>
-                          Defined in
-                          <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L124"
-                            >src/collections/reactiveMap.ts:124</a
-                          >
-                        </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="dispose">
-                <span>dispose</span
-                ><a href="#dispose" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="dispose-1">
-                    <span class="tsd-kind-call-signature">dispose</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-                    ><a href="#dispose-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-                    <aside class="tsd-sources">
-                      <ul>
-                        <li>
-                          Defined in
-                          <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L85"
-                            >src/collections/reactiveMap.ts:85</a
-                          >
-                        </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="entries">
-                <span>entries</span
-                ><a href="#entries" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="entries-1">
-                    <span class="tsd-kind-call-signature">entries</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">MapIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">,</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#entries-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>Returns an iterable of key, value pairs for every entry in the map.</p>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">MapIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                      ><span class="tsd-signature-symbol">,</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.entries</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:148</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="foreach">
-                <span>for<wbr />Each</span
-                ><a href="#foreach" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="foreach-1">
-                    <span class="tsd-kind-call-signature">forEach</span><span class="tsd-signature-symbol">(</span
-                    ><br />    <span class="tsd-kind-parameter">callbackfn</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">key</span
-                    ><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">map</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">,</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-                    <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
-                    ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">thisArg</span
-                    ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">any</span
-                    ><span class="tsd-signature-symbol">,</span><br /><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-                    ><a href="#foreach-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>Executes a provided function once per each key/value pair in the Map, in insertion order.</p>
-                    </div>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">callbackfn</span>:
-                            <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
-                            ><span class="tsd-signature-symbol">:</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">key</span
-                            ><span class="tsd-signature-symbol">:</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                            ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">map</span
-                            ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                            ><span class="tsd-signature-symbol">,</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-                            <span class="tsd-signature-symbol">=&gt;</span>
-                            <span class="tsd-signature-type">void</span></span
-                          >
-                        </li>
-                        <li>
-                          <span
-                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">thisArg</span>:
-                            <span class="tsd-signature-type">any</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.forEach</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:28</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="get">
-                <span>get</span
-                ><a href="#get" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="get-1">
-                    <span class="tsd-kind-call-signature">get</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                    <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span
-                    ><a href="#get-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>
-                        Returns a specified element from the Map object. If the value that is associated to the provided
-                        key is an object, then you will get a reference to that object and any change made to that
-                        object will effectively modify it inside the Map.
-                      </p>
-                    </div>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">key</span>:
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                      <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span>
-                    </h4>
-                    <p>
-                      Returns the element associated with the specified key. If no element is associated with the
-                      specified key, undefined is returned.
-                    </p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.get</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:33</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="has">
-                <span>has</span
-                ><a href="#has" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="has-1">
-                    <span class="tsd-kind-call-signature">has</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">boolean</span
-                    ><a href="#has-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">key</span>:
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <p>boolean indicating whether an element with the specified key exists or not.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.has</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:37</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="keys">
-                <span>keys</span
-                ><a href="#keys" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="keys-1">
-                    <span class="tsd-kind-call-signature">keys</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">MapIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#keys-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Returns an iterable of keys in the map</p></div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">MapIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.keys</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:153</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
             </section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="onchanged">
@@ -1158,13 +573,157 @@
                       >
                     </h4>
                     <p>A disposer function to unsubscribe from the event.</p>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-1">
+                          Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use></svg
+                          ></a>
+                        </h4>
+                        <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">reactiveMap</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">map</span><span class="hl-1"> = </span><span class="hl-6">reactiveMap</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">, </span><span class="hl-8">string</span><span class="hl-1">&gt;();</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">disposer</span><span class="hl-1"> = </span><span class="hl-2">map</span><span class="hl-1">.</span><span class="hl-6">onChanged</span><span class="hl-1">((</span><span class="hl-2">changed</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-6">log</span><span class="hl-1">(</span><span class="hl-3">&quot;Map changed:&quot;</span><span class="hl-1">, </span><span class="hl-2">changed</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
+                    </div>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L32"
-                            >src/collections/reactiveMap.ts:32</a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L50"
+                            >src/collections/reactiveMap.ts:50</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+          </section>
+        </details>
+        <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
+          <summary class="tsd-accordion-summary" data-key="section-Methods">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <use href="../assets/icons.svg#icon-chevronDown"></use>
+            </svg>
+            <h2>Methods</h2>
+          </summary>
+          <section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="clear">
+                <span>clear</span
+                ><a href="#clear" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="clear-1">
+                    <span class="tsd-kind-call-signature">clear</span><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                    ><a href="#clear-1" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                    <aside class="tsd-sources">
+                      <p>Overrides Map.clear</p>
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L172"
+                            >src/collections/reactiveMap.ts:172</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="delete">
+                <span>delete</span
+                ><a href="#delete" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="delete-1">
+                    <span class="tsd-kind-call-signature">delete</span><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">key</span><span class="tsd-signature-symbol">:</span>
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a
+                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-type">boolean</span
+                    ><a href="#delete-1" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">key</span>:
+                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#k">K</a></span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+                    <p>
+                      true if an element in the Map existed and has been removed, or false if the element does not
+                      exist.
+                    </p>
+                    <aside class="tsd-sources">
+                      <p>Overrides Map.delete</p>
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L154"
+                            >src/collections/reactiveMap.ts:154</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="dispose">
+                <span>dispose</span
+                ><a href="#dispose" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="dispose-1">
+                    <span class="tsd-kind-call-signature">dispose</span><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                    ><a href="#dispose-1" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use></svg
+                    ></a>
+                  </div>
+                  <div class="tsd-description">
+                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L115"
+                            >src/collections/reactiveMap.ts:115</a
                           >
                         </li>
                       </ul>
@@ -1220,8 +779,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L164"
-                            >src/collections/reactiveMap.ts:164</a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L194"
+                            >src/collections/reactiveMap.ts:194</a
                           >
                         </li>
                       </ul>
@@ -1284,48 +843,10 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveMap.ts#L106"
-                            >src/collections/reactiveMap.ts:106</a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveMap.ts#L136"
+                            >src/collections/reactiveMap.ts:136</a
                           >
                         </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="values">
-                <span>values</span
-                ><a href="#values" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="values-1">
-                    <span class="tsd-kind-call-signature">values</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">MapIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#values-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Returns an iterable of values in the map</p></div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">MapIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from Map.values</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:158</li>
                       </ul>
                     </aside>
                   </div>
@@ -1366,32 +887,10 @@
             </summary>
             <div class="tsd-accordion-details">
               <details open class="tsd-accordion tsd-page-navigation-section">
-                <summary class="tsd-accordion-summary" data-key="section-Properties">
+                <summary class="tsd-accordion-summary" data-key="section-Readable">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Properties
-                </summary>
-                <div>
-                  <a href="#tostringtag"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>[to<wbr />String<wbr />Tag]</span></a
-                  ><a href="#ondisposevalue"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>on<wbr />Dispose<wbr />Value</span></a
-                  ><a href="#size"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>size</span></a
-                  >
-                </div>
-              </details>
-              <details open class="tsd-accordion tsd-page-navigation-section">
-                <summary class="tsd-accordion-summary" data-key="section-Accessors">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Accessors
+                  >Readable
                 </summary>
                 <div>
                   <a href="#"
@@ -1402,17 +901,31 @@
                 </div>
               </details>
               <details open class="tsd-accordion tsd-page-navigation-section">
+                <summary class="tsd-accordion-summary" data-key="section-Events">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-chevronDown"></use></svg
+                  >Events
+                </summary>
+                <div>
+                  <a href="#ondisposevalue"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>on<wbr />Dispose<wbr />Value</span></a
+                  ><a href="#onchanged"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                      <use href="../assets/icons.svg#icon-2048"></use></svg
+                    ><span>on<wbr />Changed</span></a
+                  >
+                </div>
+              </details>
+              <details open class="tsd-accordion tsd-page-navigation-section">
                 <summary class="tsd-accordion-summary" data-key="section-Methods">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
                   >Methods
                 </summary>
                 <div>
-                  <a href="#iterator"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>[iterator]</span></a
-                  ><a href="#clear"
+                  <a href="#clear"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>clear</span></a
@@ -1424,30 +937,6 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>dispose</span></a
-                  ><a href="#entries"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>entries</span></a
-                  ><a href="#foreach"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>for<wbr />Each</span></a
-                  ><a href="#get"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>get</span></a
-                  ><a href="#has"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>has</span></a
-                  ><a href="#keys"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>keys</span></a
-                  ><a href="#onchanged"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>on<wbr />Changed</span></a
                   ><a href="#rename"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
@@ -1456,10 +945,6 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>set</span></a
-                  ><a href="#values"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>values</span></a
                   >
                 </div>
               </details>

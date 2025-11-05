@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <title>batch | @embra/reactivity - v0.0.5</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -79,6 +80,11 @@
                 ></a>
               </div>
               <div class="tsd-description">
+                <div class="tsd-comment tsd-typography">
+                  <p>
+                    Creates a batch of updates. Computations within the batch are deferred until the batch completes.
+                  </p>
+                </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
@@ -96,25 +102,42 @@
                         <span class="tsd-signature-symbol">=&gt;</span>
                         <a class="tsd-signature-type tsd-kind-type-parameter" href="#batcht">T</a></span
                       >
+                      <div class="tsd-comment tsd-typography"><p>The function containing updates to batch.</p></div>
                     </li>
                     <li>
                       <span
                         ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">thisArg</span>:
                         <span class="tsd-signature-type">any</span></span
                       >
+                      <div class="tsd-comment tsd-typography">
+                        <p>The value to use as <code>this</code> when executing <code>fn</code>.</p>
+                      </div>
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#batcht">T</a>
                 </h4>
+                <p>The result of the function <code>fn</code>.</p>
+                <div class="tsd-comment tsd-typography">
+                  <div class="tsd-tag-example">
+                    <h4 class="tsd-anchor-link" id="example">
+                      Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                        ><svg viewBox="0 0 24 24" aria-hidden="true">
+                          <use href="../assets/icons.svg#icon-anchor"></use></svg
+                      ></a>
+                    </h4>
+                    <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">batch</span><span class="hl-1">, </span><span class="hl-2">writable</span><span class="hl-1">, </span><span class="hl-2">compute</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">count$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">double$</span><span class="hl-1"> = </span><span class="hl-6">compute</span><span class="hl-1">(</span><span class="hl-2">get</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-6">get</span><span class="hl-1">(</span><span class="hl-2">count$</span><span class="hl-1">) * </span><span class="hl-7">2</span><span class="hl-1">);</span><br/><br/><span class="hl-6">batch</span><span class="hl-1">(() </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">1</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-2">count$</span><span class="hl-1">.</span><span class="hl-6">set</span><span class="hl-1">(</span><span class="hl-7">2</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                  </div>
+                </div>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/batch.ts#L32"
-                        >src/batch.ts:32</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/batch.ts#L87"
+                        >src/batch.ts:87</a
                       >
                     </li>
                   </ul>

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
     <title>ReadonlyReactiveSet | @embra/reactivity - v0.0.5</title>
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/style.css" />
@@ -60,6 +61,14 @@
           </ul>
           <h1>Interface ReadonlyReactiveSet&lt;V&gt;</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>
+              ReadonlyReactiveSet is a readonly interface for
+              <a href="../types/index.ReactiveSet.html" class="tsd-kind-type-alias">ReactiveSet</a>.
+            </p>
+          </div>
+        </section>
         <div class="tsd-signature">
           <span class="tsd-signature-keyword">interface</span>
           <span class="tsd-kind-interface">ReadonlyReactiveSet</span><span class="tsd-signature-symbol">&lt;</span
@@ -74,111 +83,18 @@
           ><span class="tsd-signature-symbol">&lt;</span
           ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
           ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#size">size</a
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#iterator-1"
-            >&quot;[iterator]&quot;</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">SetIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#difference-1"
-            >difference</a
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#differenceu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#differenceu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#entries-1"
-            >entries</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">SetIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><span class="tsd-signature-symbol">[</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">,</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#foreach-1"
-            >forEach</a
-          ><span class="tsd-signature-symbol">(</span><br />        <span class="tsd-kind-parameter">callbackfn</span
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-property" href="#ondisposevalue"
+            >onDisposeValue</a
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value2</span
+          ><span class="tsd-kind-parameter">fn</span><span class="tsd-signature-symbol">:</span>
+          <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">set</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySet</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-          <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
-          ><span class="tsd-signature-symbol">,</span><br />        <span class="tsd-kind-parameter">thisArg</span
-          ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">any</span
-          ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#has-1">has</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
-          ><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#intersection-1"
-            >intersection</a
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-          <span class="tsd-signature-symbol">&amp;</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#isdisjointfrom-1"
-            >isDisjointFrom</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">other</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySetLike</span
-          ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#issubsetof-1"
-            >isSubsetOf</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">other</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySetLike</span
-          ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#issupersetof-1"
-            >isSupersetOf</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">other</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySetLike</span
-          ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span
-          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#keys-1"
-            >keys</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">SetIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#onchanged-1"
+          ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
+          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span>
+          <span class="tsd-signature-symbol">=&gt;</span>
+          <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias">RemoveListener</a
+          ><span class="tsd-signature-symbol">;</span><br />    <a class="tsd-kind-call-signature" href="#onchanged-1"
             >onChanged</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
           ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
@@ -190,61 +106,7 @@
           <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
           ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
           <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias">RemoveListener</a
-          ><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#ondisposevalue-1"
-            >onDisposeValue</a
-          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
-          <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span>
-          <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias">RemoveListener</a
-          ><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#symmetricdifference-1"
-            >symmetricDifference</a
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-          <span class="tsd-signature-symbol">|</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#union-1"
-            >union</a
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-          ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-          ><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-          <span class="tsd-signature-symbol">|</span>
-          <a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br />    <a
-            class="tsd-kind-call-signature"
-            href="#values-1"
-            >values</a
-          ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">SetIterator</span><span class="tsd-signature-symbol">&lt;</span
-          ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-          ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br /><span
-            class="tsd-signature-symbol"
-            >}</span
-          >
+          ><span class="tsd-signature-symbol">;</span><br /><span class="tsd-signature-symbol">}</span>
         </div>
         <section class="tsd-panel">
           <h4>Type Parameters</h4>
@@ -254,7 +116,7 @@
             </li>
           </ul>
         </section>
-        <section class="tsd-panel tsd-hierarchy" data-refl="675">
+        <section class="tsd-panel tsd-hierarchy" data-refl="661">
           <h4>Hierarchy</h4>
           <ul class="tsd-hierarchy">
             <li class="tsd-hierarchy-item">
@@ -272,8 +134,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveSet.ts#L185"
-                >src/collections/reactiveSet.ts:185</a
+                href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveSet.ts#L225"
+                >src/collections/reactiveSet.ts:225</a
               >
             </li>
           </ul>
@@ -289,97 +151,27 @@
               </summary>
               <div class="tsd-accordion-details">
                 <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Properties</h3>
+                  <h3 class="tsd-index-heading">Readable</h3>
                   <div class="tsd-index-list">
                     <a href="#" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                         <use href="../assets/icons.svg#icon-1024"></use></svg
                       ><span>$</span></a
                     >
-                    <a href="#size" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                        <use href="../assets/icons.svg#icon-1024"></use></svg
-                      ><span>size</span></a
-                    >
                   </div>
                 </section>
                 <section class="tsd-index-section">
-                  <h3 class="tsd-index-heading">Methods</h3>
+                  <h3 class="tsd-index-heading">Events</h3>
                   <div class="tsd-index-list">
-                    <a href="#iterator" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>[iterator]</span></a
-                    >
-                    <a href="#difference" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>difference</span></a
-                    >
-                    <a href="#entries" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>entries</span></a
-                    >
-                    <a href="#foreach" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>for<wbr />Each</span></a
-                    >
-                    <a href="#has" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>has</span></a
-                    >
-                    <a href="#intersection" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>intersection</span></a
-                    >
-                    <a href="#isdisjointfrom" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>is<wbr />Disjoint<wbr />From</span></a
-                    >
-                    <a href="#issubsetof" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>is<wbr />Subset<wbr />Of</span></a
-                    >
-                    <a href="#issupersetof" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>is<wbr />Superset<wbr />Of</span></a
-                    >
-                    <a href="#keys" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>keys</span></a
+                    <a href="#ondisposevalue" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                        <use href="../assets/icons.svg#icon-1024"></use></svg
+                      ><span>on<wbr />Dispose<wbr />Value</span></a
                     >
                     <a href="#onchanged" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use></svg
                       ><span>on<wbr />Changed</span></a
-                    >
-                    <a href="#ondisposevalue" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>on<wbr />Dispose<wbr />Value</span></a
-                    >
-                    <a href="#symmetricdifference" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>symmetric<wbr />Difference</span></a
-                    >
-                    <a href="#union" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>union</span></a
-                    >
-                    <a href="#values" class="tsd-index-link"
-                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                        <use href="../assets/icons.svg#icon-2048"></use></svg
-                      ><span>values</span></a
                     >
                   </div>
                 </section>
@@ -388,11 +180,11 @@
           </section>
         </section>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Properties">
+          <summary class="tsd-accordion-summary" data-key="section-Readable">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <use href="../assets/icons.svg#icon-chevronDown"></use>
             </svg>
-            <h2>Properties</h2>
+            <h2>Readable</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
@@ -405,564 +197,134 @@
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
               </div>
+              <div class="tsd-comment tsd-typography">
+                <p>A Readable that emits the Set itself whenever it changes.</p>
+              </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveSet.ts#L186"
-                      >src/collections/reactiveSet.ts:186</a
+                      href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveSet.ts#L231"
+                      >src/collections/reactiveSet.ts:231</a
                     >
                   </li>
-                </ul>
-              </aside>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="size">
-                <code class="tsd-tag">Readonly</code><span>size</span
-                ><a href="#size" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <div class="tsd-signature">
-                <span class="tsd-kind-property">size</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">number</span>
-              </div>
-              <aside class="tsd-sources">
-                <p>Inherited from ReadonlySet.size</p>
-                <ul>
-                  <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:124</li>
                 </ul>
               </aside>
             </section>
           </section>
         </details>
         <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-          <summary class="tsd-accordion-summary" data-key="section-Methods">
+          <summary class="tsd-accordion-summary" data-key="section-Events">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <use href="../assets/icons.svg#icon-chevronDown"></use>
             </svg>
-            <h2>Methods</h2>
+            <h2>Events</h2>
           </summary>
           <section>
             <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="iterator">
-                <span>[iterator]</span
-                ><a href="#iterator" aria-label="Permalink" class="tsd-anchor-icon"
+              <h3 class="tsd-anchor-link" id="ondisposevalue">
+                <code class="tsd-tag">Readonly</code> <code class="tsd-tag">Function</code
+                ><span>on<wbr />Dispose<wbr />Value</span
+                ><a href="#ondisposevalue" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="iterator-1">
-                    <span class="tsd-kind-call-signature">&quot;[iterator]&quot;</span
-                    ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">SetIterator</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#iterator-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Iterates over values in the set.</p></div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">SetIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.[iterator]</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:218</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="difference">
-                <span>difference</span
-                ><a href="#difference" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="difference-1">
-                    <span class="tsd-kind-call-signature">difference</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#differenceu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#differenceu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#difference-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <section class="tsd-panel">
-                      <h4>Type Parameters</h4>
-                      <ul class="tsd-type-parameter-list">
-                        <li>
-                          <span id="differenceu"><span class="tsd-kind-type-parameter">U</span></span>
-                        </li>
-                      </ul>
-                    </section>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#differenceu">U</a
-                            ><span class="tsd-signature-symbol">&gt;</span></span
+              <div class="tsd-signature">
+                <span class="tsd-kind-property">onDisposeValue</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
+                ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
+                ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
+                <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias"
+                  >RemoveListener</a
+                >
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <p>Subscribe to events when a value is needed to be disposed.</p>
+                <p>A value is considered for disposal when:</p>
+                <ul>
+                  <li>it is deleted from the set.</li>
+                  <li>it is replaced by another value (the old value is removed).</li>
+                  <li>it is cleared from the set.</li>
+                  <li>the set is disposed.</li>
+                </ul>
+              </div>
+              <div class="tsd-type-declaration">
+                <h4>Type Declaration</h4>
+                <ul class="tsd-parameters">
+                  <li class="tsd-parameter-signature">
+                    <ul class="tsd-signatures">
+                      <li class="tsd-signature">
+                        <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
+                        ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
+                        ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                        ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
+                        <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span
+                        ><span class="tsd-signature-symbol">:</span>
+                        <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias"
+                          >RemoveListener</a
+                        >
+                      </li>
+                      <li class="tsd-description">
+                        <div class="tsd-parameters">
+                          <h4 class="tsd-parameters-title">Parameters</h4>
+                          <ul class="tsd-parameter-list">
+                            <li>
+                              <span
+                                ><span class="tsd-kind-parameter">fn</span>: <span class="tsd-signature-symbol">(</span
+                                ><span class="tsd-kind-parameter">value</span
+                                ><span class="tsd-signature-symbol">:</span>
+                                <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
+                                ><span class="tsd-signature-symbol">)</span>
+                                <span class="tsd-signature-symbol">=&gt;</span>
+                                <span class="tsd-signature-type">void</span></span
+                              >
+                              <div class="tsd-comment tsd-typography">
+                                <p>The function to call when a value is needed to be disposed.</p>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                        <h4 class="tsd-returns-title">
+                          Returns
+                          <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias"
+                            >RemoveListener</a
                           >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <p>a new Set containing all the elements in this Set which are not also in the argument.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.difference</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:79</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="entries">
-                <span>entries</span
-                ><a href="#entries" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="entries-1">
-                    <span class="tsd-kind-call-signature">entries</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SetIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">,</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#entries-1" aria-label="Permalink" class="tsd-anchor-icon"
+                        </h4>
+                        <p>A disposer function to unsubscribe from the event.</p>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <div class="tsd-tag-example">
+                  <h4 class="tsd-anchor-link" id="example">
+                    Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
                       ><svg viewBox="0 0 24 24" aria-hidden="true">
                         <use href="../assets/icons.svg#icon-anchor"></use></svg
                     ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>Returns an iterable of [v,v] pairs for every value <code>v</code> in the set.</p>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">SetIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">,</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.entries</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:223</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="foreach">
-                <span>for<wbr />Each</span
-                ><a href="#foreach" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="foreach-1">
-                    <span class="tsd-kind-call-signature">forEach</span><span class="tsd-signature-symbol">(</span
-                    ><br />    <span class="tsd-kind-parameter">callbackfn</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value2</span
-                    ><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">set</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySet</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-                    <span class="tsd-signature-symbol">=&gt;</span> <span class="tsd-signature-type">void</span
-                    ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">thisArg</span
-                    ><span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">any</span
-                    ><span class="tsd-signature-symbol">,</span><br /><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
-                    ><a href="#foreach-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">callbackfn</span>:
-                            <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
-                            ><span class="tsd-signature-symbol">:</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value2</span
-                            ><span class="tsd-signature-symbol">:</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">set</span
-                            ><span class="tsd-signature-symbol">:</span>
-                            <span class="tsd-signature-type">ReadonlySet</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
-                            <span class="tsd-signature-symbol">=&gt;</span>
-                            <span class="tsd-signature-type">void</span></span
-                          >
-                        </li>
-                        <li>
-                          <span
-                            ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">thisArg</span>:
-                            <span class="tsd-signature-type">any</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.forEach</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:122</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="has">
-                <span>has</span
-                ><a href="#has" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="has-1">
-                    <span class="tsd-kind-call-signature">has</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">boolean</span
-                    ><a href="#has-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">value</span>:
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.has</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.collection.d.ts:123</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="intersection">
-                <span>intersection</span
-                ><a href="#intersection" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="intersection-1">
-                    <span class="tsd-kind-call-signature">intersection</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                    <span class="tsd-signature-symbol">&amp;</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#intersection-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <section class="tsd-panel">
-                      <h4>Type Parameters</h4>
-                      <ul class="tsd-type-parameter-list">
-                        <li>
-                          <span id="intersectionu"><span class="tsd-kind-type-parameter">U</span></span>
-                        </li>
-                      </ul>
-                    </section>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                      <span class="tsd-signature-symbol">&amp;</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#intersectionu">U</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <p>a new Set containing all the elements which are both in this Set and in the argument.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.intersection</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:75</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="isdisjointfrom">
-                <span>is<wbr />Disjoint<wbr />From</span
-                ><a href="#isdisjointfrom" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="isdisjointfrom-1">
-                    <span class="tsd-kind-call-signature">isDisjointFrom</span
-                    ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">other</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlySetLike</span
-                    ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span
-                    ><a href="#isdisjointfrom-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><span class="tsd-signature-type">unknown</span
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <p>a boolean indicating whether this Set has no elements in common with the argument.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.isDisjointFrom</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:95</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="issubsetof">
-                <span>is<wbr />Subset<wbr />Of</span
-                ><a href="#issubsetof" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="issubsetof-1">
-                    <span class="tsd-kind-call-signature">isSubsetOf</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">boolean</span
-                    ><a href="#issubsetof-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><span class="tsd-signature-type">unknown</span
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <p>a boolean indicating whether all the elements in this Set are also in the argument.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.isSubsetOf</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:87</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="issupersetof">
-                <span>is<wbr />Superset<wbr />Of</span
-                ><a href="#issupersetof" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="issupersetof-1">
-                    <span class="tsd-kind-call-signature">isSupersetOf</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span
-                    ><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">boolean</span
-                    ><a href="#issupersetof-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><span class="tsd-signature-type">unknown</span
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-                    <p>a boolean indicating whether all the elements in the argument are also in this Set.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.isSupersetOf</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:91</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="keys">
-                <span>keys</span
-                ><a href="#keys" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="keys-1">
-                    <span class="tsd-kind-call-signature">keys</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SetIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#keys-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography">
-                      <p>Despite its name, returns an iterable of the values in the set.</p>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">SetIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.keys</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:228</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
+                  </h4>
+                  <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">reactiveSet</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">set</span><span class="hl-1"> = </span><span class="hl-6">reactiveSet</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">&gt;();</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">disposer</span><span class="hl-1"> = </span><span class="hl-2">set</span><span class="hl-1">.</span><span class="hl-6">onDisposeValue</span><span class="hl-1">((</span><span class="hl-2">value</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-6">log</span><span class="hl-1">(</span><span class="hl-3">&quot;Value disposed:&quot;</span><span class="hl-1">, </span><span class="hl-2">value</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                </div>
+              </div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveSet.ts#L274"
+                      >src/collections/reactiveSet.ts:274</a
+                    >
+                  </li>
+                </ul>
+              </aside>
             </section>
             <section class="tsd-panel tsd-member">
               <h3 class="tsd-anchor-link" id="onchanged">
@@ -1022,271 +384,27 @@
                       >
                     </h4>
                     <p>A disposer function to unsubscribe from the event.</p>
-                    <aside class="tsd-sources">
-                      <ul>
-                        <li>
-                          Defined in
-                          <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveSet.ts#L193"
-                            >src/collections/reactiveSet.ts:193</a
-                          >
-                        </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="ondisposevalue">
-                <span>on<wbr />Dispose<wbr />Value</span
-                ><a href="#ondisposevalue" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="ondisposevalue-1">
-                    <span class="tsd-kind-call-signature">onDisposeValue</span
-                    ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
-                    <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span>
-                    <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias"
-                      >RemoveListener</a
-                    ><a href="#ondisposevalue-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
                     <div class="tsd-comment tsd-typography">
-                      <p>Subscribe to events when a value is needed to be disposed.</p>
-                      <p>A value is considered for disposal when:</p>
-                      <ul>
-                        <li>it is deleted from the set.</li>
-                        <li>it is replaced by another value (the old value is removed).</li>
-                        <li>it is cleared from the set.</li>
-                        <li>the set is disposed.</li>
-                      </ul>
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-1">
+                          Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use></svg
+                          ></a>
+                        </h4>
+                        <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">reactiveSet</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">set</span><span class="hl-1"> = </span><span class="hl-6">reactiveSet</span><span class="hl-1">&lt;</span><span class="hl-8">number</span><span class="hl-1">&gt;();</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">disposer</span><span class="hl-1"> = </span><span class="hl-2">set</span><span class="hl-1">.</span><span class="hl-6">onChanged</span><span class="hl-1">((</span><span class="hl-2">changed</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-6">log</span><span class="hl-1">(</span><span class="hl-3">&quot;Set changed:&quot;</span><span class="hl-1">, </span><span class="hl-2">changed</span><span class="hl-1">);</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
                     </div>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">fn</span>: <span class="tsd-signature-symbol">(</span
-                            ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                            ><span class="tsd-signature-symbol">)</span>
-                            <span class="tsd-signature-symbol">=&gt;</span>
-                            <span class="tsd-signature-type">void</span></span
-                          >
-                          <div class="tsd-comment tsd-typography">
-                            <p>The function to call when a value is needed to be disposed.</p>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns
-                      <a href="../types/index.RemoveListener.html" class="tsd-signature-type tsd-kind-type-alias"
-                        >RemoveListener</a
-                      >
-                    </h4>
-                    <p>A disposer function to unsubscribe from the event.</p>
                     <aside class="tsd-sources">
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/a77fbea70ba65897b9f8d6c16b6a411623982e6b/src/collections/reactiveSet.ts#L206"
-                            >src/collections/reactiveSet.ts:206</a
+                            href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/collections/reactiveSet.ts#L249"
+                            >src/collections/reactiveSet.ts:249</a
                           >
                         </li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="symmetricdifference">
-                <span>symmetric<wbr />Difference</span
-                ><a href="#symmetricdifference" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="symmetricdifference-1">
-                    <span class="tsd-kind-call-signature">symmetricDifference</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                    <span class="tsd-signature-symbol">|</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#symmetricdifference-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <section class="tsd-panel">
-                      <h4>Type Parameters</h4>
-                      <ul class="tsd-type-parameter-list">
-                        <li>
-                          <span id="symmetricdifferenceu"><span class="tsd-kind-type-parameter">U</span></span>
-                        </li>
-                      </ul>
-                    </section>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                      <span class="tsd-signature-symbol">|</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#symmetricdifferenceu">U</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <p>
-                      a new Set containing all the elements which are in either this Set or in the argument, but not in
-                      both.
-                    </p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.symmetricDifference</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:83</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="union">
-                <span>union</span
-                ><a href="#union" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="union-1">
-                    <span class="tsd-kind-call-signature">union</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
-                    ><span class="tsd-kind-parameter">other</span><span class="tsd-signature-symbol">:</span>
-                    <span class="tsd-signature-type">ReadonlySetLike</span><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Set</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                    <span class="tsd-signature-symbol">|</span>
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#union-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <section class="tsd-panel">
-                      <h4>Type Parameters</h4>
-                      <ul class="tsd-type-parameter-list">
-                        <li>
-                          <span id="unionu"><span class="tsd-kind-type-parameter">U</span></span>
-                        </li>
-                      </ul>
-                    </section>
-                    <div class="tsd-parameters">
-                      <h4 class="tsd-parameters-title">Parameters</h4>
-                      <ul class="tsd-parameter-list">
-                        <li>
-                          <span
-                            ><span class="tsd-kind-parameter">other</span>:
-                            <span class="tsd-signature-type">ReadonlySetLike</span
-                            ><span class="tsd-signature-symbol">&lt;</span
-                            ><a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-                            ><span class="tsd-signature-symbol">&gt;</span></span
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a>
-                      <span class="tsd-signature-symbol">|</span>
-                      <a class="tsd-signature-type tsd-kind-type-parameter" href="#unionu">U</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <p>a new Set containing all the elements in this Set and also all the elements in the argument.</p>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.union</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.esnext.collection.d.ts:71</li>
-                      </ul>
-                    </aside>
-                  </div>
-                </li>
-              </ul>
-            </section>
-            <section class="tsd-panel tsd-member">
-              <h3 class="tsd-anchor-link" id="values">
-                <span>values</span
-                ><a href="#values" aria-label="Permalink" class="tsd-anchor-icon"
-                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
-                ></a>
-              </h3>
-              <ul class="tsd-signatures">
-                <li class="">
-                  <div class="tsd-signature tsd-anchor-link" id="values-1">
-                    <span class="tsd-kind-call-signature">values</span><span class="tsd-signature-symbol">()</span
-                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SetIterator</span
-                    ><span class="tsd-signature-symbol">&lt;</span
-                    ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                    ><span class="tsd-signature-symbol">&gt;</span
-                    ><a href="#values-1" aria-label="Permalink" class="tsd-anchor-icon"
-                      ><svg viewBox="0 0 24 24" aria-hidden="true">
-                        <use href="../assets/icons.svg#icon-anchor"></use></svg
-                    ></a>
-                  </div>
-                  <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Returns an iterable of values in the set.</p></div>
-                    <h4 class="tsd-returns-title">
-                      Returns <span class="tsd-signature-type">SetIterator</span
-                      ><span class="tsd-signature-symbol">&lt;</span
-                      ><a class="tsd-signature-type tsd-kind-type-parameter" href="#v">V</a
-                      ><span class="tsd-signature-symbol">&gt;</span>
-                    </h4>
-                    <aside class="tsd-sources">
-                      <p>Inherited from ReadonlySet.values</p>
-                      <ul>
-                        <li>Defined in node_modules/typescript/lib/lib.es2015.iterable.d.ts:233</li>
                       </ul>
                     </aside>
                   </div>
@@ -1327,90 +445,34 @@
             </summary>
             <div class="tsd-accordion-details">
               <details open class="tsd-accordion tsd-page-navigation-section">
-                <summary class="tsd-accordion-summary" data-key="section-Properties">
+                <summary class="tsd-accordion-summary" data-key="section-Readable">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Properties
+                  >Readable
                 </summary>
                 <div>
                   <a href="#"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
                       <use href="../assets/icons.svg#icon-1024"></use></svg
                     ><span>$</span></a
-                  ><a href="#size"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
-                      <use href="../assets/icons.svg#icon-1024"></use></svg
-                    ><span>size</span></a
                   >
                 </div>
               </details>
               <details open class="tsd-accordion tsd-page-navigation-section">
-                <summary class="tsd-accordion-summary" data-key="section-Methods">
+                <summary class="tsd-accordion-summary" data-key="section-Events">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <use href="../assets/icons.svg#icon-chevronDown"></use></svg
-                  >Methods
+                  >Events
                 </summary>
                 <div>
-                  <a href="#iterator"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>[iterator]</span></a
-                  ><a href="#difference"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>difference</span></a
-                  ><a href="#entries"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>entries</span></a
-                  ><a href="#foreach"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>for<wbr />Each</span></a
-                  ><a href="#has"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>has</span></a
-                  ><a href="#intersection"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>intersection</span></a
-                  ><a href="#isdisjointfrom"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>is<wbr />Disjoint<wbr />From</span></a
-                  ><a href="#issubsetof"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>is<wbr />Subset<wbr />Of</span></a
-                  ><a href="#issupersetof"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>is<wbr />Superset<wbr />Of</span></a
-                  ><a href="#keys"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>keys</span></a
+                  <a href="#ondisposevalue"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Property">
+                      <use href="../assets/icons.svg#icon-1024"></use></svg
+                    ><span>on<wbr />Dispose<wbr />Value</span></a
                   ><a href="#onchanged"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use></svg
                     ><span>on<wbr />Changed</span></a
-                  ><a href="#ondisposevalue"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>on<wbr />Dispose<wbr />Value</span></a
-                  ><a href="#symmetricdifference"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>symmetric<wbr />Difference</span></a
-                  ><a href="#union"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>union</span></a
-                  ><a href="#values"
-                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
-                      <use href="../assets/icons.svg#icon-2048"></use></svg
-                    ><span>values</span></a
                   >
                 </div>
               </details>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>ToWritable | @embra/reactivity - v0.0.5</title>
+    <title>toWritable | @embra/reactivity - v0.0.5</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,45 +57,68 @@
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li><a href="../modules/index.html">index</a></li>
-            <li><a href="" aria-current="page">ToWritable</a></li>
+            <li><a href="" aria-current="page">toWritable</a></li>
           </ul>
-          <h1>Interface ToWritable</h1>
+          <h1>Function toWritable</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>Converts a Readable to a Writable By adding a setter function.</p>
+          </div>
+          <div class="tsd-comment tsd-typography">
+            <div class="tsd-tag-param">
+              <h4 class="tsd-anchor-link" id="param-">
+                Param: $<a href="#param-" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+            </div>
+            <div class="tsd-tag-param">
+              <h4 class="tsd-anchor-link" id="param-set">
+                Param: set<a href="#param-set" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>a function that sets the value of Readable.</p>
+            </div>
+            <div class="tsd-tag-returns">
+              <h4 class="tsd-anchor-link" id="returns">
+                Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>The same Readable with the new setter.</p>
+            </div>
+          </div>
+        </section>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
               <div class="tsd-signature tsd-anchor-link" id="towritable">
-                <span class="tsd-kind-call-signature">ToWritable</span><span class="tsd-signature-symbol">&lt;</span
+                <span class="tsd-kind-call-signature">toWritable</span><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><br />    <span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
-                <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface">OwnedReadable</a
+                <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                  >OwnedReadable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue"
-                  >TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span
                 ><br />    <span class="tsd-kind-parameter">set</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
                 ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue"
-                  >TValue</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                 ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
                 <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span><br /><span
                   class="tsd-signature-symbol"
                   >)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a href="index.OwnedWritable.html" class="tsd-signature-type tsd-kind-interface">OwnedWritable</a
+                <a href="../interfaces/index.OwnedWritable.html" class="tsd-signature-type tsd-kind-interface"
+                  >OwnedWritable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue"
-                  >TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span
                 ><a href="#towritable" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
@@ -116,13 +139,10 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">$</span>:
-                        <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                        <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
                           >OwnedReadable</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a
-                          class="tsd-signature-type tsd-kind-type-parameter"
-                          href="../functions/index.toWritable.html#towritabletvalue"
-                          >TValue</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
                     </li>
@@ -132,10 +152,7 @@
                         ><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span>
                         <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span>
                         <span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                        <a
-                          class="tsd-signature-type tsd-kind-type-parameter"
-                          href="../functions/index.toWritable.html#towritabletvalue"
-                          >TValue</a
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                         ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
                         <span class="tsd-signature-type">void</span></span
                       >
@@ -144,12 +161,10 @@
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns
-                  <a href="index.OwnedWritable.html" class="tsd-signature-type tsd-kind-interface">OwnedWritable</a
+                  <a href="../interfaces/index.OwnedWritable.html" class="tsd-signature-type tsd-kind-interface"
+                    >OwnedWritable</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a
-                    class="tsd-signature-type tsd-kind-type-parameter"
-                    href="../functions/index.toWritable.html#towritabletvalue"
-                    >TValue</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue">TValue</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
                 <aside class="tsd-sources">
@@ -157,8 +172,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/readable.ts#L375"
-                        >src/readable.ts:375</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/readable.ts#L388"
+                        >src/readable.ts:388</a
                       >
                     </li>
                   </ul>
@@ -167,37 +182,28 @@
             </li>
             <li class="">
               <div class="tsd-signature tsd-anchor-link" id="towritable-1">
-                <span class="tsd-kind-call-signature">ToWritable</span><span class="tsd-signature-symbol">&lt;</span
+                <span class="tsd-kind-call-signature">toWritable</span><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><br />    <span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
-                <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue-1"
-                  >TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span
                 ><br />    <span class="tsd-kind-parameter">set</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">this</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
                 ><span class="tsd-signature-symbol">,</span> <span class="tsd-kind-parameter">value</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue-1"
-                  >TValue</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                 ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
                 <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span><br /><span
                   class="tsd-signature-symbol"
                   >)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                <a href="../interfaces/index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.toWritable.html#towritabletvalue-1"
-                  >TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span
                 ><a href="#towritable-1" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
@@ -218,12 +224,10 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">$</span>:
-                        <a href="index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                        <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface"
+                          >Readable</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a
-                          class="tsd-signature-type tsd-kind-type-parameter"
-                          href="../functions/index.toWritable.html#towritabletvalue-1"
-                          >TValue</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
                     </li>
@@ -233,10 +237,7 @@
                         ><span class="tsd-kind-parameter">this</span><span class="tsd-signature-symbol">:</span>
                         <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">,</span>
                         <span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
-                        <a
-                          class="tsd-signature-type tsd-kind-type-parameter"
-                          href="../functions/index.toWritable.html#towritabletvalue-1"
-                          >TValue</a
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                         ><span class="tsd-signature-symbol">)</span> <span class="tsd-signature-symbol">=&gt;</span>
                         <span class="tsd-signature-type">void</span></span
                       >
@@ -244,12 +245,10 @@
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
-                  Returns <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                  Returns
+                  <a href="../interfaces/index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a
-                    class="tsd-signature-type tsd-kind-type-parameter"
-                    href="../functions/index.toWritable.html#towritabletvalue-1"
-                    >TValue</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#towritabletvalue-1">TValue</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
                 <aside class="tsd-sources">
@@ -257,8 +256,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/readable.ts#L376"
-                        >src/readable.ts:376</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/readable.ts#L388"
+                        >src/readable.ts:388</a
                       >
                     </li>
                   </ul>

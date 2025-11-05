@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>UseCombine | @embra/reactivity - v0.0.5</title>
+    <title>combine | @embra/reactivity - v0.0.5</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,34 +56,101 @@
       <div class="col-content">
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
-            <li><a href="../modules/react.html">react</a></li>
-            <li><a href="" aria-current="page">UseCombine</a></li>
+            <li><a href="../modules/index.html">index</a></li>
+            <li><a href="" aria-current="page">combine</a></li>
           </ul>
-          <h1>Interface UseCombine</h1>
+          <h1>Function combine</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>
+              Combine an array of
+              <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s into a single
+              <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with transformed
+              value.
+            </p>
+            <p>
+              Unlike <code>compute</code>, the signature of the <code>transform</code> function is pure, which makes it
+              easier to reuse functions that are not aware of the reactive system.
+            </p>
+          </div>
+          <div class="tsd-comment tsd-typography">
+            <div class="tsd-tag-param">
+              <h4 class="tsd-anchor-link" id="param-deps">
+                Param: deps<a href="#param-deps" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>
+                An array of <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
+                combine.
+              </p>
+            </div>
+            <div class="tsd-tag-param">
+              <h4 class="tsd-anchor-link" id="param-transform">
+                Param: transform<a href="#param-transform" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>Optional pure function that takes multiple values and returns a new value.</p>
+            </div>
+            <div class="tsd-tag-param">
+              <h4 class="tsd-anchor-link" id="param-config">
+                Param: config<a href="#param-config" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>Optional custom <a href="../interfaces/index.Config.html" class="tsd-kind-interface">Config</a>.</p>
+            </div>
+            <div class="tsd-tag-returns">
+              <h4 class="tsd-anchor-link" id="returns">
+                Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p>
+                A <a href="../interfaces/index.OwnedReadable.html" class="tsd-kind-interface">OwnedReadable</a> with
+                transformed value.
+              </p>
+            </div>
+            <div class="tsd-tag-example">
+              <h4 class="tsd-anchor-link" id="example">
+                Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">combine</span><span class="hl-1">, </span><span class="hl-2">writable</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v1$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v2$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">combined$</span><span class="hl-1"> = </span><span class="hl-6">combine</span><span class="hl-1">([</span><span class="hl-2">v1$</span><span class="hl-1">, </span><span class="hl-2">v2$</span><span class="hl-1">], (</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-2">v1</span><span class="hl-1"> + </span><span class="hl-2">v2</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+            </div>
+          </div>
+        </section>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="usecombine">
-                <span class="tsd-kind-call-signature">UseCombine</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps">TDeps</a>
+              <div class="tsd-signature tsd-anchor-link" id="combine">
+                <span class="tsd-kind-call-signature">combine</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps">TDeps</a>
                 <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-keyword">readonly</span>
+                <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
+                  >ReadableLike</a
+                ><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">=</span>
                 <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                   >ReadableLike</a
                 ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span
                 ><span class="tsd-signature-symbol">(</span><br />    <span class="tsd-kind-parameter">deps</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps">TDeps</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps">TDeps</a
                 ><span class="tsd-signature-symbol">,</span><br /><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface">OwnedReadable</a
+                <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                  >OwnedReadable</a
                 ><span class="tsd-signature-symbol">&lt;</span
                 ><a href="../types/index.MapReadablesToValues.html" class="tsd-signature-type tsd-kind-type-alias"
                   >MapReadablesToValues</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps">TDeps</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps">TDeps</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#usecombine" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#combine" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
@@ -92,18 +159,21 @@
                   <p>
                     Combines an array of
                     <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s into a
-                    single <a href="index.Readable.html" class="tsd-kind-interface">Readable</a> with the array of
-                    values.
+                    single <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with the
+                    array of values.
                   </p>
                 </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="usecombinetdeps"
+                      <span id="combinetdeps"
                         ><span class="tsd-kind-type-parameter">TDeps</span>
                         <span class="tsd-signature-keyword">extends</span>
                         <span class="tsd-signature-keyword">readonly</span>
+                        <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
+                          >ReadableLike</a
+                        ><span class="tsd-signature-symbol">[]</span> =
                         <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                           >ReadableLike</a
                         ><span class="tsd-signature-symbol">[]</span></span
@@ -117,14 +187,13 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">deps</span>:
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps">TDeps</a></span
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps">TDeps</a></span
                       >
                       <div class="tsd-comment tsd-typography">
                         <p>
                           An array of
                           <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
-                          combine. It follows the React rules of hooks where the length of the array must remain
-                          constant.
+                          combine.
                         </p>
                       </div>
                     </li>
@@ -132,22 +201,26 @@
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns
-                  <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface">OwnedReadable</a
+                  <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                    >OwnedReadable</a
                   ><span class="tsd-signature-symbol">&lt;</span
                   ><a href="../types/index.MapReadablesToValues.html" class="tsd-signature-type tsd-kind-type-alias"
                     >MapReadablesToValues</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps">TDeps</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps">TDeps</a
                   ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
-                <p>A <a href="index.Readable.html" class="tsd-kind-interface">Readable</a> with the combined values.</p>
+                <p>
+                  A <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with the
+                  combined values.
+                </p>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/react/useCombine.ts#L22"
-                        >src/react/useCombine.ts:22</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/combine.ts#L52"
+                        >src/combine.ts:52</a
                       >
                     </li>
                   </ul>
@@ -155,17 +228,21 @@
               </div>
             </li>
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="usecombine-1">
-                <span class="tsd-kind-call-signature">UseCombine</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a>
+              <div class="tsd-signature tsd-anchor-link" id="combine-1">
+                <span class="tsd-kind-call-signature">combine</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps-1">TDeps</a>
                 <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-keyword">readonly</span>
                 <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                   >ReadableLike</a
+                ><span class="tsd-signature-symbol">[]</span> <span class="tsd-signature-symbol">=</span>
+                <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
+                  >ReadableLike</a
                 ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a>
+                <span class="tsd-signature-symbol">=</span> <span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span
                 ><br />    <span class="tsd-kind-parameter">deps</span><span class="tsd-signature-symbol">:</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps-1">TDeps</a
                 ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">transform</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
                 ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">deps</span
@@ -173,24 +250,25 @@
                 <a href="../types/index.MapReadablesToValues.html" class="tsd-signature-type tsd-kind-type-alias"
                   >MapReadablesToValues</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps-1">TDeps</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
                 <span class="tsd-signature-symbol">=&gt;</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a
                 ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">config</span
                 ><span class="tsd-signature-symbol">?:</span>
-                <a href="index.Config.html" class="tsd-signature-type tsd-kind-interface">Config</a
+                <a href="../interfaces/index.Config.html" class="tsd-signature-type tsd-kind-interface">Config</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br /><span
                   class="tsd-signature-symbol"
                   >)</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface">OwnedReadable</a
+                <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                  >OwnedReadable</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a
                 ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#usecombine-1" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#combine-1" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
@@ -199,24 +277,31 @@
                   <p>
                     Combines an array of
                     <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s into a
-                    single <a href="index.Readable.html" class="tsd-kind-interface">Readable</a> with transformed value.
+                    single <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with
+                    transformed value.
                   </p>
                 </div>
                 <section class="tsd-panel">
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="usecombinetdeps-1"
+                      <span id="combinetdeps-1"
                         ><span class="tsd-kind-type-parameter">TDeps</span>
                         <span class="tsd-signature-keyword">extends</span>
                         <span class="tsd-signature-keyword">readonly</span>
+                        <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
+                          >ReadableLike</a
+                        ><span class="tsd-signature-symbol">[]</span> =
                         <a href="../types/index.ReadableLike.html" class="tsd-signature-type tsd-kind-type-alias"
                           >ReadableLike</a
                         ><span class="tsd-signature-symbol">[]</span></span
                       >
                     </li>
                     <li>
-                      <span id="usecombinetvalue"><span class="tsd-kind-type-parameter">TValue</span></span>
+                      <span id="combinetvalue"
+                        ><span class="tsd-kind-type-parameter">TValue</span> =
+                        <span class="tsd-signature-type">any</span></span
+                      >
                     </li>
                   </ul>
                 </section>
@@ -226,14 +311,13 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">deps</span>:
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a></span
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps-1">TDeps</a></span
                       >
                       <div class="tsd-comment tsd-typography">
                         <p>
                           An array of
                           <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
-                          combine. It follows the React rules of hooks where the length of the array must remain
-                          constant.
+                          combine.
                         </p>
                       </div>
                     </li>
@@ -247,10 +331,10 @@
                           class="tsd-signature-type tsd-kind-type-alias"
                           >MapReadablesToValues</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetdeps-1">TDeps</a
                         ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
                         <span class="tsd-signature-symbol">=&gt;</span>
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a></span
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a></span
                       >
                       <div class="tsd-comment tsd-typography">
                         <p>A pure function that takes multiple values and returns a new value.</p>
@@ -259,26 +343,31 @@
                     <li>
                       <span
                         ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">config</span>:
-                        <a href="index.Config.html" class="tsd-signature-type tsd-kind-interface">Config</a
+                        <a href="../interfaces/index.Config.html" class="tsd-signature-type tsd-kind-interface"
+                          >Config</a
                         ><span class="tsd-signature-symbol">&lt;</span
-                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
                       <div class="tsd-comment tsd-typography">
-                        <p>Optional custom <a href="index.Config.html" class="tsd-kind-interface">Config</a>.</p>
+                        <p>
+                          Optional custom
+                          <a href="../interfaces/index.Config.html" class="tsd-kind-interface">Config</a>.
+                        </p>
                       </div>
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns
-                  <a href="index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface">OwnedReadable</a
+                  <a href="../interfaces/index.OwnedReadable.html" class="tsd-signature-type tsd-kind-interface"
+                    >OwnedReadable</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#combinetvalue">TValue</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
                 <p>
-                  An <a href="index.OwnedReadable.html" class="tsd-kind-interface">OwnedReadable</a> with the
+                  A <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with the
                   transformed values.
                 </p>
                 <aside class="tsd-sources">
@@ -286,8 +375,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/react/useCombine.ts#L30"
-                        >src/react/useCombine.ts:30</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/combine.ts#L52"
+                        >src/combine.ts:52</a
                       >
                     </li>
                   </ul>

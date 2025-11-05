@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="IE=edge" />
-    <title>IsWritable | @embra/reactivity - v0.0.5</title>
+    <title>isReadable | @embra/reactivity - v0.0.5</title>
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <meta name="description" content="Documentation for @embra/reactivity" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -57,23 +57,38 @@
         <div class="tsd-page-title">
           <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
             <li><a href="../modules/index.html">index</a></li>
-            <li><a href="" aria-current="page">IsWritable</a></li>
+            <li><a href="" aria-current="page">isReadable</a></li>
           </ul>
-          <h1>Interface IsWritable</h1>
+          <h1>Function isReadable</h1>
         </div>
+        <section class="tsd-panel tsd-comment">
+          <div class="tsd-comment tsd-typography">
+            <p>Checks if $ is is a Readable. A Writable is also a Readable.</p>
+          </div>
+          <div class="tsd-comment tsd-typography">
+            <div class="tsd-tag-returns">
+              <h4 class="tsd-anchor-link" id="returns">
+                Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+                ></a>
+              </h4>
+              <p><code>true</code> if $ is Readable.</p>
+            </div>
+          </div>
+        </section>
         <section class="tsd-panel">
           <ul class="tsd-signatures">
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="iswritable">
-                <span class="tsd-kind-call-signature">IsWritable</span><span class="tsd-signature-symbol">(</span
+              <div class="tsd-signature tsd-anchor-link" id="isreadable">
+                <span class="tsd-kind-call-signature">isReadable</span><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-kind-parameter">$</span>
                 <span class="tsd-signature-keyword">is</span>
-                <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#iswritable" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#isreadable" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
@@ -91,7 +106,7 @@
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns <span class="tsd-kind-parameter">$</span> <span class="tsd-signature-keyword">is</span>
-                  <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                  <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                   ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
@@ -100,8 +115,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L86"
-                        >src/utils.ts:86</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L83"
+                        >src/utils.ts:83</a
                       >
                     </li>
                   </ul>
@@ -109,16 +124,16 @@
               </div>
             </li>
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="iswritable-1">
-                <span class="tsd-kind-call-signature">IsWritable</span><span class="tsd-signature-symbol">(</span
+              <div class="tsd-signature tsd-anchor-link" id="isreadable-1">
+                <span class="tsd-kind-call-signature">isReadable</span><span class="tsd-signature-symbol">(</span
                 ><span class="tsd-kind-parameter">$</span><span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-kind-parameter">$</span>
                 <span class="tsd-signature-keyword">is</span>
-                <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span
-                ><a href="#iswritable-1" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#isreadable-1" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
@@ -135,7 +150,7 @@
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns <span class="tsd-kind-parameter">$</span> <span class="tsd-signature-keyword">is</span>
-                  <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                  <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                   ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
@@ -144,8 +159,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L87"
-                        >src/utils.ts:87</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L83"
+                        >src/utils.ts:83</a
                       >
                     </li>
                   </ul>
@@ -153,43 +168,30 @@
               </div>
             </li>
             <li class="">
-              <div class="tsd-signature tsd-anchor-link" id="iswritable-2">
-                <span class="tsd-kind-call-signature">IsWritable</span><span class="tsd-signature-symbol">&lt;</span
-                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#iswritablet">T</a>
+              <div class="tsd-signature tsd-anchor-link" id="isreadable-2">
+                <span class="tsd-kind-call-signature">isReadable</span><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a>
                 <span class="tsd-signature-keyword">extends</span>
-                <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span
                 ><span class="tsd-signature-symbol">(</span><br />    <span class="tsd-kind-parameter">$</span
                 ><span class="tsd-signature-symbol">:</span>
-                <a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.isWritable.html#iswritablet"
-                  >T</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a
                 ><span class="tsd-signature-symbol">,</span><br /><span class="tsd-signature-symbol">)</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-kind-parameter">$</span>
                 <span class="tsd-signature-keyword">is</span>
-                <a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.isWritable.html#iswritablet"
-                  >T</a
-                >
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a>
                 <span class="tsd-signature-keyword">extends</span>
-                <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                 ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                 ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">?</span>
-                <a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.isWritable.html#iswritablet"
-                  >T</a
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a
                 ><span class="tsd-signature-symbol">&lt;</span
-                ><a
-                  class="tsd-signature-type tsd-kind-type-parameter"
-                  href="../functions/index.isWritable.html#iswritablet"
-                  >T</a
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a
                 ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">:</span>
                 <span class="tsd-signature-type">never</span
-                ><a href="#iswritable-2" aria-label="Permalink" class="tsd-anchor-icon"
+                ><a href="#isreadable-2" aria-label="Permalink" class="tsd-anchor-icon"
                   ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
                 ></a>
               </div>
@@ -198,10 +200,11 @@
                   <h4>Type Parameters</h4>
                   <ul class="tsd-type-parameter-list">
                     <li>
-                      <span id="iswritablet"
+                      <span id="isreadablet"
                         ><span class="tsd-kind-type-parameter">T</span>
                         <span class="tsd-signature-keyword">extends</span>
-                        <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                        <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface"
+                          >Readable</a
                         ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
@@ -214,35 +217,21 @@
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">$</span>:
-                        <a
-                          class="tsd-signature-type tsd-kind-type-parameter"
-                          href="../functions/index.isWritable.html#iswritablet"
-                          >T</a
-                        ></span
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a></span
                       >
                     </li>
                   </ul>
                 </div>
                 <h4 class="tsd-returns-title">
                   Returns <span class="tsd-kind-parameter">$</span> <span class="tsd-signature-keyword">is</span>
-                  <a
-                    class="tsd-signature-type tsd-kind-type-parameter"
-                    href="../functions/index.isWritable.html#iswritablet"
-                    >T</a
-                  >
+                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a>
                   <span class="tsd-signature-keyword">extends</span>
-                  <a href="index.Writable.html" class="tsd-signature-type tsd-kind-interface">Writable</a
+                  <a href="../interfaces/index.Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
                   ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
                   ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">?</span>
-                  <a
-                    class="tsd-signature-type tsd-kind-type-parameter"
-                    href="../functions/index.isWritable.html#iswritablet"
-                    >T</a
+                  <a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a
                   ><span class="tsd-signature-symbol">&lt;</span
-                  ><a
-                    class="tsd-signature-type tsd-kind-type-parameter"
-                    href="../functions/index.isWritable.html#iswritablet"
-                    >T</a
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#isreadablet">T</a
                   ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">:</span>
                   <span class="tsd-signature-type">never</span>
                 </h4>
@@ -251,8 +240,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L88"
-                        >src/utils.ts:88</a
+                        href="https://github.com/embrajs/reactivity/blob/08ea78a0ed485574b99acf0ac4f243fb16bdbfd7/src/utils.ts#L83"
+                        >src/utils.ts:83</a
                       >
                     </li>
                   </ul>
