@@ -1,6 +1,6 @@
 {
   "name": "@embra/reactivity",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A lightweight, composable and explicit reactivity system.",
   "repository": "embrajs/reactivity",
   "main": "./dist/index.js",
