@@ -71,6 +71,10 @@
             transformed value from the given
             <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
           </p>
+          <p>
+            Unlike <code>compute</code>, the signature of the <code>transform</code> function is pure, which makes it
+            easier to reuse functions that are not aware of the reactive system.
+          </p>
         </div>
         <div class="tsd-comment tsd-typography">
           <div class="tsd-tag-param">
@@ -90,7 +94,7 @@
                 ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
               ></a>
             </h4>
-            <p>A pure function that takes an input value and returns a new value.</p>
+            <p>Optional pure function that takes an input value and returns a new value.</p>
           </div>
           <div class="tsd-tag-param">
             <h4 class="tsd-anchor-link" id="param-config">
@@ -118,8 +122,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/derive.ts#L33"
-                >src/derive.ts:33</a
+                href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/derive.ts#L36"
+                >src/derive.ts:36</a
               >
             </li>
           </ul>

@@ -89,11 +89,11 @@
       <g transform="translate(0, 0)">
   <g class="stagger" style="animation-delay: 100ms">
     <text x="2" y="15" class="text">{ readable, writable } (core)</text>
-    <text x="315" y="34" class="text">1.21 kB</text>
+    <text x="315" y="34" class="text">1.25 kB</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="93.56589147286822%">
+      <svg width="94.10876132930514%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 400ms" />
       </svg>
     </svg>
@@ -103,11 +103,11 @@
 <g transform="translate(0, 40)">
   <g class="stagger" style="animation-delay: 250ms">
     <text x="2" y="15" class="text">{ watch }</text>
-    <text x="315" y="34" class="text">361 B</text>
+    <text x="315" y="34" class="text">389 B</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="27.984496124031004%">
+      <svg width="29.38066465256798%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 550ms" />
       </svg>
     </svg>
@@ -117,11 +117,11 @@
 <g transform="translate(0, 80)">
   <g class="stagger" style="animation-delay: 400ms">
     <text x="2" y="15" class="text">{ compute, combine, derive }</text>
-    <text x="315" y="34" class="text">275 B</text>
+    <text x="315" y="34" class="text">303 B</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="21.31782945736434%">
+      <svg width="22.885196374622357%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
       </svg>
     </svg>
@@ -131,7 +131,7 @@
 <g transform="translate(0, 120)">
   <g class="stagger" style="animation-delay: 550ms">
     <text x="2" y="15" class="text">{ reactiveMap, reactiveSet, reactiveArray } (collections)</text>
-    <text x="315" y="34" class="text">1.29 kB</text>
+    <text x="315" y="34" class="text">1.32 kB</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
@@ -149,7 +149,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="16.434108527131784%">
+      <svg width="16.012084592145015%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1000ms" />
       </svg>
     </svg>
@@ -159,11 +159,11 @@
 <g transform="translate(0, 200)">
   <g class="stagger" style="animation-delay: 850ms">
     <text x="2" y="15" class="text">React Hooks</text>
-    <text x="315" y="34" class="text">483 B</text>
+    <text x="315" y="34" class="text">516 B</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="37.44186046511628%">
+      <svg width="38.972809667673715%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1150ms" />
       </svg>
     </svg>

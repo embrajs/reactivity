@@ -137,7 +137,19 @@
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -201,7 +213,11 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">19x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
@@ -229,20 +245,20 @@ import { useIsomorphicLayoutEffect } from "./utils";
 export interface UseCombine {
   /**
    * Combines an array of {@link ReadableLike}s into a single {@link Readable} with the array of values.
-   * @param deps An array of {@link ReadableLike}s to combine.
+   * @param deps An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
    * @returns A {@link Readable} with the combined values.
    */
   &lt;TDeps extends readonly ReadableLike[]&gt;(deps: TDeps): OwnedReadable&lt;MapReadablesToValues&lt;TDeps&gt;&gt;;
   /**
    * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
-   * @param deps An array of {@link ReadableLike}s to combine.
-   * @param transform A pure function that takes an array of values and returns a new value.
-   * @param config custom config for the combined Readable.
-   * @returns A {@link Readable} with the transformed values.
+   * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
+   * @param transform - A pure function that takes multiple values and returns a new value.
+   * @param config - Optional custom {@link Config}.
+   * @returns An {@link OwnReadable} with the transformed values.
    */
   &lt;TDeps extends readonly ReadableLike[], TValue&gt;(
     deps: TDeps,
-    transform: (deps: MapReadablesToValues&lt;TDeps&gt;) =&gt; TValue,
+    transform: (...deps: MapReadablesToValues&lt;TDeps&gt;) =&gt; TValue,
     config?: Config&lt;TValue&gt;,
   ): OwnedReadable&lt;TValue&gt;;
 }
@@ -250,8 +266,12 @@ export interface UseCombine {
 /**
  * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
  *
- * Note that changes to `transform` and `config` will not trigger re-derivation, and `useCombine` always uses the latest `transform` and `config` in the derivation.
- * In other words, no extra care is needed to use this in React components. All args will be updated properly.
+ * Note that changes to `transform` and `config` will not trigger re-derivation; `useCombine` always uses the latest `transform` and `config` in the derivation.
+ *
+ * @param deps - An array of {@link ReadableLike}s to combine. It follows the React rules of hooks where the length of the array must remain constant.
+ * @param transform - Optional pure function that takes multiple values and returns a new value.
+ * @param config - Optional custom {@link Config}.
+ * @returns An {@link OwnReadable} with the transformed values.
  *
  * @example
  * ```tsx
@@ -269,13 +289,17 @@ export interface UseCombine {
  */
 export const useCombine: UseCombine = &lt;TDeps extends readonly ReadableLike[], TValue&gt;(
   deps: TDeps,
-  transform?: (deps: MapReadablesToValues&lt;TDeps&gt;) =&gt; TValue,
+  transform?: (...deps: MapReadablesToValues&lt;TDeps&gt;) =&gt; TValue,
   config?: Config&lt;TValue&gt;,
 ): OwnedReadable&lt;TValue&gt; =&gt; {
   const transformRef = useRef(transform);
   const computed = useMemo(
     () =&gt;
-      combine(deps, deps =&gt; (transformRef.current ? transformRef.current(deps) : (deps as unknown as TValue)), config),
+      combine(
+        deps,
+        (...deps) =&gt; (transformRef.current ? transformRef.current(...deps) : (deps as unknown as TValue)),
+        config,
+      ),
     deps,
   );
   useIsomorphicLayoutEffect(() =&gt; {
@@ -292,7 +316,7 @@ export const useCombine: UseCombine = &lt;TDeps extends readonly ReadableLike[],
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-05T05:53:23.621Z
+                at 2025-11-05T09:06:30.388Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

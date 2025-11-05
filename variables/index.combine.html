@@ -71,6 +71,10 @@
             into a single <a href="../interfaces/index.Readable.html" class="tsd-kind-interface">Readable</a> with
             transformed value.
           </p>
+          <p>
+            Unlike <code>compute</code>, the signature of the <code>transform</code> function is pure, which makes it
+            easier to reuse functions that are not aware of the reactive system.
+          </p>
         </div>
         <div class="tsd-comment tsd-typography">
           <div class="tsd-tag-param">
@@ -90,7 +94,7 @@
                 ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
               ></a>
             </h4>
-            <p>A pure function that takes an array of values and returns a new value.</p>
+            <p>Optional pure function that takes multiple values and returns a new value.</p>
           </div>
           <div class="tsd-tag-param">
             <h4 class="tsd-anchor-link" id="param-config">
@@ -111,14 +115,23 @@
               transformed value.
             </p>
           </div>
+          <div class="tsd-tag-example">
+            <h4 class="tsd-anchor-link" id="example">
+              Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <pre><code class="ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">combine</span><span class="hl-1">, </span><span class="hl-2">writable</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v1$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v2$</span><span class="hl-1"> = </span><span class="hl-6">writable</span><span class="hl-1">(</span><span class="hl-7">0</span><span class="hl-1">);</span><br/><br/><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">combined$</span><span class="hl-1"> = </span><span class="hl-6">combine</span><span class="hl-1">([</span><span class="hl-2">v1$</span><span class="hl-1">, </span><span class="hl-2">v2$</span><span class="hl-1">], (</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">) </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-2">v1</span><span class="hl-1"> + </span><span class="hl-2">v2</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+          </div>
         </div>
         <aside class="tsd-sources">
           <ul>
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/combine.ts#L37"
-                >src/combine.ts:37</a
+                href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/combine.ts#L50"
+                >src/combine.ts:50</a
               >
             </li>
           </ul>

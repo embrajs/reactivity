@@ -73,11 +73,50 @@
           <p>
             Note that changes to <code>transform</code> and <code>config</code> will not trigger re-derivation, and
             <code>useDerive</code> always uses the latest <code>transform</code> and <code>config</code> in the
-            derivation. In other words, no extra care is needed to use this in React components. All args will be
-            updated properly.
+            derivation.
           </p>
         </div>
         <div class="tsd-comment tsd-typography">
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-dep">
+              Param: dep<a href="#param-dep" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>
+              The <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a> to derive
+              from, or a non-Readable value that will be returned as-is.
+            </p>
+          </div>
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-transform">
+              Param: transform<a href="#param-transform" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>Optional pure function that takes an input value and returns a new value.</p>
+          </div>
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-config">
+              Param: config<a href="#param-config" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>Optional custom <a href="../interfaces/index.Config.html" class="tsd-kind-interface">Config</a>.</p>
+          </div>
+          <div class="tsd-tag-returns">
+            <h4 class="tsd-anchor-link" id="returns">
+              Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>
+              Transformed value from the given
+              <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>, or
+              <code>dep</code> itself if <code>dep</code> is not a
+              <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>.
+            </p>
+          </div>
           <div class="tsd-tag-example">
             <h4 class="tsd-anchor-link" id="example">
               Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
@@ -93,8 +132,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/react/useDerived.ts#L57"
-                >src/react/useDerived.ts:57</a
+                href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/react/useDerived.ts#L61"
+                >src/react/useDerived.ts:61</a
               >
             </li>
           </ul>

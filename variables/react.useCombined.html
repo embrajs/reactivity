@@ -74,11 +74,45 @@
           <p>
             Note that changes to <code>transform</code> and <code>config</code> will not trigger re-derivation, and
             <code>useCombine</code> always uses the latest <code>transform</code> and <code>config</code> in the
-            derivation. In other words, no extra care is needed to use this in React components. All args will be
-            updated properly.
+            derivation.
           </p>
         </div>
         <div class="tsd-comment tsd-typography">
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-deps">
+              Param: deps<a href="#param-deps" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>
+              An array of <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
+              combine. It follows the React rules of hooks where the length of the array must remain constant.
+            </p>
+          </div>
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-transform">
+              Param: transform<a href="#param-transform" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>Optional pure function that takes multiple values and returns a new value.</p>
+          </div>
+          <div class="tsd-tag-param">
+            <h4 class="tsd-anchor-link" id="param-config">
+              Param: config<a href="#param-config" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>Optional custom <a href="../interfaces/index.Config.html" class="tsd-kind-interface">Config</a>.</p>
+          </div>
+          <div class="tsd-tag-returns">
+            <h4 class="tsd-anchor-link" id="returns">
+              Returns<a href="#returns" aria-label="Permalink" class="tsd-anchor-icon"
+                ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg
+              ></a>
+            </h4>
+            <p>The transformed values.</p>
+          </div>
           <div class="tsd-tag-example">
             <h4 class="tsd-anchor-link" id="example">
               Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
@@ -94,8 +128,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/react/useCombined.ts#L46"
-                >src/react/useCombined.ts:46</a
+                href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/react/useCombined.ts#L50"
+                >src/react/useCombined.ts:50</a
               >
             </li>
           </ul>

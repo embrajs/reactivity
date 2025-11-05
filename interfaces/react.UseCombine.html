@@ -122,7 +122,8 @@
                         <p>
                           An array of
                           <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
-                          combine.
+                          combine. It follows the React rules of hooks where the length of the array must remain
+                          constant.
                         </p>
                       </div>
                     </li>
@@ -144,7 +145,7 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/react/useCombine.ts#L22"
+                        href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/react/useCombine.ts#L22"
                         >src/react/useCombine.ts:22</a
                       >
                     </li>
@@ -166,7 +167,8 @@
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetdeps-1">TDeps</a
                 ><span class="tsd-signature-symbol">,</span><br />    <span class="tsd-kind-parameter">transform</span
                 ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
-                ><span class="tsd-kind-parameter">deps</span><span class="tsd-signature-symbol">:</span>
+                ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">deps</span
+                ><span class="tsd-signature-symbol">:</span>
                 <a href="../types/index.MapReadablesToValues.html" class="tsd-signature-type tsd-kind-type-alias"
                   >MapReadablesToValues</a
                 ><span class="tsd-signature-symbol">&lt;</span
@@ -229,14 +231,16 @@
                         <p>
                           An array of
                           <a href="../types/index.ReadableLike.html" class="tsd-kind-type-alias">ReadableLike</a>s to
-                          combine.
+                          combine. It follows the React rules of hooks where the length of the array must remain
+                          constant.
                         </p>
                       </div>
                     </li>
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">transform</span>: <span class="tsd-signature-symbol">(</span
-                        ><span class="tsd-kind-parameter">deps</span><span class="tsd-signature-symbol">:</span>
+                        ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">deps</span
+                        ><span class="tsd-signature-symbol">:</span>
                         <a
                           href="../types/index.MapReadablesToValues.html"
                           class="tsd-signature-type tsd-kind-type-alias"
@@ -248,7 +252,7 @@
                         <a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a></span
                       >
                       <div class="tsd-comment tsd-typography">
-                        <p>A pure function that takes an array of values and returns a new value.</p>
+                        <p>A pure function that takes multiple values and returns a new value.</p>
                       </div>
                     </li>
                     <li>
@@ -259,7 +263,9 @@
                         ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
                         ><span class="tsd-signature-symbol">&gt;</span></span
                       >
-                      <div class="tsd-comment tsd-typography"><p>custom config for the combined Readable.</p></div>
+                      <div class="tsd-comment tsd-typography">
+                        <p>Optional custom <a href="index.Config.html" class="tsd-kind-interface">Config</a>.</p>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -270,15 +276,13 @@
                   ><a class="tsd-signature-type tsd-kind-type-parameter" href="#usecombinetvalue">TValue</a
                   ><span class="tsd-signature-symbol">&gt;</span>
                 </h4>
-                <p>
-                  A <a href="index.Readable.html" class="tsd-kind-interface">Readable</a> with the transformed values.
-                </p>
+                <p>An OwnReadable with the transformed values.</p>
                 <aside class="tsd-sources">
                   <ul>
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/75b5b3d9d6a81db40ffc1be563ede464d046a16f/src/react/useCombine.ts#L30"
+                        href="https://github.com/embrajs/reactivity/blob/7f3b8f94ca94ddecd0ce7ea8de5b0f15caccd212/src/react/useCombine.ts#L30"
                         >src/react/useCombine.ts:30</a
                       >
                     </li>
