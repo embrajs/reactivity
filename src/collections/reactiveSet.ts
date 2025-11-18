@@ -1,4 +1,5 @@
 import { batchFlush, batchStart, type BatchTask, batchTasks } from "../batch";
+import { context } from "../context";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { type ReadableProvider, type OwnedWritable, type Readable } from "../interface";
 import { writable } from "../readable";
@@ -184,6 +185,28 @@ export class OwnedReactiveSet<V> extends Set<V> implements ReadableProvider<Read
       this._notify_();
       isBatchTop && batchFlush();
     }
+  }
+
+  /**
+   * Replace the contents of the set with the given values.
+   * @param values - The new values to replace the set with.
+   * @returns The set itself.
+   */
+  public replace(values: Iterable<V>): this {
+    const isBatchTop = batchStart();
+    const newValues: Set<V> = (context.replaceMarkers_ ??= new Set());
+    for (const value of values) {
+      newValues.add(value);
+      this.add(value);
+    }
+    for (const value of this) {
+      if (!newValues.has(value)) {
+        this.delete(value);
+      }
+    }
+    newValues.clear();
+    isBatchTop && batchFlush();
+    return this;
   }
 
   /** @internal */

@@ -4,6 +4,7 @@ import { BRAND } from "./utils";
 export interface Context {
   batching_: boolean;
   readonly batchTask_: Set<BatchTask>;
+  replaceMarkers_?: Set<any>;
 }
 
 declare const globalThis: {

@@ -1,4 +1,5 @@
 import { batchFlush, batchStart, type BatchTask, batchTasks } from "../batch";
+import { context } from "../context";
 import { type EventObject, on, type RemoveListener, send, size } from "../event";
 import { type ReadableProvider, type OwnedWritable, type Readable } from "../interface";
 import { writable } from "../readable";
@@ -199,6 +200,28 @@ export class OwnedReactiveMap<K, V> extends Map<K, V> implements ReadableProvide
       this.set(newKey, value);
       isBatchTop && batchFlush();
     }
+  }
+
+  /**
+   * Replace the contents of the map with the given entries.
+   * @param entries - The new entries to replace the map with.
+   * @returns The map itself.
+   */
+  public replace(entries: Iterable<readonly [K, V]>): this {
+    const isBatchTop = batchStart();
+    const newKeys: Set<K> = (context.replaceMarkers_ ??= new Set());
+    for (const [key, value] of entries) {
+      newKeys.add(key);
+      this.set(key, value);
+    }
+    for (const key of this.keys()) {
+      if (!newKeys.has(key)) {
+        this.delete(key);
+      }
+    }
+    newKeys.clear();
+    isBatchTop && batchFlush();
+    return this;
   }
 
   /** @internal */

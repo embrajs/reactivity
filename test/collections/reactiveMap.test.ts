@@ -623,6 +623,28 @@ describe("ReactiveMap", () => {
       expect(listener2).toHaveBeenCalledTimes(0);
     });
 
+    it("should not mark a value to be disposed if it is deleted and added back in a batch", () => {
+      const map = reactiveMap<string, number>();
+      const listener = vi.fn();
+
+      map.onDisposeValue(listener);
+
+      map.set("foo", 1);
+      expect(listener).toBeCalledTimes(0);
+
+      batch(() => {
+        map.delete("foo");
+        map.set("foo", 1);
+      });
+      expect(listener).toBeCalledTimes(0);
+
+      batch(() => {
+        map.delete("foo");
+        map.set("foo", 2);
+      });
+      expect(listener).toBeCalledTimes(1);
+    });
+
     it("should not notify removed listeners", () => {
       const map = reactiveMap<string, number>();
       const listener = vi.fn();
@@ -647,6 +669,177 @@ describe("ReactiveMap", () => {
       map.onDisposeValue(listener);
       map.dispose();
       expect(listener).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe("replace", () => {
+    it("should replace all entries", () => {
+      const map = reactiveMap<string, number>();
+      map.set("foo", 1);
+      map.set("bar", 2);
+      map.replace([["baz", 3]]);
+      expect(map.get("foo")).toBeUndefined();
+      expect(map.get("bar")).toBeUndefined();
+      expect(map.get("baz")).toEqual(3);
+    });
+
+    it("should return deleted same key entries", () => {
+      const map = reactiveMap(Object.entries({ foo: 1, bar: 2 }));
+      const deleted = map.replace(Object.entries({ foo: 3, bar: 4 }));
+      expect([...deleted]).toHaveLength(2);
+    });
+
+    it("should notify on replace", () => {
+      const map = reactiveMap<string, number>();
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      map.replace([["baz", 3]]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(mockNotify).toHaveBeenCalledWith(map);
+
+      dispose();
+    });
+
+    it("should replace more entries", () => {
+      const map = reactiveMap<string, number>(
+        Object.entries({
+          foo: 1,
+          bar: 2,
+        }),
+      );
+
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      map.replace([
+        ["baz", 3],
+        ["qux", 4],
+        ["quux", 5],
+      ]);
+
+      expect(map.get("foo")).toBeUndefined();
+      expect(map.get("bar")).toBeUndefined();
+      expect(map.get("baz")).toEqual(3);
+      expect(map.get("qux")).toEqual(4);
+      expect(map.get("quux")).toEqual(5);
+
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+
+      dispose();
+    });
+
+    it("should replace less entries", () => {
+      const map = reactiveMap<string, number>(
+        Object.entries({
+          foo: 1,
+          bar: 2,
+        }),
+      );
+
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      map.replace([["baz", 3]]);
+
+      expect(map.get("foo")).toBeUndefined();
+      expect(map.get("bar")).toBeUndefined();
+      expect(map.get("baz")).toEqual(3);
+
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+
+      dispose();
+    });
+
+    it("should not replace same entries", () => {
+      const map = reactiveMap<string, number>(
+        Object.entries({
+          foo: 1,
+          bar: 2,
+        }),
+      );
+
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      map.replace([
+        ["bar", 2],
+        ["foo", 1],
+      ]);
+
+      expect(map.get("foo")).toBe(1);
+      expect(map.get("bar")).toBe(2);
+
+      expect(mockNotify).toHaveBeenCalledTimes(0);
+
+      dispose();
+    });
+
+    it("should not notify if not changed", () => {
+      const map = reactiveMap<string, number>([["baz", 3]]);
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      map.replace([["baz", 3]]);
+      expect(mockNotify).toHaveBeenCalledTimes(0);
+
+      dispose();
+    });
+
+    it("should notify if some keys are removed", () => {
+      const map = reactiveMap<string, number>([
+        ["baz", 3],
+        ["foo", 4],
+      ]);
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      expect(map.get("foo")).toBe(4);
+
+      map.replace([["baz", 3]]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(map.get("foo")).toBeUndefined();
+
+      dispose();
+    });
+
+    it("should notify if some keys with same value are removed", () => {
+      const map = reactiveMap<string, number>([
+        ["baz", 4],
+        ["foo", 4],
+      ]);
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      expect(map.get("foo")).toBe(4);
+
+      map.replace([["baz", 4]]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(map.get("baz")).toBe(4);
+      expect(map.get("foo")).toBeUndefined();
+
+      dispose();
+    });
+
+    it("should notify if some values are changed to values from other keys", () => {
+      const map = reactiveMap<string, number>([
+        ["baz", 3],
+        ["foo", 4],
+      ]);
+      const mockNotify = vi.fn();
+      const dispose = map.$.reaction(mockNotify);
+
+      expect(map.get("foo")).toBe(4);
+
+      map.replace([
+        ["baz", 4],
+        ["foo", 3],
+      ]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(map.get("baz")).toBe(4);
+      expect(map.get("foo")).toBe(3);
+
+      dispose();
     });
   });
 });

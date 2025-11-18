@@ -167,6 +167,22 @@ export class OwnedReactiveArray<V> extends Array<V> implements ReadableProvider<
     return this;
   }
 
+  /**
+   * Replaces the contents of the array with the provided items.
+   * @param items The new items to replace the contents of the array with.
+   * @returns The array itself.
+   */
+  public replace(items: Iterable<V>): this {
+    const isBatchTop = batchStart();
+    let i = 0;
+    for (const item of items) {
+      this.set(i++, item);
+    }
+    this.setLength(i);
+    isBatchTop && batchFlush();
+    return this;
+  }
+
   public dispose(): void {
     if (this._disposed_) return;
     if (process.env.NODE_ENV !== "production") {

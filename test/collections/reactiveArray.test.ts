@@ -650,6 +650,103 @@ describe("ReactiveArray", () => {
     });
   });
 
+  describe("replace", () => {
+    it("should replace the array with the specified elements", () => {
+      const arr = reactiveArray([1, 2, 3]);
+      const spy = vi.fn();
+      arr.$.reaction(spy);
+
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      arr.replace([4, 5, 6]);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(arr).toEqual([4, 5, 6]);
+    });
+
+    it("should replace the array with less elements", () => {
+      const arr = reactiveArray([1, 2, 3]);
+      const spy = vi.fn();
+      arr.$.reaction(spy);
+
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      arr.replace([1]);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(arr).toEqual([1]);
+    });
+
+    it("should replace the array with different order", () => {
+      const arr = reactiveArray([1, 2, 3]);
+      const spy = vi.fn();
+      arr.$.reaction(spy);
+
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      arr.replace([3, 2, 1]);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(arr).toEqual([3, 2, 1]);
+    });
+
+    it("should replace an empty array with the specified elements", () => {
+      const arr = reactiveArray<number>([]);
+
+      const spy = vi.fn();
+      arr.$.reaction(spy);
+
+      expect(spy).toHaveBeenCalledTimes(0);
+
+      arr.replace([1, 2, 3]);
+
+      expect(spy).toHaveBeenCalledTimes(1);
+
+      expect(arr).toEqual([1, 2, 3]);
+    });
+
+    it("should notify on replace", () => {
+      const arr = reactiveArray(["a", "b", "c"]);
+      const mockNotify = vi.fn();
+      const dispose = arr.$.reaction(mockNotify);
+
+      arr.replace(["x", "y", "z"]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(mockNotify).lastCalledWith(arr);
+
+      dispose();
+    });
+
+    it("should not notify if not changed", () => {
+      const arr = reactiveArray([1]);
+      const mockNotify = vi.fn();
+      const dispose = arr.$.reaction(mockNotify);
+
+      arr.replace([2, 3]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(mockNotify).lastCalledWith(arr);
+
+      dispose();
+    });
+
+    it("should notify if some keys are removed", () => {
+      const arr = reactiveArray([1, 2, 3]);
+      const mockNotify = vi.fn();
+      const dispose = arr.$.reaction(mockNotify);
+
+      expect(arr).toEqual([1, 2, 3]);
+
+      arr.replace([1, 2]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(arr).toEqual([1, 2]);
+
+      dispose();
+    });
+  });
+
   describe.each(["test", "production"])("dispose [%s]", NODE_ENV => {
     const originalEnv = process.env.NODE_ENV;
 

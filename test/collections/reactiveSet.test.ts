@@ -533,6 +533,28 @@ describe("ReactiveSet", () => {
       expect(listener2).toHaveBeenCalledTimes(0);
     });
 
+    it("should not mark a value to be disposed if it is deleted and added back in a batch", () => {
+      const set = reactiveSet<number>();
+      const listener = vi.fn();
+
+      set.onDisposeValue(listener);
+
+      set.add(1);
+      expect(listener).toBeCalledTimes(0);
+
+      batch(() => {
+        set.delete(1);
+        set.add(1);
+      });
+      expect(listener).toBeCalledTimes(0);
+
+      batch(() => {
+        set.delete(1);
+        set.add(2);
+      });
+      expect(listener).toBeCalledTimes(1);
+    });
+
     it("should not notify removed listeners", () => {
       const set = reactiveSet<number>();
       const listener = vi.fn();
@@ -557,6 +579,68 @@ describe("ReactiveSet", () => {
       set.onDisposeValue(listener);
       set.dispose();
       expect(listener).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe("replace", () => {
+    it("should replace all values", () => {
+      const set = reactiveSet<number>();
+      set.add(1);
+      set.add(2);
+      set.replace([3, 4, 5]);
+      expect(set.has(1)).toBe(false);
+      expect(set.has(2)).toBe(false);
+      expect(set.has(3)).toBe(true);
+      expect(set.has(4)).toBe(true);
+      expect(set.has(5)).toBe(true);
+    });
+
+    it("should replace some values", () => {
+      const set = reactiveSet<number>([1, 2, 3, 4, 5]);
+      set.replace([3, 4, 5]);
+      expect(set.has(1)).toBe(false);
+      expect(set.has(2)).toBe(false);
+      expect(set.has(3)).toBe(true);
+      expect(set.has(4)).toBe(true);
+      expect(set.has(5)).toBe(true);
+    });
+
+    it("should notify on replace", () => {
+      const set = reactiveSet<number>();
+      set.add(1);
+      const mockNotify = vi.fn();
+      const dispose = set.$.reaction(mockNotify);
+
+      set.replace([2, 3]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(mockNotify).toHaveBeenCalledWith(set);
+
+      dispose();
+    });
+
+    it("should not notify if not changed", () => {
+      const set = reactiveSet([1, 2, 3]);
+      const mockNotify = vi.fn();
+      const dispose = set.$.reaction(mockNotify);
+
+      set.replace([1, 2, 3]);
+      expect(mockNotify).toHaveBeenCalledTimes(0);
+
+      dispose();
+    });
+
+    it("should notify if some keys are removed", () => {
+      const set = reactiveSet([1, 2, 3]);
+      const mockNotify = vi.fn();
+      const dispose = set.$.reaction(mockNotify);
+
+      expect(set.has(3)).toBe(true);
+
+      set.replace([1, 2]);
+      expect(mockNotify).toHaveBeenCalledTimes(1);
+      expect(set.has(3)).toBe(false);
+
+      dispose();
     });
   });
 });
