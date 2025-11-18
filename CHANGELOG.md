@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.7](https://github.com/embrajs/reactivity/compare/v0.0.6...v0.0.7) (2025-11-18)
+
+
+### Features
+
+* **collections:** add replace ([d13a60f](https://github.com/embrajs/reactivity/commit/d13a60f3b8e6411b4c045f7f9e891e41afb050f7))
+
 ## [0.0.6](https://github.com/embrajs/reactivity/compare/v0.0.5...v0.0.6) (2025-11-05)
 
 
