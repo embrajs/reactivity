@@ -18,6 +18,7 @@ describe("useDerived", () => {
     // @ts-expect-error not Readable
     renderHook(() => useDerived(undefined, value => value + 1));
 
+    // eslint-disable-next-line no-unassigned-vars
     let v: Readable<number> | undefined;
     const { result } = renderHook(() => useDerived(v, value => value + 1));
 

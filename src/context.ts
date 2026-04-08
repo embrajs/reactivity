@@ -7,6 +7,7 @@ export interface Context {
   replaceMarkers_?: Set<any>;
 }
 
+// eslint-disable-next-line no-shadow-restricted-names
 declare const globalThis: {
   [BRAND]?: Context;
 };
