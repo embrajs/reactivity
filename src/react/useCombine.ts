@@ -60,7 +60,7 @@ export interface UseCombine {
  * ```
  */
 export const useCombine: UseCombine = <TDeps extends readonly ReadableLike[], TValue>(
-  deps: TDeps,
+  deps: [...TDeps],
   transform?: (...deps: MapReadablesToValues<TDeps>) => TValue,
   config?: Config<TValue>,
 ): OwnedReadable<TValue> => {

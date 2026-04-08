@@ -35,7 +35,7 @@ export interface CreateReadable {
    *
    * @returns A tuple with the Readonly and a function to set the value.
    */
-  <TValue = any>(): [OwnedReadable<NoInfer<TValue> | undefined>, SetValue<NoInfer<TValue> | undefined>];
+  <TValue = any>(): [OwnedReadable<TValue | undefined>, SetValue<TValue | undefined>];
   /**
    * Creates a Readonly with the given value.
    *
@@ -51,7 +51,7 @@ export interface CreateReadable {
    * @param config Optional custom config.
    * @returns A tuple with the Readonly and a function to set the value.
    */
-  <TValue = any>(value: TValue, config?: Config<TValue>): [OwnedReadable<NoInfer<TValue>>, SetValue<NoInfer<TValue>>];
+  <TValue = any>(value: TValue, config?: Config<TValue>): [OwnedReadable<TValue>, SetValue<TValue>];
   /**
    * Creates a Readonly with the given value.
    *
@@ -62,7 +62,7 @@ export interface CreateReadable {
   <TValue = any>(
     value?: TValue,
     config?: Config<TValue>,
-  ): [OwnedReadable<NoInfer<TValue | undefined>>, SetValue<NoInfer<TValue | undefined>>];
+  ): [OwnedReadable<TValue | undefined>, SetValue<TValue | undefined>];
 }
 
 /** @internal */
@@ -354,7 +354,7 @@ export class ReadableImpl<TValue = any> implements BatchTask {
 export const readable: CreateReadable = <TValue = any>(
   value?: TValue,
   config?: Config<TValue | undefined>,
-): [OwnedReadable<NoInfer<TValue> | undefined>, SetValue<NoInfer<TValue> | undefined>] => {
+): [OwnedReadable<TValue | undefined>, SetValue<TValue | undefined>] => {
   let currentValue = value;
 
   const get = () => currentValue;
@@ -428,4 +428,4 @@ export interface CreateWritable {
 export const writable: CreateWritable = <TValue = any>(
   value?: TValue,
   config?: Config<TValue>,
-): OwnedWritable<NoInfer<TValue | undefined>> => toWritable(...readable(value, config));
+): OwnedWritable<TValue | undefined> => toWritable(...readable(value, config));

@@ -24,4 +24,14 @@ describe("combine", () => {
     dep1$.value = 3;
     expect(combined$.value).toBe(5);
   });
+
+  it("should infer type correctly", () => {
+    const dep1$ = writable(1);
+    const dep2$ = writable("str");
+    const passNumber = (n: number): number => n;
+    const passString = (s: string): string => s;
+    const combined$ = combine([dep1$, dep2$], (v1, v2) => [passNumber(v1), passString(v2)]);
+
+    expect(combined$.value).toEqual([dep1$.value, dep2$.value]);
+  });
 });

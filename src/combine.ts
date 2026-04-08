@@ -11,7 +11,9 @@ export interface Combine {
    * @param deps An array of {@link ReadableLike}s to combine.
    * @returns A {@link Readable} with the combined values.
    */
-  <TDeps extends readonly ReadableLike[] = ReadableLike[]>(deps: TDeps): OwnedReadable<MapReadablesToValues<TDeps>>;
+  <TDeps extends readonly ReadableLike[] = ReadableLike[]>(
+    deps: [...TDeps],
+  ): OwnedReadable<MapReadablesToValues<TDeps>>;
   /**
    * Combines an array of {@link ReadableLike}s into a single {@link Readable} with transformed value.
    * @param deps - An array of {@link ReadableLike}s to combine.
@@ -20,7 +22,7 @@ export interface Combine {
    * @returns A {@link Readable} with the transformed values.
    */
   <TDeps extends readonly ReadableLike[] = ReadableLike[], TValue = any>(
-    deps: TDeps,
+    deps: [...TDeps],
     transform: (...deps: MapReadablesToValues<TDeps>) => TValue,
     config?: Config<TValue>,
   ): OwnedReadable<TValue>;
@@ -47,10 +49,10 @@ export interface Combine {
  * const v2$ = writable(0);
  *
  * const combined$ = combine([v1$, v2$], (v1, v2) => v1 + v2);
- * ```
+ * ````
  */
 export const combine: Combine = <TDeps extends readonly ReadableLike[], TValue = any>(
-  deps: TDeps,
+  deps: [...TDeps],
   transform?: (...deps: MapReadablesToValues<TDeps>) => TValue,
   config?: Config<TValue>,
 ) =>
