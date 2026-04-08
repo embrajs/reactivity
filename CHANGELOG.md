@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.8](https://github.com/embrajs/reactivity/compare/v0.0.7...v0.0.8) (2026-04-08)
+
+
+### Bug Fixes
+
+* restore 'types' option and correct 'ignoreDeprecations' placement in tsconfig ([0a21a7e](https://github.com/embrajs/reactivity/commit/0a21a7e4e971550ff4f5b0ba4b7d87c6c7c20dff))
+* update context and tests to address linting issues ([741a110](https://github.com/embrajs/reactivity/commit/741a1106749f2827f2c8a519a24953242d44958a))
+
 ## [0.0.7](https://github.com/embrajs/reactivity/compare/v0.0.6...v0.0.7) (2025-11-18)
 
 
