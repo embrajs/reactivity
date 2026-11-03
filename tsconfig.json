@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "declaration": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": ["DOM", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noUnusedParameters": true,
@@ -13,7 +16,8 @@
     "skipLibCheck": true,
     "strict": true,
     "stripInternal": true,
-    "target": "ESNext"
-  },
-  "include": ["src/**/*"]
+    "target": "ESNext",
+    "types": ["node"],
+    "useDefineForClassFields": false
+  }
 }

@@ -1,10 +1,10 @@
 {
-  "name": "@embra/template",
+  "name": "@embra/reactivity",
   "version": "0.1.0",
-  "description": "Collection of common utilities.",
+  "description": "A lightweight, ownership-based, composable and explicit reactivity system.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/embrajs/template.git"
+    "url": "git+https://github.com/embrajs/reactivity.git"
   },
   "type": "module",
   "main": "./dist/index.cjs",
@@ -42,9 +42,7 @@
     "build:min": "MINIFY=true tsdown && echo '' && gzip-size dist/index.mjs dist/index.js",
     "release": "commit-and-tag-version"
   },
-  "keywords": [
-    "template"
-  ],
+  "keywords": [],
   "maintainers": [
     {
       "name": "CRIMX",
