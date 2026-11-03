@@ -19,5 +19,6 @@
     "target": "ESNext",
     "types": ["node"],
     "useDefineForClassFields": false
-  }
+  },
+  "include": ["src", "test", "scripts", "*.config.*"]
 }

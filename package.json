@@ -10,6 +10,16 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.cts",
+  "typesVersions": {
+    "*": {
+      "react": [
+        "dist/react.d.cts"
+      ],
+      "debug": [
+        "dist/debug.d.cts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "require": {
@@ -19,6 +29,26 @@
       "import": {
         "types": "./dist/index.d.mts",
         "default": "./dist/index.mjs"
+      }
+    },
+    "./react": {
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      },
+      "import": {
+        "types": "./dist/react.d.mts",
+        "default": "./dist/react.mjs"
+      }
+    },
+    "./debug": {
+      "require": {
+        "types": "./dist/debug.d.cts",
+        "default": "./dist/debug.cjs"
+      },
+      "import": {
+        "types": "./dist/debug.d.mts",
+        "default": "./dist/debug.mjs"
       }
     }
   },
@@ -38,26 +68,33 @@
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --coverage --coverage.reportsDirectory='./docs/coverage'",
-    "build": "tsdown",
-    "build:min": "MINIFY=true tsdown && echo '' && gzip-size dist/index.mjs dist/index.js",
+    "build": "node scripts/build.ts",
+    "build:min": "NODE_ENV=production MINIFY=true node scripts/build.ts && echo '' && gzip-size dist/index.mjs dist/index.cjs",
     "release": "commit-and-tag-version"
   },
-  "keywords": [],
-  "maintainers": [
-    {
-      "name": "CRIMX",
-      "email": "straybugs@gmail.com",
-      "url": "https://github.com/crimx/"
-    }
+  "keywords": [
+    "observable",
+    "react",
+    "reactive",
+    "model",
+    "frp",
+    "functional-reactive-programming",
+    "data flow"
   ],
+  "author": {
+    "name": "CRIMX",
+    "email": "straybugs@gmail.com",
+    "url": "https://github.com/crimx/"
+  },
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.4.10",
+    "@hyrious/dts": "^0.3.8",
     "@types/node": "^25.5.0",
     "@vitest/coverage-v8": "^4.1.2",
     "@wopjs/gzip-size": "^0.1.5",
     "commit-and-tag-version": "^12.7.1",
-    "tsdown": "^0.21.7",
+    "esbuild": "^0.27.7",
     "typedoc": "^0.28.18",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vitest": "^4.0.4"
