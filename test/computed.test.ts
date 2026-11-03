@@ -502,8 +502,8 @@ describe("computed", () => {
 
     it("detects direct circular dependencies", () => {
       const value = computed((): number => value.get());
-      expect(() => value.get()).toThrow(/circular/);
-      expect(() => value.get()).toThrow(/circular/);
+      expect(() => value.get()).toThrow("loop detected");
+      expect(() => value.get()).toThrow("loop detected");
       value.dispose();
     });
 
@@ -520,7 +520,7 @@ describe("computed", () => {
         { sync: true },
       );
 
-      expect(() => circular.set(true)).toThrow(/circular/);
+      expect(() => circular.set(true)).toThrow("loop detected");
       batch(() => {
         circular.set(false);
         fallback.set(3);

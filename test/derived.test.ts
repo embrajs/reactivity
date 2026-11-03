@@ -488,7 +488,7 @@ describe("derived", () => {
       const spy = vi.fn();
       const stop = second.subscribe(spy, { sync: true });
 
-      expect(() => circular.set(true)).toThrow(/circular/);
+      expect(() => circular.set(true)).toThrow("loop detected");
       batch(() => {
         circular.set(false);
         fallback.set(3);

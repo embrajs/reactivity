@@ -425,7 +425,7 @@ describe.each(factories)("$name invalidation", ({ create }) => {
   it("still rejects a circular computation", () => {
     let value: Owned<Readable<number>>;
     value = create([], () => value.get());
-    expect(() => value.get()).toThrow("circular computed dependency");
+    expect(() => value.get()).toThrow("loop detected");
     value.dispose();
   });
 });

@@ -297,7 +297,7 @@ class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
     this.get = (): T => {
       if (!(this.flags_ & Flags.Disposed)) {
         if (this.flags_ & Flags.Running) {
-          throw new Error("circular computed dependency");
+          throw new Error("loop detected");
         }
         const link = runtime.currentObserver_ ? trackDependency(this, runtime.currentObserver_) : null;
         if (needsRefresh(this)) {
@@ -449,7 +449,7 @@ function needsRefresh(node: ComputedNode): boolean {
 
 function refreshComputed(node: ComputedNode): void {
   if (node.flags_ & Flags.Running) {
-    throw new Error("circular computed dependency");
+    throw new Error("loop detected");
   }
   const staticDeps = node.flags_ & Flags.DepsStatic;
   // A write during evaluation must invalidate the next passive read too.

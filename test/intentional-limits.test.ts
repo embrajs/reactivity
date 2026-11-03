@@ -18,7 +18,7 @@ describe("intentional limits", () => {
         const stop = first.subscribe(() => {}, { sync: true });
 
         try {
-          expect(() => circular.set(true)).toThrow("circular computed dependency");
+          expect(() => circular.set(true)).toThrow("loop detected");
         } finally {
           stop();
           first.dispose();
