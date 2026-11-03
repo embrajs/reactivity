@@ -76,27 +76,27 @@ const DEP_SCAN_LIMIT = 8;
 enum Flags {
   None = 0,
 
+  // Keep frequent masks in low bits to shorten inlined constants.
   Disposed = 1 << 0,
 
-  Dirty = 1 << 1, // Initial evaluation or retry after failure.
-  Pending = 1 << 2, // Inputs may have changed since the last evaluation.
+  KindValueNode = 1 << 1, // 01
+  KindComputedNode = 2 << 1, // 10
+  KindSubscriberNode = 3 << 1, // 11
+  KindMask = 0b11 << 1,
 
-  Queued = 1 << 3,
-  QueueAsync = 1 << 4,
-
-  DepsStatic = 1 << 5,
-  Running = 1 << 6,
-  Failed = 1 << 7,
+  Running = 1 << 3,
 
   // Unvisited links are removed after each collection, so one alternating bit is sufficient.
-  TrackPhase = 1 << 8,
-  Subscribed = 1 << 9,
+  TrackPhase = 1 << 4,
+  DepsStatic = 1 << 5,
 
-  KindValueNode = 1 << 20, // 001
-  KindComputedNode = 2 << 20, // 010
-  KindSubscriberNode = 3 << 20, // 011
+  Dirty = 1 << 6, // Initial evaluation or retry after failure.
+  Pending = 1 << 7, // Inputs may have changed since the last evaluation.
+  Failed = 1 << 8,
 
-  KindMask = 0b111 << 20, // bit 20～22
+  Queued = 1 << 9,
+  QueueAsync = 1 << 10,
+  Subscribed = 1 << 11,
 }
 
 type Source<T = any> = ValueNode<T> | ComputedNode<T>;
