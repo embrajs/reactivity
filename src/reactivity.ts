@@ -7,80 +7,19 @@ import {
   type ISubList,
   removeSub,
 } from "./broadcast";
+import { CONTRACT_SYMBOL, CONTRACT_VERSION, DEP_SCAN_LIMIT, Flags } from "./constants";
+import { getRuntime, type RuntimeQueue } from "./runtime";
 import type { Cleanup, EqualityConfig, NormalizedEquality, Owned, Setter } from "./types";
 
-const DEP_SCAN_LIMIT = 8;
-
-declare global {
-  interface EmbraReactivityTypeSymbols {
-    readonly CONTRACT: unique symbol;
-  }
-  interface EmbraReactivityGlobals {
-    [CONTRACT_SYMBOL]?: EmbraReactivityRuntimes;
-  }
-  interface EmbraReactivityRuntimes {
-    [CONTRACT_VERSION]?: Runtime;
-  }
-}
-
-const CONTRACT_VERSION = "v1";
-type CONTRACT_VERSION = typeof CONTRACT_VERSION;
-const CONTRACT_SYMBOL = Symbol.for("@embra/reactivity") as EmbraReactivityTypeSymbols["CONTRACT"];
-
-interface Runtime {
-  NOOP_: () => void;
-  version_: number;
-  currentObserver_: Observer | null;
-  syncQueue_: EffectQueue;
-  asyncQueue_: EffectQueue;
-}
-
-const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {
-  NOOP_() {},
-  version_: 0,
-  currentObserver_: null,
-  syncQueue_: { queueHead_: null, queueTail_: null, flushing_: false },
-  asyncQueue_: { queueHead_: null, queueTail_: null, flushing_: false },
-});
+type EffectQueue = RuntimeQueue<EffectNode>;
+const runtime = /* @__PURE__ */ getRuntime<Observer, EffectNode>();
 const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
-
-interface EffectQueue {
-  queueHead_: EffectNode | null;
-  queueTail_: EffectNode | null;
-  flushing_: boolean;
-}
 
 export type Subscriber<T = any> = (this: EffectContext, value: T) => void;
 
 export interface SubscribeOptions {
   sync?: boolean;
   immediate?: boolean;
-}
-
-enum Flags {
-  None = 0,
-
-  // Keep frequent masks in low bits to shorten inlined constants.
-  Disposed = 1 << 0,
-
-  KindValueNode = 1 << 1, // 01
-  KindComputedNode = 2 << 1, // 10
-  KindSubscriberNode = 3 << 1, // 11
-  KindMask = 0b11 << 1,
-
-  Running = 1 << 3,
-
-  // Unvisited links are removed after each collection, so one alternating bit is sufficient.
-  TrackPhase = 1 << 4,
-  DepsStatic = 1 << 5,
-
-  Dirty = 1 << 6, // Initial evaluation or retry after failure.
-  Pending = 1 << 7, // Inputs may have changed since the last evaluation.
-  Failed = 1 << 8,
-
-  Queued = 1 << 9,
-  QueueAsync = 1 << 10,
-  Subscribed = 1 << 11,
 }
 
 type Source<T = any> = ValueNode<T> | ComputedNode<T>;
