@@ -17,11 +17,16 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "style": {
+        "noNonNullAssertion": "off"
+      },
       "suspicious": {
+        "noConfusingVoidType": "off",
         "noExplicitAny": "off",
         "noAssignInExpressions": "off"
       },
       "complexity": {
+        "noCommaOperator": "off",
         "noUselessLoneBlockStatements": "off",
         "useOptionalChain": "off"
       }

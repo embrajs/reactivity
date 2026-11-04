@@ -7,6 +7,9 @@ import {
   type ISubList,
   removeSub,
 } from "./broadcast";
+import type { Cleanup, EqualityConfig, NormalizedEquality, Owned, Setter } from "./types";
+
+const DEP_SCAN_LIMIT = 8;
 
 declare global {
   interface EmbraReactivityTypeSymbols {
@@ -23,12 +26,6 @@ declare global {
 const CONTRACT_VERSION = "v1";
 type CONTRACT_VERSION = typeof CONTRACT_VERSION;
 const CONTRACT_SYMBOL = Symbol.for("@embra/reactivity") as EmbraReactivityTypeSymbols["CONTRACT"];
-
-interface EffectQueue {
-  queueHead_: EffectNode | null;
-  queueTail_: EffectNode | null;
-  flushing_: boolean;
-}
 
 interface Runtime {
   NOOP_: () => void;
@@ -47,31 +44,18 @@ const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {}
 });
 const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
 
-export type Cleanup = () => void;
-export interface EffectContext {
-  dispose(): void;
+interface EffectQueue {
+  queueHead_: EffectNode | null;
+  queueTail_: EffectNode | null;
+  flushing_: boolean;
 }
-export type EffectFn = (this: EffectContext) => void | Cleanup;
+
 export type Subscriber<T = any> = (this: EffectContext, value: T) => void;
-export type Setter<T = any> = (value: T) => void;
-export type Equality<T = any> = (previous: T, next: T) => boolean;
-export type WatchEffect = EffectFn;
-export interface WatchOptions {
-  sync?: boolean;
-}
+
 export interface SubscribeOptions {
   sync?: boolean;
   immediate?: boolean;
 }
-export type Owned<T> = T & {
-  dispose(): void;
-};
-
-type NormalizedEquality<T> = Equality<T> | false | null;
-
-type EqualityConfig<T> = Equality<T> | false | null | undefined;
-
-const DEP_SCAN_LIMIT = 8;
 
 enum Flags {
   None = 0,
@@ -131,6 +115,14 @@ class Link<T = any> implements ISubItem, IDepItem {
     this.value_ = source.value_;
   }
 }
+
+export interface EffectContext {
+  dispose(): void;
+}
+
+export type EffectFn = (this: EffectContext) => undefined | Cleanup;
+
+export type WatchEffect = EffectFn;
 
 class EffectNode implements IDepList, EffectContext {
   flags_: Flags;
@@ -689,6 +681,31 @@ function callUntracked<T>(fn: (value: T) => void, value: T): void {
   }
 }
 
+function getSource(value: ReadableLike): Source;
+function getSource(value: unknown): Source | undefined;
+function getSource(value: unknown): Source | undefined {
+  if (isReadable(value) || isReadable((value = (value as ReadableProvider | undefined)?.$))) {
+    return value as Source;
+  }
+}
+
+function addStaticDependency(source: Source, observer: Observer): Link {
+  if (process.env.NODE_ENV !== "production") {
+    if (source.flags_ & Flags.Disposed) {
+      if (source.__dev_disposed_at_) {
+        console.error("Source disposed at:", source.__dev_disposed_at_);
+      }
+      throw new Error("disposed");
+    }
+  }
+  const link = new Link(source, observer);
+  appendDep(observer, link);
+  if ((observer.flags_ & Flags.KindMask) === Flags.KindSubscriberNode) {
+    subscribeLink(link);
+  }
+  return link;
+}
+
 export interface Readable<T = any> {
   [CONTRACT_SYMBOL]: CONTRACT_VERSION;
   readonly value: T;
@@ -729,33 +746,6 @@ export function isReadableProvider<T = any>(value: unknown): value is ReadablePr
 
 export function isReadableLike<T = any>(value: unknown): value is ReadableLike<T> {
   return isReadable<T>(value) || isReadableProvider<T>(value);
-}
-
-function getSource(value: ReadableLike): Source;
-function getSource(value: unknown): Source | undefined;
-function getSource(value: unknown): Source | undefined {
-  if (isReadable(value) || isReadable((value = (value as ReadableProvider | undefined)?.$))) {
-    return value as Source;
-  }
-}
-
-export function arrayShallowEqual(previous: unknown, next: unknown): boolean {
-  if (Object.is(previous, next)) {
-    return true;
-  }
-  if (!Array.isArray(previous) || !Array.isArray(next)) {
-    return false;
-  }
-  const length = previous.length;
-  if (length !== next.length) {
-    return false;
-  }
-  for (let i = 0; i < length; i++) {
-    if (!Object.is(previous[i], next[i])) {
-      return false;
-    }
-  }
-  return true;
 }
 
 export function writable<T = any>(value: T, config?: WritableOptions<T>): Owned<Writable<T>> {
@@ -806,23 +796,6 @@ export function derived<R>(
   return node;
 }
 
-function addStaticDependency(source: Source, observer: Observer): Link {
-  if (process.env.NODE_ENV !== "production") {
-    if (source.flags_ & Flags.Disposed) {
-      if (source.__dev_disposed_at_) {
-        console.error("Source disposed at:", source.__dev_disposed_at_);
-      }
-      throw new Error("disposed");
-    }
-  }
-  const link = new Link(source, observer);
-  appendDep(observer, link);
-  if ((observer.flags_ & Flags.KindMask) === Flags.KindSubscriberNode) {
-    subscribeLink(link);
-  }
-  return link;
-}
-
 export function subscribe<T>(source: ReadableLike<T>, callback: Subscriber<T>, options?: SubscribeOptions): Cleanup;
 export function subscribe<const T extends readonly ReadableLike[]>(
   sources: T,
@@ -853,6 +826,10 @@ export function subscribe(
     throw error;
   }
   return () => effect.dispose();
+}
+
+export interface WatchOptions {
+  sync?: boolean;
 }
 
 export function watch(effect: WatchEffect, options?: WatchOptions): Cleanup {

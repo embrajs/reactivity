@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, it, vi } from "vitest";
-import { arrayShallowEqual, derived, type Equality, writable } from "../src/reactivity";
+import { arrayShallowEqual, derived, type Equality, writable } from "../src";
 
 describe("arrayShallowEqual", () => {
   it.each([
