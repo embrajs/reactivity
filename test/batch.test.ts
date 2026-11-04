@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { batch, watch, writable } from "../src/reactivity";
+import { batch, watch, writable } from "../src";
 
 describe("batch", () => {
   it("returns the callback result and calls it once", () => {

@@ -671,20 +671,28 @@ export type ReadableValues<T extends readonly ReadableLike[]> = {
   [K in keyof T]: ReadableValue<T[K]>;
 };
 
-export function isReadable<T = any>(value: unknown): value is Readable<T> {
+export function isReadable<T>(value: Readable<T> | null | undefined): value is Readable<T>;
+export function isReadable<T = any>(value: unknown): value is Readable<T>;
+export function isReadable(value: unknown): value is Readable {
   return (value as Readable | undefined)?.[CONTRACT_SYMBOL] === CONTRACT_VERSION;
 }
 
-export function isWritable<T = any>(value: unknown): value is Writable<T> {
+export function isWritable<T>(value: Readable<T> | null | undefined): value is Writable<T>;
+export function isWritable<T = any>(value: unknown): value is Writable<T>;
+export function isWritable(value: unknown): value is Writable {
   return isReadable(value) && ((value as Writable).set || NOOP_) !== NOOP_;
 }
 
-export function isReadableProvider<T = any>(value: unknown): value is ReadableProvider<T> {
-  return isReadable<T>((value as ReadableProvider<T> | undefined)?.$);
+export function isReadableProvider<T>(value: ReadableProvider<T> | null | undefined): value is ReadableProvider<T>;
+export function isReadableProvider<T = any>(value: unknown): value is ReadableProvider<T>;
+export function isReadableProvider(value: unknown): value is ReadableProvider {
+  return isReadable((value as ReadableProvider | undefined)?.$);
 }
 
-export function isReadableLike<T = any>(value: unknown): value is ReadableLike<T> {
-  return isReadable<T>(value) || isReadableProvider<T>(value);
+export function isReadableLike<T>(value: ReadableLike<T> | null | undefined): value is ReadableLike<T>;
+export function isReadableLike<T = any>(value: unknown): value is ReadableLike<T>;
+export function isReadableLike(value: unknown): value is ReadableLike {
+  return isReadable(value) || isReadableProvider(value);
 }
 
 export function writable<T = any>(value: T, config?: WritableOptions<T>): Owned<Writable<T>> {

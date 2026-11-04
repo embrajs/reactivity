@@ -9,7 +9,7 @@ import {
   subscribe,
   watch,
   writable,
-} from "../src/reactivity";
+} from "../src";
 
 afterEach(() => {
   vi.restoreAllMocks();

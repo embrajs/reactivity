@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { writable } from "../src/reactivity";
+import { writable } from "../src";
 
 async function tick() {
   await Promise.resolve();

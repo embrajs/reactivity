@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import * as first from "../src/reactivity";
+import * as first from "../src";
 
 vi.resetModules();
-const second = await import("../src/reactivity");
+const second = await import("../src");
 
 afterEach(() => {
   vi.restoreAllMocks();

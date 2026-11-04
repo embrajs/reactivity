@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { type EffectContext, type EffectFn, subscribe, type WatchEffect, watch, writable } from "../src/reactivity";
+import { type EffectContext, type EffectFn, subscribe, type WatchEffect, watch, writable } from "../src";
 
 async function tick() {
   await Promise.resolve();

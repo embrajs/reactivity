@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computed, derived, writable } from "../src/reactivity";
+import { computed, derived, writable } from "../src";
 
 // These are deliberate contract boundaries, not pending fixes.
 // Record the unsupported behavior, its cost rationale, and the caller's supported action.

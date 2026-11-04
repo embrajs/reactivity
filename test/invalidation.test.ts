@@ -1,14 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  batch,
-  computed,
-  derived,
-  type Owned,
-  type Readable,
-  type ReadableOptions,
-  watch,
-  writable,
-} from "../src/reactivity";
+import { batch, computed, derived, type Owned, type Readable, type ReadableOptions, watch, writable } from "../src";
 
 type Create = (
   sources: readonly Readable<number>[],

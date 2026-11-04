@@ -14,7 +14,7 @@ import {
   readable,
   type Writable,
   writable,
-} from "../src/reactivity";
+} from "../src";
 
 describe("readable predicates", () => {
   it("recognizes each node kind without evaluating it", () => {
@@ -130,5 +130,17 @@ describe("readable predicates", () => {
     expectTypeOf<ReadableValues<readonly [Readable<number>, ReadableProvider<string>]>>().toEqualTypeOf<
       readonly [number, string]
     >();
+  });
+
+  it("preserves known value types when narrowing nullable inputs", () => {
+    const source = null as Readable<number> | null;
+    if (isReadable(source)) expectTypeOf(source).toEqualTypeOf<Readable<number>>();
+    if (isWritable(source)) expectTypeOf(source).toEqualTypeOf<Writable<number>>();
+
+    const provider = null as ReadableProvider<string> | null;
+    if (isReadableProvider(provider)) expectTypeOf(provider).toEqualTypeOf<ReadableProvider<string>>();
+
+    const like = null as ReadableLike<boolean> | null;
+    if (isReadableLike(like)) expectTypeOf(like).toEqualTypeOf<ReadableLike<boolean>>();
   });
 });

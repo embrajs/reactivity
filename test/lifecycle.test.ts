@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { batch, computed, derived, type Readable, watch, writable } from "../src/reactivity";
+import { batch, computed, derived, type Readable, watch, writable } from "../src";
 
 async function collect(): Promise<void> {
   // WeakRef targets remain alive until the end of the job that last dereferenced them.

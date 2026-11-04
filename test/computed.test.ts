@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { batch, computed, watch, writable } from "../src/reactivity";
+import { batch, computed, watch, writable } from "../src";
 
 afterEach(() => {
   vi.restoreAllMocks();
