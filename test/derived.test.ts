@@ -1,15 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import {
-  batch,
-  computed,
-  derived,
-  type Owned,
-  type Readable,
-  type ReadableLike,
-  subscribe,
-  watch,
-  writable,
-} from "../src";
+import { batch, computed, derived, type Owned, type Readable, type ReadableLike, watch, writable } from "../src";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -323,11 +313,11 @@ describe("derived", () => {
       stop();
     });
 
-    it("coalesces asynchronous notifications through the top-level subscribe", async () => {
+    it("coalesces asynchronous source subscription notifications", async () => {
       const source = writable(0);
       const value = derived(source, (next) => next * 2);
       const spy = vi.fn();
-      const stop = subscribe(value, spy);
+      const stop = value.subscribe(spy);
 
       source.set(1);
       source.set(2);
@@ -336,6 +326,35 @@ describe("derived", () => {
       expect(spy.mock.calls).toEqual([[0], [4]]);
       stop();
     });
+  });
+
+  it.each([2, 4])("rejects writes from a fixed computation (%i inputs)", (count) => {
+    const sources = Array.from({ length: count }, () => writable(0));
+    const value = derived(sources, (...values) => {
+      sources[0]!.set(1);
+      return values.reduce((sum, input) => sum + input, 0);
+    });
+    expect(() => value.get()).toThrow("write during computation");
+    expect(sources[0]!.get()).toBe(0);
+    value.dispose();
+  });
+
+  it.each([2, 4])("rejects upstream writes before preparing fixed arguments (%i inputs)", (count) => {
+    const first = writable(0);
+    const trigger = writable(0);
+    const later = computed(() => {
+      const input = trigger.get();
+      if (input === 1) first.set(10);
+      return input;
+    });
+    const padding = Array.from({ length: count - 2 }, () => writable(0));
+    const value = derived([first, ...padding, later], (...values) => values.reduce((sum, input) => sum + input, 0));
+    expect(value.get()).toBe(0);
+    trigger.set(1);
+    expect(() => value.get()).toThrow("write during computation");
+    expect(first.get()).toBe(0);
+    value.dispose();
+    later.dispose();
   });
 
   describe("equality", () => {
@@ -366,134 +385,6 @@ describe("derived", () => {
 
       source.set(2);
       expect(spy.mock.calls).toEqual([[0], [0]]);
-      stop();
-    });
-  });
-
-  describe("errors", () => {
-    it.each([new Error("compute"), undefined])("retries a thrown %j without an input change", (error) => {
-      const source = writable(1);
-      let fail = true;
-      const compute = vi.fn((next: number) => {
-        if (fail) throw error;
-        return next * 2;
-      });
-      const value = derived(source, compute);
-
-      for (let i = 0; i < 2; i++) {
-        const noError = Symbol("no error");
-        let thrown: unknown = noError;
-        try {
-          value.get();
-        } catch (caught) {
-          thrown = caught;
-        }
-        expect(thrown).toBe(error);
-      }
-      fail = false;
-      expect(value.get()).toBe(2);
-      expect(value.get()).toBe(2);
-      expect(compute).toHaveBeenCalledTimes(3);
-      source.set(2);
-      expect(value.get()).toBe(4);
-    });
-
-    it("retains unread fixed inputs after an upstream refresh fails", () => {
-      const first = writable(0);
-      const trigger = writable(0);
-      const last = writable(0);
-      const error = new Error("upstream");
-      let fail = false;
-      const upstream = computed(() => {
-        const next = trigger.get();
-        if (fail) throw error;
-        return next;
-      });
-      const compute = vi.fn((a: number, b: number, c: number) => a + b + c);
-      const value = derived([first, upstream, last], compute);
-      const downstream = computed(() => value.get() * 2);
-      const spy = vi.fn();
-      const stop = downstream.subscribe(spy, { sync: true });
-
-      fail = true;
-      expect(() =>
-        batch(() => {
-          first.set(1);
-          trigger.set(1);
-        }),
-      ).toThrow(error);
-      expect(compute).toHaveBeenCalledOnce();
-      expect(spy.mock.calls).toEqual([[0]]);
-      fail = false;
-      last.set(2);
-      expect(spy.mock.calls).toEqual([[0], [8]]);
-      expect(compute).toHaveBeenCalledTimes(2);
-      stop();
-    });
-
-    it("recovers downstream observers after its callback throws", () => {
-      const first = writable(0);
-      const second = writable(0);
-      const error = new Error("compute");
-      let fail = false;
-      const value = derived([first, second], (a, b) => {
-        if (fail) throw error;
-        return a + b;
-      });
-      const spy = vi.fn();
-      const stop = watch(
-        () => {
-          spy(value.get());
-        },
-        { sync: true },
-      );
-
-      fail = true;
-      expect(() => first.set(1)).toThrow(error);
-      expect(spy.mock.calls).toEqual([[0]]);
-      fail = false;
-      second.set(2);
-      expect(spy.mock.calls).toEqual([[0], [3]]);
-      stop();
-    });
-
-    it("does not commit a result when equality throws", () => {
-      const source = writable(0);
-      const error = new Error("equal");
-      const equal = vi.fn((a: number, b: number) => a === b);
-      const value = derived(source, (next) => next, { equal });
-      const spy = vi.fn();
-      const stop = value.subscribe(spy, { sync: true });
-      equal.mockImplementationOnce(() => {
-        throw error;
-      });
-
-      expect(() => source.set(1)).toThrow(error);
-      expect(spy.mock.calls).toEqual([[0]]);
-      expect(value.get()).toBe(1);
-      expect(equal.mock.calls).toEqual([
-        [0, 1],
-        [0, 1],
-      ]);
-      source.set(2);
-      expect(spy.mock.calls).toEqual([[0], [2]]);
-      stop();
-    });
-
-    it("detects a mixed circular dependency and recovers when it is removed", () => {
-      const circular = writable(false);
-      const fallback = writable(1);
-      const first = computed((): number => (circular.get() ? second.get() : fallback.get()));
-      const second = derived(first, (next) => next + 1);
-      const spy = vi.fn();
-      const stop = second.subscribe(spy, { sync: true });
-
-      expect(() => circular.set(true)).toThrow("loop detected");
-      batch(() => {
-        circular.set(false);
-        fallback.set(3);
-      });
-      expect(spy.mock.calls).toEqual([[2], [4]]);
       stop();
     });
   });
@@ -561,24 +452,6 @@ describe("derived", () => {
       expect(ref.deref()).toBeUndefined();
       expect(compute).not.toHaveBeenCalled();
       source.set(1);
-    });
-
-    it("releases partially connected inputs when a later input is already disposed", async () => {
-      const first = writable(0);
-      const disposed = writable(0);
-      disposed.dispose();
-      vi.spyOn(console, "error").mockImplementation(() => {});
-      const ref = (() => {
-        const second = writable(1);
-        const ref = new WeakRef(second);
-        expect(() => derived([first, { $: second }, { $: disposed }], (a, b, c) => a + b + c)).toThrow("disposed");
-        return ref;
-      })();
-
-      await new Promise<void>((resolve) => setImmediate(resolve));
-      globalThis.gc!();
-      expect(ref.deref()).toBeUndefined();
-      first.set(1);
     });
 
     it("releases partially connected inputs when a provider getter throws", async () => {

@@ -17,19 +17,48 @@ describe.each([
     create: (source: Readable<number>, compute: (value: number) => number) => derived(source, compute),
   },
 ])("$name lifecycle", ({ create }) => {
-  it.each([false, true])("can be collected without disposal after read=%s", async (read) => {
+  it("can be collected before its first read", async () => {
     const source = writable(0);
     const compute = vi.fn((value: number) => value + 1);
     const ref = (() => {
       const value = create(source, compute);
-      if (read) expect(value.get()).toBe(1);
       return new WeakRef(value);
     })();
 
     await collect();
     expect(ref.deref()).toBeUndefined();
     source.set(1);
-    expect(compute).toHaveBeenCalledTimes(read ? 1 : 0);
+    expect(compute).not.toHaveBeenCalled();
+  });
+
+  it("reads an input disposed before its first evaluation", () => {
+    const source = writable(0);
+    const value = create(source, (input) => input + 1);
+    source.set(1);
+    source.dispose();
+    expect(value.get()).toBe(2);
+    value.dispose();
+  });
+
+  it("keeps an evaluated observer connected until it is disposed", async () => {
+    const source = writable(0);
+    const compute = vi.fn((value: number) => value + 1);
+    const ref = (() => {
+      const value = create(source, compute);
+      expect(value.get()).toBe(1);
+      return new WeakRef(value);
+    })();
+
+    await collect();
+    expect(ref.deref()).toBeDefined();
+    source.set(1);
+    expect(compute).toHaveBeenCalledOnce();
+    expect(ref.deref()!.get()).toBe(2);
+    ref.deref()!.dispose();
+    await collect();
+    expect(ref.deref()).toBeUndefined();
+    source.set(2);
+    expect(compute).toHaveBeenCalledTimes(2);
   });
 
   it("keeps an active node alive until its subscriber disposes itself", async () => {
@@ -97,7 +126,7 @@ describe.each([
     expect(compute).toHaveBeenCalledTimes(2);
   });
 
-  it("does not retain a passive consumer of an active computed", async () => {
+  it("keeps a computed observer connected after the last effect is cancelled", async () => {
     const source = writable(0);
     const first = create(source, (value) => value + 1);
     const stop = first.subscribe(() => {}, { sync: true });
@@ -108,13 +137,48 @@ describe.each([
     })();
 
     await collect();
-    expect(ref.deref()).toBeUndefined();
-    source.set(1);
-    expect(first.get()).toBe(2);
+    expect(ref.deref()).toBeDefined();
     stop();
+    source.set(1);
+    expect(ref.deref()!.get()).toBe(3);
+    ref.deref()!.dispose();
+    await collect();
+    expect(ref.deref()).toBeUndefined();
   });
 
-  it("can collect a failed passive node", async () => {
+  it("disconnects an upstream only after its last computed observer leaves", async () => {
+    const source = writable(0);
+    const compute = vi.fn((value: number) => value);
+    const { ref, left, right, stop } = (() => {
+      const first = create(source, compute);
+      const left = create(first, (value) => value + 1);
+      const right = create(first, (value) => value + 2);
+      expect(left.get()).toBe(1);
+      expect(right.get()).toBe(2);
+      return {
+        ref: new WeakRef(first),
+        left,
+        right,
+        stop: first.subscribe(() => {}, { sync: true }),
+      };
+    })();
+
+    left.dispose();
+    stop();
+    await collect();
+    expect(ref.deref()).toBeDefined();
+    source.set(1);
+    expect(right.get()).toBe(3);
+    expect(compute).toHaveBeenCalledTimes(2);
+
+    right.dispose();
+    await collect();
+    expect(ref.deref()).toBeUndefined();
+    source.set(2);
+    expect(compute).toHaveBeenCalledTimes(2);
+  });
+
+  it("releases a failed observer when it is disposed", async () => {
     const source = writable(0);
     const error = new Error("compute");
     const ref = (() => {
@@ -122,6 +186,7 @@ describe.each([
         throw error;
       });
       expect(() => value.get()).toThrow(error);
+      value.dispose();
       return new WeakRef(value);
     })();
 
@@ -130,7 +195,7 @@ describe.each([
     source.set(1);
   });
 
-  it("validates a passive cache before activating it", () => {
+  it("validates an invalidated cache before adding an effect", () => {
     const source = writable(0);
     const compute = vi.fn((value: number) => value);
     const value = create(source, compute);
@@ -144,7 +209,7 @@ describe.each([
     stop();
   });
 
-  it("reuses a restored passive cache when activating it", () => {
+  it("preserves a restored output when adding an effect", () => {
     const source = writable(0);
     const compute = vi.fn((value: number) => value);
     const value = create(source, compute);
@@ -156,13 +221,12 @@ describe.each([
     const seen = vi.fn();
     const stop = value.subscribe(seen, { sync: true });
     expect(seen.mock.calls).toEqual([[0]]);
-    expect(compute).toHaveBeenCalledOnce();
     source.set(2);
     expect(seen.mock.calls).toEqual([[0], [2]]);
     stop();
   });
 
-  it("validates each level when a passive chain becomes active again", () => {
+  it("recomputes a disconnected chain when it becomes active again", () => {
     const source = writable(0);
     const compute = vi.fn((value: number) => value % 2);
     const first = create(source, compute);
@@ -176,16 +240,16 @@ describe.each([
     const stopAgain = second.subscribe(seen, { sync: true, immediate: false });
     expect(second.get()).toBe(1);
     expect(compute).toHaveBeenCalledTimes(2);
-    expect(secondCompute).toHaveBeenCalledOnce();
+    expect(secondCompute).toHaveBeenCalledTimes(2);
     source.set(3);
     expect(seen.mock.calls).toEqual([[2]]);
     stopAgain();
     source.set(4);
     expect(second.get()).toBe(1);
-    expect(secondCompute).toHaveBeenCalledTimes(3);
+    expect(secondCompute).toHaveBeenCalledTimes(4);
   });
 
-  it("preserves a passive cache across unrelated writes", () => {
+  it("preserves a computed cache across unrelated writes", () => {
     const source = writable(0);
     const unrelated = writable(0);
     const compute = vi.fn((value: number) => value);
@@ -198,36 +262,52 @@ describe.each([
     expect(compute).toHaveBeenCalledOnce();
   });
 
-  it("checks again after an input is written during passive evaluation", () => {
+  it("rejects writes from a computation in development", () => {
     const source = writable(0);
-    const compute = vi.fn((input: number) => {
-      if (input === 0) source.set(1);
+    const value = create(source, (input) => {
+      source.set(input + 1);
       return input;
     });
-    const value = create(source, compute);
-    expect(value.get()).toBe(0);
-    expect(value.get()).toBe(1);
-    expect(value.get()).toBe(1);
-    expect(compute).toHaveBeenCalledTimes(2);
+    expect(() => value.get()).toThrow("write during computation");
+    expect(source.get()).toBe(0);
+    value.dispose();
+    source.set(1);
+    expect(source.get()).toBe(1);
   });
 
-  it.each([false, true])("checks writes when detached during evaluation, stopBeforeWrite=%s", (stopBeforeWrite) => {
+  it("rejects writes from a computed equality callback", () => {
     const source = writable(0);
-    let stop = () => {};
-    const compute = vi.fn((input: number) => {
-      if (input === 1) {
-        if (stopBeforeWrite) stop();
-        source.set(2);
-        if (!stopBeforeWrite) stop();
-      }
-      return input;
+    const other = writable(0);
+    const value = create(source, (input) => input);
+    const guarded = computed(() => value.get(), {
+      equal: (a, b) => {
+        other.set(b);
+        return a === b;
+      },
     });
-    const value = create(source, compute);
-    stop = value.subscribe(() => {}, { sync: true });
+    expect(guarded.get()).toBe(0);
     source.set(1);
-    expect(value.get()).toBe(2);
-    expect(value.get()).toBe(2);
-    expect(compute).toHaveBeenCalledTimes(3);
+    expect(() => guarded.get()).toThrow("write during computation");
+    expect(other.get()).toBe(0);
+    guarded.dispose();
+    value.dispose();
+  });
+
+  it("allows effect writes after a pure computation", () => {
+    const source = writable(0);
+    const value = create(source, (input) => input * 2);
+    const seen: number[] = [];
+    const stop = value.subscribe(
+      (input) => {
+        seen.push(input);
+        if (input === 2) source.set(2);
+      },
+      { sync: true },
+    );
+    source.set(1);
+    expect(seen).toEqual([0, 2, 4]);
+    stop();
+    value.dispose();
   });
 });
 
@@ -255,6 +335,34 @@ it("releases obsolete computed branches while the outer watch stays active", asy
   stop();
 });
 
+it("releases obsolete computed branches without an effect", async () => {
+  const source = writable(0);
+  const chooseFirst = writable(true);
+  const { ref, outer } = (() => {
+    const first = computed(() => source.get() + 1);
+    let branch: Readable<number> | undefined = first;
+    return {
+      ref: new WeakRef(first),
+      outer: computed(() => {
+        if (chooseFirst.get()) {
+          return branch!.get();
+        }
+        branch = undefined;
+        return 0;
+      }),
+    };
+  })();
+
+  expect(outer.get()).toBe(1);
+  chooseFirst.set(false);
+  expect(outer.get()).toBe(0);
+  await collect();
+  expect(ref.deref()).toBeUndefined();
+  source.set(1);
+  expect(outer.get()).toBe(0);
+  outer.dispose();
+});
+
 it("detaches duplicate static links without disconnecting another observer", async () => {
   const source = writable(0);
   const seen = vi.fn();
@@ -270,4 +378,17 @@ it("detaches duplicate static links without disconnecting another observer", asy
   source.set(1);
   expect(seen.mock.calls).toEqual([[0], [1]]);
   stopSource();
+});
+
+it.each([false, true])("a disposed source releases downstream callbacks, computed=%s", async (memo) => {
+  const source = memo ? computed(() => 1) : writable(1);
+  const callback = (() => {
+    const callback = () => {};
+    source.subscribe(callback, { immediate: false });
+    return new WeakRef(callback);
+  })();
+  source.dispose();
+  await collect();
+  expect(callback.deref()).toBeUndefined();
+  expect(source.get()).toBe(1);
 });

@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 describe("shared runtime", () => {
-  it("refreshes passive caches after writes from another module copy", () => {
+  it("invalidates computed observers across module copies", () => {
     const source = first.writable(0);
     const compute = vi.fn((input: number) => input + 1);
     const fixed = second.derived(source, compute);
@@ -21,7 +21,7 @@ describe("shared runtime", () => {
     expect(compute).toHaveBeenCalledTimes(2);
 
     const seen = vi.fn();
-    const stop = second.subscribe(dynamic, seen, { sync: true });
+    const stop = dynamic.subscribe(seen, { sync: true });
     stop();
     source.set(2);
     expect(dynamic.get()).toBe(4);
@@ -79,8 +79,7 @@ describe("shared runtime", () => {
     const child = vi.fn();
     const stop = first.watch(
       () => {
-        const stopChild = second.subscribe(
-          source,
+        const stopChild = source.subscribe(
           (value) => {
             hidden.get();
             child(value);
@@ -111,8 +110,8 @@ describe("shared runtime", () => {
     const a = first.writable(0);
     const b = second.writable(0);
     const spy = vi.fn();
-    const stopA = first.subscribe(a, (value) => spy("a", value), { sync: true, immediate: false });
-    const stopB = second.subscribe(b, (value) => spy("b", value), { sync: true, immediate: false });
+    const stopA = a.subscribe((value) => spy("a", value), { sync: true, immediate: false });
+    const stopB = b.subscribe((value) => spy("b", value), { sync: true, immediate: false });
 
     first.batch(() => {
       a.set(1);
@@ -136,8 +135,8 @@ describe("shared runtime", () => {
     const a = first.writable(0);
     const b = second.writable(0);
     const spy = vi.fn();
-    const stopA = first.subscribe(a, (value) => spy("a", value), { immediate: false });
-    const stopB = second.subscribe(b, (value) => spy("b", value), { immediate: false });
+    const stopA = a.subscribe((value) => spy("a", value), { immediate: false });
+    const stopB = b.subscribe((value) => spy("b", value), { immediate: false });
 
     a.set(1);
     b.set(1);
@@ -154,20 +153,19 @@ describe("shared runtime", () => {
     stopB();
   });
 
-  it("drains both copies after an error and allows the next batch to recover", () => {
+  it("restores shared scheduling after an error and explicit graph disposal", () => {
     const a = first.writable(0);
     const b = second.writable(0);
     const error = new Error("callback");
     const spy = vi.fn();
-    const stopA = first.subscribe(
-      a,
+    const stopA = a.subscribe(
       (value) => {
         if (value === 1) throw error;
         spy("a", value);
       },
       { sync: true, immediate: false },
     );
-    const stopB = second.subscribe(b, (value) => spy("b", value), { sync: true, immediate: false });
+    const stopB = b.subscribe((value) => spy("b", value), { sync: true, immediate: false });
 
     expect(() =>
       second.batch(() => {
@@ -175,17 +173,24 @@ describe("shared runtime", () => {
         b.set(1);
       }),
     ).toThrow(error);
-    expect(spy.mock.calls).toEqual([["b", 1]]);
+    expect(spy).not.toHaveBeenCalled();
+    stopA();
+    stopB();
+    a.dispose();
+    b.dispose();
+    const nextA = first.writable(0);
+    const nextB = second.writable(0);
+    const stopNextA = nextA.subscribe((value) => spy("a", value), { sync: true, immediate: false });
+    const stopNextB = nextB.subscribe((value) => spy("b", value), { sync: true, immediate: false });
     first.batch(() => {
-      a.set(2);
-      b.set(2);
+      nextA.set(2);
+      nextB.set(2);
     });
     expect(spy.mock.calls).toEqual([
-      ["b", 1],
       ["a", 2],
       ["b", 2],
     ]);
-    stopA();
-    stopB();
+    stopNextA();
+    stopNextB();
   });
 });

@@ -1,5 +1,6 @@
 export type Cleanup = () => void;
 
+/** A pure equivalence relation. It must not mutate reactive state. */
 export type Equality<T = any> = (previous: T, next: T) => boolean;
 
 export type NormalizedEquality<T> = Equality<T> | false | null;

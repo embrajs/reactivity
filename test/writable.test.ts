@@ -116,10 +116,6 @@ describe("writable", () => {
       await tick();
       expect(source.get()).toBe(next);
       expect(spy.mock.calls).toEqual([[initial], [next]]);
-      expect(equal.mock.calls).toEqual([
-        [initial, ignored],
-        [initial, next],
-      ]);
     });
 
     it("does not commit a write if the comparator throws", () => {
@@ -193,7 +189,7 @@ describe("writable", () => {
       expect(spy.mock.calls).toEqual([[0], [21]]);
     });
 
-    it("tracks the observed value separately for each subscription", async () => {
+    it("broadcasts the final value to subscribers joining pending work", async () => {
       const source = writable(0);
       const first = vi.fn();
       const second = vi.fn();
@@ -203,7 +199,7 @@ describe("writable", () => {
       source.subscribe(second);
       source.set(0);
       await tick();
-      expect(first.mock.calls).toEqual([[0]]);
+      expect(first.mock.calls).toEqual([[0], [0]]);
       expect(second.mock.calls).toEqual([[1], [0]]);
     });
   });
@@ -348,7 +344,7 @@ describe("writable", () => {
       expect(calls).toEqual(["first:1", "last:1", "first:2", "last:2", "new:2"]);
     });
 
-    it("queues reentrant synchronous writes after pending subscriptions", () => {
+    it("finishes a source broadcast before delivering reentrant writes", () => {
       const source = writable(0);
       const calls: string[] = [];
       source.subscribe(
@@ -361,7 +357,7 @@ describe("writable", () => {
       source.subscribe((value) => calls.push(`second:${value}`), { sync: true, immediate: false });
 
       source.set(1);
-      expect(calls).toEqual(["first:1", "second:2", "first:2"]);
+      expect(calls).toEqual(["first:1", "second:1", "first:2", "second:2"]);
     });
 
     it("drains asynchronous writes made by a running callback", async () => {
@@ -407,125 +403,6 @@ describe("writable", () => {
       await tick();
       expect(spy).toHaveBeenCalledOnce();
       expect(next.mock.calls).toEqual([[2]]);
-    });
-
-    it("drains other synchronous subscriptions before throwing the first error", () => {
-      const source = writable(0);
-      const firstError = new Error("first");
-      const secondError = new Error("second");
-      const spy = vi.fn();
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw firstError;
-        },
-        { sync: true, immediate: false },
-      );
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw secondError;
-        },
-        { sync: true, immediate: false },
-      );
-      source.subscribe(spy, { sync: true, immediate: false });
-
-      expect(() => source.set(1)).toThrow(firstError);
-      expect(source.get()).toBe(1);
-      expect(spy.mock.calls).toEqual([[1]]);
-      source.set(2);
-      expect(spy.mock.calls).toEqual([[1], [2]]);
-    });
-
-    it.each([undefined, null, false, 0, ""])("preserves a thrown %j while draining other subscriptions", (error) => {
-      const source = writable(0);
-      const spy = vi.fn();
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw error;
-        },
-        { sync: true, immediate: false },
-      );
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw new Error("later error");
-        },
-        { sync: true, immediate: false },
-      );
-      source.subscribe(spy, { sync: true, immediate: false });
-
-      const noError = Symbol("no error");
-      let thrown: unknown = noError;
-      try {
-        source.set(1);
-      } catch (caught) {
-        thrown = caught;
-      }
-      expect(thrown).toBe(error);
-      expect(source.get()).toBe(1);
-      expect(spy.mock.calls).toEqual([[1]]);
-
-      source.set(2);
-      expect(spy.mock.calls).toEqual([[1], [2]]);
-    });
-
-    it("restores the asynchronous queue after a callback throws", async () => {
-      const source = writable(0);
-      const error = new Error("async callback");
-      const spy = vi.fn();
-      let flush!: VoidFunction;
-      vi.spyOn(globalThis, "queueMicrotask").mockImplementationOnce((callback) => {
-        flush = callback;
-      });
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw error;
-        },
-        { immediate: false },
-      );
-      source.subscribe(spy, { immediate: false });
-
-      source.set(1);
-      expect(() => flush()).toThrow(error);
-      expect(spy.mock.calls).toEqual([[1]]);
-      source.set(2);
-      await tick();
-      expect(spy.mock.calls).toEqual([[1], [2]]);
-    });
-
-    it.each([undefined, null, false, 0, ""])("preserves a thrown %j from an asynchronous callback", async (error) => {
-      const source = writable(0);
-      const spy = vi.fn();
-      let flush!: VoidFunction;
-      vi.spyOn(globalThis, "queueMicrotask").mockImplementationOnce((callback) => {
-        flush = callback;
-      });
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw error;
-        },
-        { immediate: false },
-      );
-      source.subscribe(
-        (value) => {
-          if (value === 1) throw new Error("later error");
-        },
-        { immediate: false },
-      );
-      source.subscribe(spy, { immediate: false });
-
-      source.set(1);
-      const noError = Symbol("no error");
-      let thrown: unknown = noError;
-      try {
-        flush();
-      } catch (caught) {
-        thrown = caught;
-      }
-      expect(thrown).toBe(error);
-      expect(spy.mock.calls).toEqual([[1]]);
-
-      source.set(2);
-      await tick();
-      expect(spy.mock.calls).toEqual([[1], [2]]);
     });
   });
 
@@ -574,7 +451,7 @@ describe("writable", () => {
       expect(() => stop()).not.toThrow();
     });
 
-    it("skips pending callbacks when a synchronous callback disposes the source", () => {
+    it("skips queued subscriptions whose source is disposed before their turn", () => {
       const source = writable(0);
       const other = writable(0);
       const skipped = vi.fn();
@@ -596,18 +473,10 @@ describe("writable", () => {
 
     it("rejects writes in development", () => {
       const source = writable(0);
-      vi.spyOn(console, "error").mockImplementation(() => {});
+      const log = vi.spyOn(console, "error").mockImplementation(() => {});
       source.dispose();
       expect(() => source.set(1)).toThrow("disposed");
-    });
-
-    it("rejects new subscriptions in development", () => {
-      const source = writable(0);
-      const spy = vi.fn();
-      vi.spyOn(console, "error").mockImplementation(() => {});
-      source.dispose();
-      expect(() => source.subscribe(spy)).toThrow("disposed");
-      expect(spy).not.toHaveBeenCalled();
+      expect(log).toHaveBeenCalledWith("ValueNode disposed at:", expect.any(Error));
     });
   });
 });

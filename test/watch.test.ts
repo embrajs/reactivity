@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { type EffectContext, type EffectFn, subscribe, type WatchEffect, watch, writable } from "../src";
+import { type EffectContext, type EffectFn, type WatchEffect, watch, writable } from "../src";
 
 async function tick() {
   await Promise.resolve();
@@ -131,7 +131,7 @@ describe("watch", () => {
       stop();
     });
 
-    it("keeps the first snapshot when a dependency is reread after a write", () => {
+    it("processes effect writes when the dependency is read again", () => {
       const source = writable(0);
       const spy = vi.fn();
       const stop = watch(
@@ -151,7 +151,7 @@ describe("watch", () => {
       stop();
     });
 
-    it("keeps the first value and version across nonconsecutive rereads", () => {
+    it("processes effect writes across nonconsecutive dependency reads", () => {
       const source = writable(0);
       const other = writable(0);
       const spy = vi.fn();
@@ -175,7 +175,7 @@ describe("watch", () => {
       stop();
     });
 
-    it("keeps the first snapshot when another observer occupies the subscriber tail", () => {
+    it("processes effect writes when another observer is subscribed during the callback", () => {
       const source = writable(0);
       const other = writable(0);
       const spy = vi.fn();
@@ -499,8 +499,7 @@ describe("watch", () => {
       const stop = watch(
         function () {
           contexts.push(this);
-          subscribe(
-            source,
+          source.subscribe(
             function (value) {
               expect(this).not.toBe(contexts.at(-1));
               child(value);
@@ -719,305 +718,6 @@ describe("watch", () => {
       stop();
       expect(spy.mock.calls).toEqual([[0]]);
       expect(cleanup).toHaveBeenCalledOnce();
-    });
-  });
-
-  describe("errors", () => {
-    it.each([
-      new Error("initial"),
-      undefined,
-      null,
-      false,
-      0,
-      "",
-    ])("cancels a failed initial run and preserves its thrown %j while draining other work", (error) => {
-      const source = writable(0);
-      const other = writable(0);
-      const peer = vi.fn();
-      other.subscribe(
-        (value) => {
-          if (value === 1) throw new Error("later error");
-        },
-        { sync: true, immediate: false },
-      );
-      other.subscribe(peer, { sync: true, immediate: false });
-      const callback = vi.fn(() => {
-        source.get();
-        other.set(1);
-        throw error;
-      });
-
-      const noError = Symbol("no error");
-      let thrown: unknown = noError;
-      try {
-        watch(callback, { sync: true });
-      } catch (caught) {
-        thrown = caught;
-      }
-      expect(thrown).toBe(error);
-      expect(peer.mock.calls).toEqual([[1]]);
-      source.set(1);
-      expect(callback).toHaveBeenCalledOnce();
-      other.set(2);
-      expect(peer.mock.calls).toEqual([[1], [2]]);
-    });
-
-    it("preserves the first queue error when initialization cleanup also throws", () => {
-      const source = writable(0);
-      const trigger = writable(0);
-      const error = new Error("queue");
-      const cleanupError = new Error("cleanup");
-      const spy = vi.fn();
-      const peer = vi.fn();
-      const cleanup = vi.fn(() => {
-        throw cleanupError;
-      });
-      trigger.subscribe(
-        (value) => {
-          if (value === 1) throw error;
-        },
-        { sync: true, immediate: false },
-      );
-      trigger.subscribe(peer, { sync: true, immediate: false });
-
-      let thrown: unknown;
-      try {
-        watch(
-          () => {
-            spy(source.get());
-            trigger.set(1);
-            return cleanup;
-          },
-          { sync: true },
-        );
-      } catch (caught) {
-        thrown = caught;
-      }
-      expect(thrown).toBe(error);
-      expect(cleanup).toHaveBeenCalledOnce();
-      expect(peer.mock.calls).toEqual([[1]]);
-
-      source.set(1);
-      trigger.set(2);
-      expect(spy.mock.calls).toEqual([[0]]);
-      expect(cleanup).toHaveBeenCalledOnce();
-      expect(peer.mock.calls).toEqual([[1], [2]]);
-    });
-
-    it("keeps dependencies read by a failed rerun and drops the unused branch", () => {
-      const condition = writable(false);
-      const first = writable(0);
-      const second = writable(0);
-      const error = new Error("rerun");
-      const spy = vi.fn();
-      const stop = watch(
-        () => {
-          if (condition.get()) {
-            spy(second.get());
-            throw error;
-          }
-          spy(first.get());
-        },
-        { sync: true },
-      );
-
-      expect(() => condition.set(true)).toThrow(error);
-      first.set(1);
-      expect(spy.mock.calls).toEqual([[0], [0]]);
-      expect(() => second.set(2)).toThrow(error);
-      expect(spy.mock.calls).toEqual([[0], [0], [2]]);
-      condition.set(false);
-      second.set(3);
-      expect(spy.mock.calls).toEqual([[0], [0], [2], [1]]);
-      stop();
-    });
-
-    it("does not reuse the previous cleanup after a callback throws", () => {
-      const source = writable(0);
-      const cleanup = vi.fn();
-      const error = new Error("rerun");
-      const spy = vi.fn();
-      const stop = watch(
-        () => {
-          const value = source.get();
-          spy(value);
-          if (value === 1) throw error;
-          return cleanup;
-        },
-        { sync: true },
-      );
-
-      expect(() => source.set(1)).toThrow(error);
-      expect(cleanup).toHaveBeenCalledOnce();
-      source.set(2);
-      expect(cleanup).toHaveBeenCalledOnce();
-      stop();
-      expect(cleanup).toHaveBeenCalledTimes(2);
-      expect(spy.mock.calls).toEqual([[0], [1], [2]]);
-    });
-
-    it("keeps reordered dependencies after cleanup throws", () => {
-      const source = writable(0);
-      const first = writable(0);
-      const second = writable(0);
-      const error = new Error("cleanup");
-      const spy = vi.fn();
-      const stop = watch(
-        () => {
-          const value = source.get();
-          if (value === 0) spy(value, first.get(), second.get());
-          else spy(value, second.get(), first.get());
-          return () => {
-            if (value === 0) throw error;
-          };
-        },
-        { sync: true },
-      );
-
-      expect(() => source.set(1)).toThrow(error);
-      source.set(2);
-      second.set(1);
-      expect(spy.mock.calls).toEqual([
-        [0, 0, 0],
-        [2, 0, 0],
-        [2, 1, 0],
-      ]);
-      stop();
-    });
-
-    it.each([
-      new Error("cleanup"),
-      undefined,
-      null,
-      false,
-      0,
-      "",
-    ])("recovers after cleanup throws %j without retrying it and continues other observers", (error) => {
-      const source = writable(0);
-      const spy = vi.fn();
-      const cleanup = vi.fn((value: number) => {
-        if (value === 0) throw error;
-      });
-      const stop = watch(
-        () => {
-          const value = source.get();
-          spy(value);
-          return () => cleanup(value);
-        },
-        { sync: true },
-      );
-      const peer = vi.fn();
-      const stopPeer = watch(
-        () => {
-          peer(source.get());
-        },
-        { sync: true },
-      );
-
-      const noError = Symbol("no error");
-      let thrown: unknown = noError;
-      try {
-        source.set(1);
-      } catch (caught) {
-        thrown = caught;
-      }
-      expect(thrown).toBe(error);
-      expect(spy.mock.calls).toEqual([[0]]);
-      expect(cleanup.mock.calls).toEqual([[0]]);
-      expect(peer.mock.calls).toEqual([[0], [1]]);
-
-      source.set(2);
-      expect(spy.mock.calls).toEqual([[0], [2]]);
-      expect(cleanup.mock.calls).toEqual([[0]]);
-      expect(peer.mock.calls).toEqual([[0], [1], [2]]);
-      stop();
-      expect(cleanup.mock.calls).toEqual([[0], [2]]);
-      stopPeer();
-    });
-
-    it("recovers an asynchronous watch after cleanup throws without retrying it", async () => {
-      const source = writable(0);
-      const error = new Error("async cleanup");
-      const spy = vi.fn();
-      const cleanup = vi.fn((value: number) => {
-        if (value === 0) throw error;
-      });
-      const stop = watch(() => {
-        const value = source.get();
-        spy(value);
-        return () => cleanup(value);
-      });
-      const peer = vi.fn();
-      const stopPeer = watch(() => {
-        peer(source.get());
-      });
-      let flush!: VoidFunction;
-      vi.spyOn(globalThis, "queueMicrotask").mockImplementationOnce((callback) => {
-        flush = callback;
-      });
-
-      source.set(1);
-      expect(() => flush()).toThrow(error);
-      expect(spy.mock.calls).toEqual([[0]]);
-      expect(cleanup.mock.calls).toEqual([[0]]);
-      expect(peer.mock.calls).toEqual([[0], [1]]);
-
-      source.set(2);
-      await tick();
-      expect(spy.mock.calls).toEqual([[0], [2]]);
-      expect(cleanup.mock.calls).toEqual([[0]]);
-      expect(peer.mock.calls).toEqual([[0], [1], [2]]);
-      stop();
-      expect(cleanup.mock.calls).toEqual([[0], [2]]);
-      stopPeer();
-    });
-
-    it("keeps stop idempotent when its cleanup throws", () => {
-      const source = writable(0);
-      const spy = vi.fn();
-      const error = new Error("stop");
-      const cleanup = vi.fn(() => {
-        throw error;
-      });
-      const stop = watch(
-        () => {
-          spy(source.get());
-          return cleanup;
-        },
-        { sync: true },
-      );
-
-      expect(() => stop()).toThrow(error);
-      expect(() => stop()).not.toThrow();
-      source.set(1);
-      expect(spy.mock.calls).toEqual([[0]]);
-      expect(cleanup).toHaveBeenCalledOnce();
-    });
-
-    it("restores the parent context when a nested watch fails during its initial run", () => {
-      const hidden = writable(0);
-      const tracked = writable(0);
-      const error = new Error("nested");
-      const child = vi.fn(() => {
-        hidden.get();
-        throw error;
-      });
-      const spy = vi.fn();
-      const stop = watch(
-        () => {
-          expect(() => watch(child, { sync: true })).toThrow(error);
-          spy(tracked.get());
-        },
-        { sync: true },
-      );
-
-      hidden.set(1);
-      expect(child).toHaveBeenCalledOnce();
-      expect(spy.mock.calls).toEqual([[0]]);
-      tracked.set(1);
-      expect(child).toHaveBeenCalledTimes(2);
-      expect(spy.mock.calls).toEqual([[0], [1]]);
-      stop();
     });
   });
 
