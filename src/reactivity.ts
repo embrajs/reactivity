@@ -1,5 +1,4 @@
 import {
-  appendDep,
   appendSub,
   clearSubs,
   type IDepItem,
@@ -783,7 +782,13 @@ function addStaticDependencies(observer: ComputedNode, sources: ReadableLike | r
 
 function addStaticDependency(source: Source, observer: ComputedNode): void {
   const link = new Link(source, observer);
-  appendDep(observer, link);
+  link.depNext_ = null;
+  if (observer.depTail_ !== null) {
+    observer.depTail_.depNext_ = link;
+  } else {
+    observer.depHead_ = link;
+  }
+  observer.depTail_ = link;
 }
 
 export interface Readable<T = any> {

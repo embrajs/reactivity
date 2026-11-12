@@ -51,13 +51,3 @@ export function clearSubs(list: ISubList): void {
   }
   list.subHead_ = list.subTail_ = null;
 }
-
-export function appendDep(list: IDepList, item: IDepItem): void {
-  item.depNext_ = null;
-  if (list.depTail_ !== null) {
-    list.depTail_.depNext_ = item;
-  } else {
-    list.depHead_ = item;
-  }
-  list.depTail_ = item;
-}
