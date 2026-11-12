@@ -8,11 +8,36 @@ import {
   removeSub,
 } from "./broadcast";
 import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
-import { getRuntime, type RuntimeQueue } from "./runtime";
 import type { Cleanup, Equality, EqualityConfig, NormalizedEquality, Owned, Setter } from "./types";
 
-const runtime = /* @__PURE__ */ getRuntime<Observer, QueueItem>();
-const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
+declare global {
+  interface EmbraReactivityTypeSymbols {
+    readonly CONTRACT: unique symbol;
+  }
+  interface EmbraReactivityGlobals {
+    [CONTRACT_SYMBOL]?: EmbraReactivityRuntimes;
+  }
+  interface EmbraReactivityRuntimes {
+    [CONTRACT_VERSION]?: Runtime;
+  }
+}
+
+interface RuntimeQueue {
+  /** Running while a batch/flush is active, or an asynchronous flush is scheduled. */
+  flags_: Flags;
+  items_: (QueueItem | undefined)[];
+  head_: number;
+  tail_: number;
+}
+
+interface Runtime {
+  NOOP_: () => void;
+  currentObserver_: Observer | null;
+  syncQueue_: RuntimeQueue;
+  asyncQueue_: RuntimeQueue;
+  /** Development-only write guard; omitted from production evaluation. */
+  __dev_currentComputation?: unknown;
+}
 
 export type Subscriber<T = any> = (this: EffectContext, value: T) => void;
 
@@ -33,6 +58,76 @@ export type WatchEffect = EffectFn;
 type Source<T = any> = ValueNode<T> | ComputedNode<T>;
 type Observer = ComputedNode | WatchNode;
 type QueueItem = Source | WatchNode;
+
+const runtime = /* @__PURE__ */ ((): Runtime => {
+  const runtime_ = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {
+    NOOP_() {},
+    currentObserver_: null,
+    syncQueue_: { flags_: Flags.None, items_: [], head_: 0, tail_: 0 },
+    asyncQueue_: { flags_: Flags.None, items_: [], head_: 0, tail_: 0 },
+  });
+
+  ValueNode.prototype = {
+    runtime_,
+
+    get value(): any {
+      return this.get();
+    },
+
+    set value(value: any) {
+      this.set(value);
+    },
+
+    subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup {
+      return createSubscription(this, callback, options);
+    },
+
+    dispose(): void {
+      if (!(this.flags_ & Flags.Disposed)) {
+        this.flags_ = Flags.KindValueNode | Flags.Disposed;
+        if (process.env.NODE_ENV !== "production") {
+          this.__dev_disposed_at = new Error();
+        }
+        clearSubs(this);
+        disposeSubscriptions(this);
+      }
+    },
+  } satisfies ThisType<ValueNode> as ValueNode;
+
+  ComputedNode.prototype = {
+    runtime_,
+
+    track_(source: Source): void {
+      trackDependency(source, this);
+    },
+
+    get value(): any {
+      return this.get();
+    },
+
+    subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup {
+      return createSubscription(this, callback, options);
+    },
+
+    dispose(): void {
+      if (!(this.flags_ & Flags.Disposed)) {
+        this.flags_ = Flags.KindComputedNode | Flags.Disposed;
+        if (process.env.NODE_ENV !== "production") {
+          this.__dev_disposed_at = new Error();
+        }
+        this.depTail_ = null;
+        cleanupObserver(this);
+        this.compute_ = null;
+        clearSubs(this);
+        disposeSubscriptions(this);
+      }
+    },
+  } satisfies ThisType<ComputedNode> as ComputedNode;
+
+  return runtime_;
+})();
+
+const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
 
 class Link implements ISubItem, IDepItem {
   // TrackPhase belongs to collection; Dirty records a published Effect input.
@@ -61,163 +156,129 @@ interface ValueOptions<T> {
   equal?: EqualityConfig<T>;
 }
 
-class ValueNode<T = any> implements ISubList, Writable<T> {
+declare class ValueNode<T = any> implements ISubList, Writable<T> {
+  runtime_: Runtime;
   // Keep the shared Source fields in the same construction order as ComputedNode.
   flags_: Flags;
   subHead_: Link | null;
   subTail_: Link | null;
-  declare [CONTRACT_SYMBOL]: CONTRACT_VERSION;
+  [CONTRACT_SYMBOL]: CONTRACT_VERSION;
   name: string;
   value_: T;
   equal_: NormalizedEquality<T>;
   syncSubscriptions_: SubscriptionList | null;
   asyncSubscriptions_: SubscriptionList | null;
-  declare __dev_disposed_at: Error | null;
+  __dev_disposed_at: Error | null;
+  value: T;
   get: () => T;
   set: Setter<T>;
+  dispose(): void;
+  subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
+  constructor(value: T, options?: ValueOptions<T>);
+}
 
-  constructor(value: T, options?: ValueOptions<T>) {
-    this.flags_ = Flags.KindValueNode;
-    this.subHead_ = null;
-    this.subTail_ = null;
-    this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
-    this.name = options?.name ?? "";
-    this.value_ = value;
-    this.equal_ = options?.equal ?? null;
-    this.syncSubscriptions_ = null;
-    this.asyncSubscriptions_ = null;
-    if (process.env.NODE_ENV !== "production") {
-      this.__dev_disposed_at = null;
-    }
-
-    this.get = () => this.value;
-
-    this.set = (value) => {
-      if (process.env.NODE_ENV !== "production") {
-        if (this.flags_ & Flags.Disposed) {
-          if (this.__dev_disposed_at) {
-            console.error("ValueNode disposed at:", this.__dev_disposed_at);
-          }
-          throw new Error("disposed");
-        }
-        if (runtime.__dev_currentComputation) {
-          throw new Error("write during computation");
-        }
-      }
-      const equal = this.equal_;
-      if (equal === null ? this.value_ !== value : equal === false || different(equal, this.value_, value)) {
-        this.value_ = value;
-        if (this.subHead_ !== null || this.flags_ & Flags.HasSubscriptions) {
-          if (!(this.flags_ & Flags.Dirty)) {
-            this.flags_ |= Flags.Dirty;
-            propagate(this);
-          }
-          if (!(syncQueue_.flags_ & Flags.Running)) {
-            flushEffects();
-          }
-        }
-      }
-    };
+function ValueNode<T>(this: ValueNode<T>, value: T, options?: ValueOptions<T>) {
+  this.flags_ = Flags.KindValueNode;
+  this.subHead_ = null;
+  this.subTail_ = null;
+  this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
+  this.name = options?.name ?? "";
+  this.value_ = value;
+  this.equal_ = options?.equal ?? null;
+  this.syncSubscriptions_ = null;
+  this.asyncSubscriptions_ = null;
+  if (process.env.NODE_ENV !== "production") {
+    this.__dev_disposed_at = null;
   }
 
-  get value(): T {
-    const observer = runtime.currentObserver_;
+  this.get = () => {
+    const observer = this.runtime_.currentObserver_;
     if (observer !== null && !(this.flags_ & Flags.Disposed)) {
       this.flags_ &= ~Flags.Dirty;
       observer.track_(this);
     }
     return this.value_;
-  }
+  };
 
-  set value(value: T) {
-    this.set(value);
-  }
-
-  subscribe(callback: Subscriber<T>, options?: SubscribeOptions): Cleanup {
-    return createSubscription(this, callback, options);
-  }
-
-  dispose(): void {
-    if (!(this.flags_ & Flags.Disposed)) {
-      this.flags_ = Flags.KindValueNode | Flags.Disposed;
-      if (process.env.NODE_ENV !== "production") {
-        this.__dev_disposed_at = new Error();
+  this.set = (value) => {
+    if (process.env.NODE_ENV !== "production") {
+      if (this.flags_ & Flags.Disposed) {
+        if (this.__dev_disposed_at) {
+          console.error("ValueNode disposed at:", this.__dev_disposed_at);
+        }
+        throw new Error("disposed");
       }
-      clearSubs(this);
-      disposeSubscriptions(this);
+      if (runtime.__dev_currentComputation) {
+        throw new Error("write during computation");
+      }
     }
-  }
+    const equal = this.equal_;
+    if (equal === null ? this.value_ !== value : equal === false || different(equal, this.value_, value)) {
+      this.value_ = value;
+      if (this.subHead_ !== null || this.flags_ & Flags.HasSubscriptions) {
+        if (!(this.flags_ & Flags.Dirty)) {
+          this.flags_ |= Flags.Dirty;
+          propagate(this);
+        }
+        if (!(syncQueue_.flags_ & Flags.Running)) {
+          flushEffects();
+        }
+      }
+    }
+  };
 }
 
-class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
+declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
+  runtime_: Runtime;
   // Keep the shared Source fields in the same construction order as ValueNode.
   flags_: Flags;
   subHead_: Link | null;
   subTail_: Link | null;
-  declare [CONTRACT_SYMBOL]: CONTRACT_VERSION;
+  [CONTRACT_SYMBOL]: CONTRACT_VERSION;
   name: string;
   value_: T | undefined;
+  value: T;
   equal_: NormalizedEquality<T>;
   syncSubscriptions_: SubscriptionList | null;
   asyncSubscriptions_: SubscriptionList | null;
-  declare __dev_disposed_at: Error | null;
+  __dev_disposed_at: Error | null;
   get: () => T;
   depHead_: Link | null;
   // The confirmed tail during collection; the actual tail outside collection.
   depTail_: Link | null;
   compute_: ((...values: any[]) => T) | null;
+  track_(source: Source): void;
+  dispose(): void;
+  subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
+  constructor(compute: (...values: any[]) => T, options?: ReadableOptions<T>);
+}
 
-  constructor(compute: (...values: any[]) => T, options?: ReadableOptions<T>) {
-    this.flags_ = Flags.KindComputedNode | Flags.Dirty;
-    this.subHead_ = null;
-    this.subTail_ = null;
-    this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
-    this.name = options?.name ?? "";
-    this.value_ = undefined;
-    this.equal_ = options?.equal ?? null;
-    this.syncSubscriptions_ = null;
-    this.asyncSubscriptions_ = null;
-    if (process.env.NODE_ENV !== "production") {
-      this.__dev_disposed_at = null;
-    }
-    this.get = () => this.value;
-    this.depHead_ = null;
-    this.depTail_ = null;
-    this.compute_ = compute;
+function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T, options?: ReadableOptions<T>) {
+  this.flags_ = Flags.KindComputedNode | Flags.Dirty;
+  this.subHead_ = null;
+  this.subTail_ = null;
+  this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
+  this.name = options?.name ?? "";
+  this.value_ = undefined;
+  this.equal_ = options?.equal ?? null;
+  this.syncSubscriptions_ = null;
+  this.asyncSubscriptions_ = null;
+  if (process.env.NODE_ENV !== "production") {
+    this.__dev_disposed_at = null;
   }
-
-  track_(source: Source): void {
-    trackDependency(source, this);
-  }
-
-  get value(): T {
+  this.get = () => {
     if (this.flags_ & (Flags.Dirty | Flags.Pending | Flags.Running)) {
       updateComputed(this);
     }
-    const observer = runtime.currentObserver_;
+    const observer = this.runtime_.currentObserver_;
     if (observer !== null && !(this.flags_ & Flags.Disposed)) {
       observer.track_(this);
     }
     return this.value_ as T;
-  }
-
-  subscribe(callback: Subscriber<T>, options?: SubscribeOptions): Cleanup {
-    return createSubscription(this, callback, options);
-  }
-
-  dispose(): void {
-    if (!(this.flags_ & Flags.Disposed)) {
-      this.flags_ = Flags.KindComputedNode | Flags.Disposed;
-      if (process.env.NODE_ENV !== "production") {
-        this.__dev_disposed_at = new Error();
-      }
-      this.depTail_ = null;
-      cleanupObserver(this);
-      this.compute_ = null;
-      clearSubs(this);
-      disposeSubscriptions(this);
-    }
-  }
+  };
+  this.depHead_ = null;
+  this.depTail_ = null;
+  this.compute_ = compute;
 }
 
 // Subscriptions are source-owned records, not graph observers or queue entries.
@@ -697,7 +758,7 @@ function hasEffectChange(effect: WatchNode): boolean {
   return false;
 }
 
-function clearQueue(queue: RuntimeQueue<QueueItem>): void {
+function clearQueue(queue: RuntimeQueue): void {
   for (let i = queue.head_; i < queue.tail_; i++) {
     const item = queue.items_[i];
     if (item !== undefined) {
