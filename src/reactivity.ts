@@ -364,30 +364,31 @@ function Subscription(this: Subscription, list: SubscriptionList | null, callbac
   };
 }
 
-class WatchNode implements IDepList, EffectContext {
+declare class WatchNode implements IDepList, EffectContext {
   flags_: Flags;
   depHead_: Link | null;
   depTail_: Link | null;
   cleanup_: Cleanup | null;
   callback_: (this: EffectContext) => void | Cleanup;
   dispose: Cleanup;
+  constructor(callback: WatchEffect, flags: Flags);
+}
 
-  constructor(callback: WatchEffect, flags: Flags) {
-    this.flags_ = Flags.KindSubscriberNode | Flags.Connected | flags;
-    this.depHead_ = null;
-    this.depTail_ = null;
-    this.cleanup_ = null;
-    this.callback_ = callback;
+function WatchNode(this: WatchNode, callback: WatchEffect, flags: Flags) {
+  this.flags_ = Flags.KindSubscriberNode | Flags.Connected | flags;
+  this.depHead_ = null;
+  this.depTail_ = null;
+  this.cleanup_ = null;
+  this.callback_ = callback;
 
-    this.dispose = (): void => {
-      if (!(this.flags_ & Flags.Disposed)) {
-        this.flags_ |= Flags.Disposed;
-        if (!(this.flags_ & Flags.Running)) {
-          finalizeEffectDisposal(this);
-        }
+  this.dispose = (): void => {
+    if (!(this.flags_ & Flags.Disposed)) {
+      this.flags_ |= Flags.Disposed;
+      if (!(this.flags_ & Flags.Running)) {
+        finalizeEffectDisposal(this);
       }
-    };
-  }
+    }
+  };
 }
 
 function different(equal: Equality, previous: any, next: any): boolean {
@@ -851,17 +852,11 @@ export interface Writable<T = any> extends Readable<T> {
   set: Setter<T>;
 }
 
-export interface ReadableProvider<T = any> {
-  readonly $: Readable<T>;
-}
-
-export type ReadableLike<T = any> = Readable<T> | ReadableProvider<T>;
-
 export type WritableOptions<T> = ValueOptions<T>;
 export type ReadableOptions<T> = ValueOptions<T>;
 
-export type ReadableValue<T> = T extends Readable<infer V> ? V : T extends ReadableProvider<infer V> ? V : never;
-export type ReadableValues<T extends readonly ReadableLike[]> = {
+export type ReadableValue<T> = T extends Readable<infer V> ? V : never;
+export type ReadableValues<T extends readonly Readable[]> = {
   [K in keyof T]: ReadableValue<T[K]>;
 };
 
@@ -875,18 +870,6 @@ export function isWritable<T>(value: Readable<T> | null | undefined): value is W
 export function isWritable<T = any>(value: unknown): value is Writable<T>;
 export function isWritable(value: unknown): value is Writable {
   return isReadable(value) && ((value as Writable).set || NOOP_) !== NOOP_;
-}
-
-export function isReadableProvider<T>(value: ReadableProvider<T> | null | undefined): value is ReadableProvider<T>;
-export function isReadableProvider<T = any>(value: unknown): value is ReadableProvider<T>;
-export function isReadableProvider(value: unknown): value is ReadableProvider {
-  return isReadable((value as ReadableProvider | undefined)?.$);
-}
-
-export function isReadableLike<T>(value: ReadableLike<T> | null | undefined): value is ReadableLike<T>;
-export function isReadableLike<T = any>(value: unknown): value is ReadableLike<T>;
-export function isReadableLike(value: unknown): value is ReadableLike {
-  return isReadable(value) || isReadableProvider(value);
 }
 
 export function writable<T = any>(value: T, config?: WritableOptions<T>): Owned<Writable<T>> {

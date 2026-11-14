@@ -3,12 +3,8 @@ import {
   computed,
   derived,
   isReadable,
-  isReadableLike,
-  isReadableProvider,
   isWritable,
   type Readable,
-  type ReadableLike,
-  type ReadableProvider,
   type ReadableValue,
   type ReadableValues,
   readable,
@@ -27,8 +23,6 @@ describe("readable predicates", () => {
 
     for (const value of [source, readonly, dynamic, fixed]) {
       expect(isReadable(value)).toBe(true);
-      expect(isReadableLike(value)).toBe(true);
-      expect(isReadableProvider(value)).toBe(false);
     }
     expect(isWritable(source)).toBe(true);
     expect(isWritable(readonly)).toBe(false);
@@ -38,18 +32,14 @@ describe("readable predicates", () => {
     expect(derive).not.toHaveBeenCalled();
   });
 
-  it("recognizes ordinary, array and function providers", () => {
+  it("rejects ordinary, array and function providers", () => {
     const source = writable(1);
     const providers = [{ $: source }, Object.assign([], { $: source }), Object.assign(() => {}, { $: source })];
 
     for (const provider of providers) {
-      expect(isReadableProvider(provider)).toBe(true);
-      expect(isReadableLike(provider)).toBe(true);
       expect(isReadable(provider)).toBe(false);
       expect(isWritable(provider)).toBe(false);
     }
-    expect(isReadableProvider({ $: { $: source } })).toBe(false);
-    expect(isReadableLike({ $: { $: source } })).toBe(false);
   });
 
   it("allows a readable to also provide another readable", () => {
@@ -57,8 +47,6 @@ describe("readable predicates", () => {
 
     expect(isReadable(source)).toBe(true);
     expect(isWritable(source)).toBe(true);
-    expect(isReadableProvider(source)).toBe(true);
-    expect(isReadableLike(source)).toBe(true);
     expectTypeOf<ReadableValue<typeof source>>().toEqualTypeOf<number>();
   });
 
@@ -71,8 +59,6 @@ describe("readable predicates", () => {
     for (const value of [source, readonly, dynamic, fixed]) {
       value.dispose();
       expect(isReadable(value)).toBe(true);
-      expect(isReadableLike(value)).toBe(true);
-      expect(isReadableProvider({ $: value })).toBe(true);
     }
     expect(isWritable(source)).toBe(true);
     expect(isWritable(readonly)).toBe(false);
@@ -96,8 +82,6 @@ describe("readable predicates", () => {
   ])("rejects non-readables: %s", (value) => {
     expect(isReadable(value)).toBe(false);
     expect(isWritable(value)).toBe(false);
-    expect(isReadableProvider(value)).toBe(false);
-    expect(isReadableLike(value)).toBe(false);
   });
 
   it("rejects method-shaped objects and incompatible contract versions", () => {
@@ -112,22 +96,18 @@ describe("readable predicates", () => {
     ]) {
       expect(isReadable(value)).toBe(false);
       expect(isWritable(value)).toBe(false);
-      expect(isReadableProvider({ $: value })).toBe(false);
-      expect(isReadableLike({ $: value })).toBe(false);
     }
     expect(get).not.toHaveBeenCalled();
     expect(set).not.toHaveBeenCalled();
   });
 
-  it("narrows unknown values and extracts provider value types", () => {
+  it("narrows unknown values and extracts readable value types", () => {
     const source: unknown = writable(1);
     if (isReadable<number>(source)) expectTypeOf(source).toEqualTypeOf<Readable<number>>();
     if (isWritable<number>(source)) expectTypeOf(source).toEqualTypeOf<Writable<number>>();
-    const provider: unknown = { $: source };
-    if (isReadableProvider<number>(provider)) expectTypeOf(provider).toEqualTypeOf<ReadableProvider<number>>();
-    if (isReadableLike<number>(provider)) expectTypeOf(provider).toEqualTypeOf<ReadableLike<number>>();
-    expectTypeOf<ReadableValue<ReadableProvider<string>>>().toEqualTypeOf<string>();
-    expectTypeOf<ReadableValues<readonly [Readable<number>, ReadableProvider<string>]>>().toEqualTypeOf<
+    expectTypeOf<ReadableValue<Readable<string>>>().toEqualTypeOf<string>();
+    expectTypeOf<ReadableValue<{ $: Readable<string> }>>().toEqualTypeOf<never>();
+    expectTypeOf<ReadableValues<readonly [Readable<number>, Readable<string>]>>().toEqualTypeOf<
       readonly [number, string]
     >();
   });
@@ -136,11 +116,5 @@ describe("readable predicates", () => {
     const source = null as Readable<number> | null;
     if (isReadable(source)) expectTypeOf(source).toEqualTypeOf<Readable<number>>();
     if (isWritable(source)) expectTypeOf(source).toEqualTypeOf<Writable<number>>();
-
-    const provider = null as ReadableProvider<string> | null;
-    if (isReadableProvider(provider)) expectTypeOf(provider).toEqualTypeOf<ReadableProvider<string>>();
-
-    const like = null as ReadableLike<boolean> | null;
-    if (isReadableLike(like)) expectTypeOf(like).toEqualTypeOf<ReadableLike<boolean>>();
   });
 });

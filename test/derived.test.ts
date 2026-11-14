@@ -1,16 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import {
-  batch,
-  computed,
-  derived,
-  type Owned,
-  type Readable,
-  type ReadableLike,
-  type ReadableProvider,
-  readable,
-  watch,
-  writable,
-} from "../src";
+import { batch, computed, derived, type Owned, type Readable, readable, watch, writable } from "../src";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -79,17 +68,18 @@ describe("derived", () => {
 
   it("rejects providers in its input types", () => {
     const source = writable(1);
-    const provider: ReadableProvider<number> = { $: source };
-    const inputs: ReadableLike<number>[] = [source, provider];
+    const provider = { $: source };
+    const inputs = [source, provider];
     const compute = () => 0;
 
     expectTypeOf(derived).toBeCallableWith(source, compute);
     expectTypeOf(derived).toBeCallableWith([source], compute);
+    expectTypeOf(derived).toBeCallableWith(provider.$, compute);
     // @ts-expect-error Providers must be explicitly unwrapped.
     expectTypeOf(derived).toBeCallableWith(provider, compute);
     // @ts-expect-error Every tuple element must be a Readable.
     expectTypeOf(derived).toBeCallableWith([source, provider] as const, compute);
-    // @ts-expect-error Arrays of ReadableLike may contain providers.
+    // @ts-expect-error Every array element must be a Readable.
     expectTypeOf(derived).toBeCallableWith(inputs, compute);
   });
 
