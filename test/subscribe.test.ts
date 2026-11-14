@@ -95,7 +95,7 @@ describe("source.subscribe", () => {
   it("subscribes to an explicit multi-input derived value", async () => {
     const first = writable(0),
       second = writable("a");
-    const value = derived([first, { $: second }], (a, b) => [a, b] as const);
+    const value = derived([first, second], (a, b) => [a, b] as const);
     const callback = vi.fn();
     const stop = value.subscribe(function (next) {
       expectTypeOf(next).toEqualTypeOf<readonly [number, string]>();

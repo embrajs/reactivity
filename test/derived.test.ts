@@ -1,5 +1,16 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { batch, computed, derived, type Owned, type Readable, type ReadableLike, watch, writable } from "../src";
+import {
+  batch,
+  computed,
+  derived,
+  type Owned,
+  type Readable,
+  type ReadableLike,
+  type ReadableProvider,
+  readable,
+  watch,
+  writable,
+} from "../src";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -11,7 +22,7 @@ describe("derived", () => {
     const upstreamCompute = vi.fn(() => source.get() * 2);
     const upstream = computed(upstreamCompute);
     const compute = vi.fn((value: number) => value + 1);
-    const value = derived({ $: upstream }, compute);
+    const value = derived(upstream, compute);
 
     expect(upstreamCompute).not.toHaveBeenCalled();
     expect(compute).not.toHaveBeenCalled();
@@ -28,29 +39,34 @@ describe("derived", () => {
     expect(compute).toHaveBeenCalledTimes(2);
   });
 
-  it("infers values from providers, mixed tuples and arrays", () => {
+  it("infers values from readables, tuples and arrays", () => {
     const first = writable(1);
-    const second = writable("a");
-    const single = derived({ $: first }, (value) => {
+    const [second] = readable("a");
+    const single = derived(first, (value) => {
       expectTypeOf(value).toEqualTypeOf<number>();
       return String(value);
     });
     expectTypeOf(single).toEqualTypeOf<Owned<Readable<string>>>();
-    const tuple = derived([first, { $: second }], (a, b) => {
+    const tuple = derived([first, second], (a, b) => {
       expectTypeOf(a).toEqualTypeOf<number>();
       expectTypeOf(b).toEqualTypeOf<string>();
       return `${a}${b}`;
     });
-    const sources = [{ $: second }, first] as const;
+    const sources = [second, first] as const;
     const readonlyTuple = derived(sources, (a, b) => {
       expectTypeOf(a).toEqualTypeOf<string>();
       expectTypeOf(b).toEqualTypeOf<number>();
       return [a, b] as const;
     });
     expectTypeOf(readonlyTuple).toEqualTypeOf<Owned<Readable<readonly [string, number]>>>();
-    const inputs: ReadableLike<number>[] = [first, { $: first }];
+    const inputs: Readable<number>[] = [first, first];
     const list = derived(inputs, (...values) => {
       expectTypeOf(values).toEqualTypeOf<number[]>();
+      return values.reduce((sum, value) => sum + value, 0);
+    });
+    const readonlyInputs: readonly Readable<number>[] = inputs;
+    const readonlyList = derived(readonlyInputs, (...values) => {
+      expectTypeOf(values).toEqualTypeOf<readonly number[]>();
       return values.reduce((sum, value) => sum + value, 0);
     });
 
@@ -58,25 +74,26 @@ describe("derived", () => {
     expect(tuple.get()).toBe("1a");
     expect(readonlyTuple.get()).toEqual(["a", 1]);
     expect(list.get()).toBe(2);
+    expect(readonlyList.get()).toBe(2);
   });
 
-  it("treats an array provider as a single dependency", () => {
-    const source = writable("a");
-    const other = writable(1);
-    const provider = Object.assign([other] as const, { $: source });
-    const compute = vi.fn((value: string) => value.toUpperCase());
-    const value = derived(provider, compute);
+  it("rejects providers in its input types", () => {
+    const source = writable(1);
+    const provider: ReadableProvider<number> = { $: source };
+    const inputs: ReadableLike<number>[] = [source, provider];
+    const compute = () => 0;
 
-    expect(value.get()).toBe("A");
-    other.set(2);
-    expect(value.get()).toBe("A");
-    expect(compute).toHaveBeenCalledOnce();
-    source.set("b");
-    expect(value.get()).toBe("B");
-    expect(compute.mock.calls).toEqual([["a"], ["b"]]);
+    expectTypeOf(derived).toBeCallableWith(source, compute);
+    expectTypeOf(derived).toBeCallableWith([source], compute);
+    // @ts-expect-error Providers must be explicitly unwrapped.
+    expectTypeOf(derived).toBeCallableWith(provider, compute);
+    // @ts-expect-error Every tuple element must be a Readable.
+    expectTypeOf(derived).toBeCallableWith([source, provider] as const, compute);
+    // @ts-expect-error Arrays of ReadableLike may contain providers.
+    expectTypeOf(derived).toBeCallableWith(inputs, compute);
   });
 
-  it("prefers a direct readable over its provider property", () => {
+  it("uses a readable directly even when it has a provider property", () => {
     const other = writable("a");
     const source = Object.assign(writable(1), { $: other });
     const value = derived(source, (next) => {
@@ -91,43 +108,16 @@ describe("derived", () => {
     expect(value.get()).toBe(4);
   });
 
-  it("resolves each provider position once and keeps its original source", () => {
-    const first = writable(1);
-    const second = writable(10);
-    let selected = first;
-    const get = vi.fn(() => selected);
-    const provider = {
-      get $() {
-        return get();
-      },
-    };
-    const value = derived([provider, provider], (a, b) => a + b);
+  it("updates from a read-only input through its independent setter", () => {
+    const [source, set] = readable(1);
+    const compute = vi.fn((next: number) => next * 2);
+    const value = derived(source, compute);
 
-    expect(get).toHaveBeenCalledTimes(2);
-    selected = second;
+    expect(compute).not.toHaveBeenCalled();
     expect(value.get()).toBe(2);
-    first.set(2);
+    set(2);
     expect(value.get()).toBe(4);
-    second.set(20);
-    expect(value.get()).toBe(4);
-    expect(get).toHaveBeenCalledTimes(2);
-  });
-
-  it("reads a single provider getter once before evaluation", () => {
-    const source = writable(1);
-    const get = vi.fn(() => source);
-    const provider = {
-      get $() {
-        return get();
-      },
-    };
-    const value = derived(provider, (next) => next * 2);
-
-    expect(get).toHaveBeenCalledOnce();
-    expect(value.get()).toBe(2);
-    source.set(2);
-    expect(value.get()).toBe(4);
-    expect(get).toHaveBeenCalledOnce();
+    expect(compute.mock.calls).toEqual([[1], [2]]);
   });
 
   it("passes an array-valued single source as one argument without a receiver", () => {
@@ -199,7 +189,7 @@ describe("derived", () => {
   });
 
   describe("dependencies", () => {
-    it("lets a provider getter rebuild a derived inside an outer watch", () => {
+    it("rebuilds from an explicitly unwrapped provider inside an outer watch", () => {
       const selectFirst = writable(true);
       const first = writable(1);
       const second = writable(10);
@@ -211,7 +201,7 @@ describe("derived", () => {
       const spy = vi.fn();
       const stop = watch(
         () => {
-          const value = derived(provider, (next) => next * 2);
+          const value = derived(provider.$, (next) => next * 2);
           spy(value.get());
           return () => value.dispose();
         },
@@ -452,27 +442,6 @@ describe("derived", () => {
       expect(ref.deref()).toBeUndefined();
       expect(compute).not.toHaveBeenCalled();
       source.set(1);
-    });
-
-    it("releases partially connected inputs when a provider getter throws", async () => {
-      const first = writable(0);
-      const error = new Error("provider");
-      const provider = {
-        get $(): Readable<number> {
-          throw error;
-        },
-      };
-      const ref = (() => {
-        const second = writable(1);
-        const ref = new WeakRef(second);
-        expect(() => derived([first, { $: second }, provider], (a, b, c) => a + b + c)).toThrow(error);
-        return ref;
-      })();
-
-      await new Promise<void>((resolve) => setImmediate(resolve));
-      globalThis.gc!();
-      expect(ref.deref()).toBeUndefined();
-      first.set(1);
     });
   });
 });

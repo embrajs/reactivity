@@ -13,7 +13,7 @@ export enum Flags {
   KindMask = 0b11 << 1,
   Running = 1 << 3,
   Dirty = 1 << 4, // An unconsumed source write, a confirmed computed input, or a published Watch input.
-  QueueAsync = 1 << 5,
+  QueueModeAsync = 1 << 5,
   Pending = 1 << 6, // A computed node's inputs may have changed.
   QueuedSyncSource = 1 << 7,
   HasSubscriptions = 1 << 8, // At least one synchronous or asynchronous subscription group exists.
