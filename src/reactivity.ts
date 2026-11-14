@@ -913,8 +913,8 @@ export function derived<R>(
 ): Owned<Readable<R>> {
   const computed = new ComputedNode(compute, options);
   computed.flags_ |= Flags.DepsStatic;
-  for (const source of Array.isArray(sources) ? sources : [sources]) {
-    const link = createLink(source, computed);
+  for (const source of isReadable(sources) ? [sources] : sources) {
+    const link = createLink(source as Source, computed);
     if (computed.depTail_ !== null) {
       computed.depTail_.depNext_ = link;
     } else {
