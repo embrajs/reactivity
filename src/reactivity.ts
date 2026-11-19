@@ -975,20 +975,7 @@ export interface WatchOptions {
 export function watch(effect: WatchEffect, options?: WatchOptions): Cleanup {
   const node = new WatchNode(effect, options?.sync ? Flags.None : Flags.QueueModeAsync);
   try {
-    batch(() => {
-      const previousObserver = runtime.currentObserver_;
-      runtime.currentObserver_ = node;
-      node.flags_ |= Flags.Running;
-      try {
-        node.cleanup_ = node.callback_() || null;
-      } finally {
-        runtime.currentObserver_ = previousObserver;
-        node.flags_ &= ~Flags.Running;
-        if (node.flags_ & Flags.Disposed) {
-          finalizeEffectDisposal(node);
-        }
-      }
-    });
+    batch(() => runEffect(node));
   } catch (error) {
     node.dispose();
     throw error;
