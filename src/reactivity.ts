@@ -298,10 +298,11 @@ ValueNode.prototype = ComputedNode.prototype = {
 
       clearSubs(this);
 
-      for (const list of [this.syncSubscriptions_, this.asyncSubscriptions_]) {
-        while (list !== null && list.subHead_ !== null) {
-          list.subHead_.dispose();
-        }
+      while (this.syncSubscriptions_ !== null) {
+        this.syncSubscriptions_.subHead_!.dispose();
+      }
+      while (this.asyncSubscriptions_ !== null) {
+        this.asyncSubscriptions_.subHead_!.dispose();
       }
     }
   },
@@ -789,11 +790,11 @@ function flushEffects(mode: Flags): void {
       (mode & Flags.QueueModeAsync && asyncQueue_.head_ < asyncQueue_.tail_)
     ) {
       const queue = syncQueue_.head_ < syncQueue_.tail_ ? syncQueue_ : asyncQueue_;
-      const queueMode = queue === asyncQueue_ ? Flags.QueueModeAsync : Flags.None;
+      const isAsync = queue === asyncQueue_;
       // Finish the current async wave, then drain sync writes before the next wave.
-      const limit = queueMode & Flags.QueueModeAsync ? queue.tail_ : Infinity;
+      const limit = isAsync ? queue.tail_ : 0;
       let i = queue.head_;
-      for (; i < queue.tail_ && i < limit; i++) {
+      for (; i < (isAsync ? limit : queue.tail_); i++) {
         const item = queue.items_[i]!;
         queue.items_[i] = undefined;
         if ((item.flags_ & Flags.KindMask) === Flags.KindSubscriberNode) {
@@ -802,11 +803,12 @@ function flushEffects(mode: Flags): void {
             runEffect(item as WatchNode);
           }
         } else {
-          item.flags_ &= ~(queueMode & Flags.QueueModeAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource);
+          item.flags_ &= ~(isAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource);
           if (!(item.flags_ & Flags.Disposed)) {
             const source = item as Source;
-            if ((queueMode & Flags.QueueModeAsync ? source.asyncSubscriptions_ : source.syncSubscriptions_) !== null) {
-              broadcastSource(source, queueMode);
+            const list = isAsync ? source.asyncSubscriptions_ : source.syncSubscriptions_;
+            if (list !== null) {
+              broadcastSource(source, list);
             } else if (source.subHead_ !== null) {
               readSource(source);
             }
@@ -913,23 +915,23 @@ export function derived<R>(
 ): Owned<Readable<R>> {
   const computed = new ComputedNode(compute, options);
   computed.flags_ |= Flags.DepsStatic;
-  for (const source of isReadable(sources) ? [sources] : sources) {
-    const link = createLink(source as Source, computed);
-    if (computed.depTail_ !== null) {
-      computed.depTail_.depNext_ = link;
-    } else {
-      computed.depHead_ = link;
+  if (isReadable(sources)) {
+    computed.depHead_ = computed.depTail_ = createLink(sources as Source, computed);
+  } else {
+    for (const source of sources) {
+      const link = createLink(source as Source, computed);
+      if (computed.depTail_ !== null) {
+        computed.depTail_.depNext_ = link;
+      } else {
+        computed.depHead_ = link;
+      }
+      computed.depTail_ = link;
     }
-    computed.depTail_ = link;
   }
   return computed;
 }
 
-function broadcastSource(source: Source, mode: Flags): void {
-  const list = mode & Flags.QueueModeAsync ? source.asyncSubscriptions_ : source.syncSubscriptions_;
-  if (list === null) {
-    return;
-  }
+function broadcastSource(source: Source, list: SubscriptionList): void {
   const value = readSource(source);
   const flags = list.flags_;
   list.flags_ = flags & ~(Flags.Dirty | Flags.ForceNotify);
