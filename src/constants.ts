@@ -14,7 +14,7 @@ export enum Flags {
   Running = 1 << 3,
   Dirty = 1 << 4, // An unconsumed source write, a confirmed computed input, or a published Watch input.
   QueueModeAsync = 1 << 5,
-  Pending = 1 << 6, // A computed node's inputs may have changed.
+  Pending = 1 << 6, // A Computed needs validation, or a Watch input has multiple unconsumed changes.
   QueuedSyncSource = 1 << 7,
   HasSubscriptions = 1 << 8, // At least one synchronous or asynchronous subscription group exists.
 
@@ -24,6 +24,7 @@ export enum Flags {
   QueuedAsyncSource = 1 << 11,
   Connected = 1 << 12, // An observer's upstream links are attached.
   Initialized = 1 << 13,
+  WatchSingleWrite = 1 << 14, // A Value has Watch links to mark on its next coalesced write.
 
   // SubscriptionList-only; its flags never contain the node's Disposed bit.
   ForceNotify = 1 << 0,

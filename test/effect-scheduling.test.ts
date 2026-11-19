@@ -75,7 +75,7 @@ describe("effect scheduling", () => {
   it.each([
     false,
     true,
-  ])("preserves an asynchronous resource after synchronous reads of reverted input, fixed=%s", async (fixed) => {
+  ])("preserves an asynchronous resource after the intermediate computed value is reverted, fixed=%s", async (fixed) => {
     const source = writable(0);
     const cleanup = vi.fn();
     const callback = vi.fn();
@@ -123,9 +123,12 @@ describe("effect scheduling", () => {
     stopSecond();
   });
 
-  it.each([false, true])("compares asynchronous resources with custom output equality, fixed=%s", async (fixed) => {
+  it.each([
+    false,
+    true,
+  ])("reuses output equality for one Computed publication and compares after multiple publications, fixed=%s", async (fixed) => {
     const source = writable(0);
-    const equal = (a: { id: number }, b: { id: number }) => a.id === b.id;
+    const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
     const input = fixed
       ? derived(source, (value) => ({ id: value % 10 }), { equal })
       : computed(() => ({ id: source.get() % 10 }), { equal });
@@ -147,11 +150,25 @@ describe("effect scheduling", () => {
     await Promise.resolve();
     expect(callback.mock.calls).toEqual([[0]]);
     expect(cleanup).not.toHaveBeenCalled();
+    expect(equal.mock.calls.map(([a, b]) => [a.id, b.id])).toEqual([
+      [0, 1],
+      [1, 0],
+      [0, 0],
+    ]);
 
+    equal.mockClear();
     source.set(11);
     await Promise.resolve();
     expect(callback.mock.calls).toEqual([[0], [1]]);
     expect(cleanup).toHaveBeenCalledOnce();
+    expect(equal).toHaveBeenCalledOnce();
+
+    equal.mockClear();
+    source.set(21);
+    await Promise.resolve();
+    expect(callback.mock.calls).toEqual([[0], [1]]);
+    expect(cleanup).toHaveBeenCalledOnce();
+    expect(equal).toHaveBeenCalledOnce();
     stopAsync();
     stopSync();
     input.dispose();

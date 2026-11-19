@@ -88,6 +88,64 @@ describe("batch", () => {
     stop();
   });
 
+  it("compares observed values only after a Watch misses multiple publications", async () => {
+    const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
+    const source = writable({ id: 0 }, { equal });
+    const observe = vi.fn();
+    const cleanup = vi.fn();
+    const stops = [true, false].map((sync) =>
+      watch(
+        () => {
+          observe(sync, source.get().id);
+          return cleanup;
+        },
+        { sync },
+      ),
+    );
+
+    source.set({ id: 1 });
+    await Promise.resolve();
+    expect(equal).toHaveBeenCalledOnce();
+    expect(observe.mock.calls).toEqual([
+      [true, 0],
+      [false, 0],
+      [true, 1],
+      [false, 1],
+    ]);
+
+    equal.mockClear();
+    observe.mockClear();
+    cleanup.mockClear();
+    batch(() => {
+      source.set({ id: 2 });
+      expect(source.get().id).toBe(2);
+      source.set({ id: 1 });
+    });
+    await Promise.resolve();
+    expect(equal.mock.calls.map(([a, b]) => [a.id, b.id])).toEqual([
+      [1, 2],
+      [2, 1],
+      [1, 1],
+      [1, 1],
+    ]);
+    expect(observe).not.toHaveBeenCalled();
+    expect(cleanup).not.toHaveBeenCalled();
+
+    equal.mockClear();
+    source.set({ id: 3 });
+    await Promise.resolve();
+    expect(equal).toHaveBeenCalledOnce();
+    expect(observe.mock.calls).toEqual([
+      [true, 3],
+      [false, 3],
+    ]);
+
+    for (const stop of stops) {
+      stop();
+    }
+    source.dispose();
+  });
+
   it("delivers repeated values once when equality is disabled", () => {
     const source = writable(0, { equal: false });
     const spy = vi.fn();

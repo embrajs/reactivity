@@ -68,7 +68,7 @@ const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {}
 const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
 
 interface Link extends ISubItem, IDepItem {
-  // TrackPhase belongs to collection; Dirty records a published Effect input.
+  // Watch links use Dirty for a publication and Pending for two or more.
   flags_: Flags;
   subNext_: Link | null;
   subPrev_: Link | null;
@@ -134,7 +134,7 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ValueOptions<T>) {
   this.get = () => {
     const observer = this.runtime_.currentObserver_;
     if (observer !== null && !(this.flags_ & Flags.Disposed)) {
-      this.flags_ &= ~Flags.Dirty;
+      this.flags_ &= ~(Flags.Dirty | Flags.WatchSingleWrite);
       trackDependency(this, observer);
     }
     return this.value_;
@@ -159,6 +159,8 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ValueOptions<T>) {
         if (!(this.flags_ & Flags.Dirty)) {
           this.flags_ |= Flags.Dirty;
           propagate(this);
+        } else if (this.flags_ & Flags.WatchSingleWrite) {
+          markRepeatedWatchWrites(this);
         }
         if (!(this.runtime_.syncQueue_.flags_ & Flags.Running)) {
           flushEffects(Flags.None);
@@ -567,8 +569,9 @@ function enqueueWatch(observer: WatchNode, flags: Flags): void {
 }
 
 // A write confirms direct inputs. Descendants only need upstream validation.
-function propagate(source: Source): void {
+function propagate(source: ValueNode): void {
   queueSubscriptions(source, Flags.Dirty);
+  let hasSingleWrite = false;
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
     const flags = observer.flags_;
@@ -578,8 +581,27 @@ function propagate(source: Source): void {
         propagatePending(observer as ComputedNode);
       }
     } else {
-      link.flags_ |= Flags.Dirty;
+      if (link.flags_ & Flags.Dirty) {
+        link.flags_ |= Flags.Pending;
+      } else {
+        link.flags_ |= Flags.Dirty;
+        hasSingleWrite = true;
+      }
       enqueueWatch(observer as WatchNode, flags);
+    }
+  }
+  if (hasSingleWrite) {
+    source.flags_ |= Flags.WatchSingleWrite;
+  }
+}
+
+function markRepeatedWatchWrites(source: ValueNode): void {
+  // The first write already queued these Watches. A tracked read clears the
+  // Value latch before adding or resetting a Watch link.
+  source.flags_ &= ~Flags.WatchSingleWrite;
+  for (let link = source.subHead_; link !== null; link = link.subNext_) {
+    if (link.flags_ & Flags.Dirty) {
+      link.flags_ |= Flags.Pending;
     }
   }
 }
@@ -607,7 +629,7 @@ function readSource(source: Source): any {
     if ((source.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
       updateComputed(source as ComputedNode);
     } else {
-      source.flags_ &= ~Flags.Dirty;
+      source.flags_ &= ~(Flags.Dirty | Flags.WatchSingleWrite);
     }
   }
   return source.value_;
@@ -673,7 +695,7 @@ function updateComputed(node: ComputedNode): void {
         if ((link.observer_.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
           link.observer_.flags_ |= Flags.Dirty;
         } else {
-          link.flags_ |= Flags.Dirty;
+          link.flags_ |= link.flags_ & Flags.Dirty ? Flags.Pending : Flags.Dirty;
           enqueueWatch(link.observer_ as WatchNode, link.observer_.flags_);
         }
       }
@@ -753,6 +775,9 @@ function hasEffectChange(effect: WatchNode): boolean {
     if (!(source.flags_ & Flags.Disposed)) {
       readSource(source);
       if (link.flags_ & Flags.Dirty) {
+        if (!(link.flags_ & Flags.Pending)) {
+          return true;
+        }
         const equal = source.equal_;
         if (
           equal === null
@@ -761,7 +786,7 @@ function hasEffectChange(effect: WatchNode): boolean {
         ) {
           return true;
         }
-        link.flags_ &= ~Flags.Dirty;
+        link.flags_ &= ~(Flags.Dirty | Flags.Pending);
         link.value_ = source.value_;
       }
     }
@@ -967,8 +992,9 @@ export interface WatchOptions {
 /**
  * Runs immediately, then in synchronous batches or asynchronous microtasks.
  * Effects check their latest inputs at their turn; reads remain live.
- * Effects compare inputs with their own last consumption and skip
- * both the callback and cleanup when all published inputs have reverted.
+ * A single publication reruns the effect without comparing its input again.
+ * When multiple publications occur, the effect compares the latest value with
+ * its observed value and skips the callback and cleanup if its inputs are equal.
  * A thrown error aborts the current queue. Dispose affected effects and computed
  * nodes before rebuilding a failed graph.
  */
