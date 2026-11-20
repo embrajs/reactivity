@@ -2,6 +2,7 @@ import { Flags } from "../constants";
 import type { Cleanup, Owned, Readable, Writable } from "../types";
 import {
   type BatchChannel,
+  cancelDisposal,
   cancelDisposals,
   checkCollectionWrite,
   createCollectionSource,
@@ -10,7 +11,7 @@ import {
   queueAllChannel,
   queueChannel,
   type ReactiveCollection,
-  subscribeDisposeValue,
+  subscribeCollection,
   trackCollection,
 } from "./utils";
 
@@ -84,7 +85,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeDisposeValue(this, fn);
+    return subscribeCollection(this, Flags.Pending, fn);
   }
 
   public dispose(): void {
@@ -120,7 +121,8 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
       if (oldValue !== value) {
         this.items_[index] = value;
         queueChannel(this.cleanup_, oldValue);
-        this.commit_([value]);
+        cancelDisposal(this.cleanup_, value);
+        notifyCollection(this);
       }
     }
   }

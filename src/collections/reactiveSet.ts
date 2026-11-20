@@ -11,8 +11,7 @@ import {
   queueAllChannel,
   queueChannel,
   type ReactiveCollection,
-  subscribeChanged,
-  subscribeDisposeValue,
+  subscribeCollection,
   trackCollection,
 } from "./utils";
 
@@ -99,11 +98,11 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public onChanged(fn: (values: ReadonlySet<V>) => void): Cleanup {
-    return subscribeChanged(this, fn);
+    return subscribeCollection(this, Flags.None, fn);
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeDisposeValue(this, fn);
+    return subscribeCollection(this, Flags.Pending, fn);
   }
 
   public dispose(): void {

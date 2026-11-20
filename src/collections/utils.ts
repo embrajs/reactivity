@@ -1,7 +1,7 @@
 import { appendSub, detachCallback, type ICallbackItem, type ICallbackList, invokeCallbacks } from "../broadcast";
 import { Flags } from "../constants";
 import { batch, writable } from "../reactivity";
-import { NOOP_, runtime } from "../runtime";
+import { NOOP_, runtime, syncQueue_ } from "../runtime";
 import type { Cleanup, EffectContext, Owned, Readable, Writable } from "../types";
 
 export interface BatchChannel<T = any> extends ICallbackList<ChannelSubscription> {
@@ -46,6 +46,13 @@ export interface ReactiveCollection {
   __dev_disposed_at?: Error | null;
 }
 
+function disposeChannel(channel: BatchChannel): void {
+  while (channel.subHead_ !== null) {
+    channel.subHead_.dispose();
+  }
+  channel.source_.dispose();
+}
+
 function flushChannel(list: BatchChannel): void {
   list.flags_ &= ~Flags.QueuedSyncSource;
   const values = list.value_;
@@ -62,15 +69,12 @@ function flushChannel(list: BatchChannel): void {
   } finally {
     values.clear();
     if (list.flags_ & Flags.Disposed) {
-      while (list.subHead_ !== null) {
-        list.subHead_.dispose();
-      }
-      list.source_.dispose();
+      disposeChannel(list);
     }
   }
 }
 
-export function createChannel(flags: Flags): BatchChannel {
+function createChannel(flags: Flags): BatchChannel {
   const source = writable(null, { equal: false });
   const channel: BatchChannel = {
     flags_: flags,
@@ -85,35 +89,17 @@ export function createChannel(flags: Flags): BatchChannel {
   return channel;
 }
 
-export function subscribeChannel(list: BatchChannel, callback: (value: any) => void): Cleanup {
-  const subscription = new ChannelSubscription(list, callback);
-  appendSub(list, subscription);
+export function subscribeCollection(collection: ReactiveCollection, flags: Flags, fn: (value: any) => void): Cleanup {
+  if (collection.flags_ & Flags.Disposed) {
+    return NOOP_;
+  }
+  const channel =
+    flags & Flags.Pending
+      ? (collection.cleanup_ ??= createChannel(flags))
+      : (collection.changed_ ??= createChannel(flags));
+  const subscription = new ChannelSubscription(channel, fn);
+  appendSub(channel, subscription);
   return subscription.dispose;
-}
-
-export function subscribeChanged<K>(
-  collection: ReactiveCollection & { changed_: BatchChannel | null },
-  fn: (keys: ReadonlySet<K>) => void,
-): Cleanup {
-  if (collection.flags_ & Flags.Disposed) {
-    return NOOP_;
-  }
-  let channel = collection.changed_;
-  if (channel === null) {
-    channel = collection.changed_ = createChannel(Flags.None);
-  }
-  return subscribeChannel(channel, fn);
-}
-
-export function subscribeDisposeValue<V>(collection: ReactiveCollection, fn: (value: V) => void): Cleanup {
-  if (collection.flags_ & Flags.Disposed) {
-    return NOOP_;
-  }
-  let channel = collection.cleanup_;
-  if (channel === null) {
-    channel = collection.cleanup_ = createChannel(Flags.Pending);
-  }
-  return subscribeChannel(channel, fn);
 }
 
 export function queueChannel<T>(channel: BatchChannel<T> | null, value: T): void {
@@ -165,24 +151,27 @@ export function trackCollection(collection: ReactiveCollection): void {
 }
 
 export function notifyCollection(collection: ReactiveCollection): void {
-  const cleanup = collection.cleanup_;
-  const changed = collection.changed_;
+  const cleanup =
+    collection.cleanup_ !== null && collection.cleanup_.flags_ & Flags.QueuedSyncSource ? collection.cleanup_ : null;
+  const changed =
+    collection.changed_ != null && collection.changed_.flags_ & Flags.QueuedSyncSource ? collection.changed_ : null;
   const source = !(collection.flags_ & Flags.Disposed) ? collection.source_ : null;
-  if (
-    (cleanup !== null && cleanup.flags_ & Flags.QueuedSyncSource) ||
-    (changed !== null && changed !== undefined && changed.flags_ & Flags.QueuedSyncSource)
-  ) {
-    batch(() => {
-      if (cleanup !== null && cleanup.flags_ & Flags.QueuedSyncSource) {
+  if (cleanup !== null || changed !== null) {
+    if (syncQueue_.flags_ & Flags.Running) {
+      if (cleanup !== null) {
         cleanup.source_.set(null);
       }
-      if (changed !== null && changed !== undefined && changed.flags_ & Flags.QueuedSyncSource) {
+      if (changed !== null) {
         changed.source_.set(null);
       }
       if (source !== null) {
         source.set(collection);
       }
-    });
+    } else if (source === null && (cleanup === null || changed === null)) {
+      (cleanup ?? changed)!.source_.set(null);
+    } else {
+      batch(() => notifyCollection(collection));
+    }
   } else if (source !== null) {
     source.set(collection);
   }
@@ -210,12 +199,9 @@ export function disposeCollection<V>(collection: ReactiveCollection, values: Ite
       collection.source_.dispose();
     }
     const changed = collection.changed_;
-    if (changed !== null && changed !== undefined) {
+    if (changed != null) {
       collection.changed_ = null;
-      while (changed.subHead_ !== null) {
-        changed.subHead_.dispose();
-      }
-      changed.source_.dispose();
+      disposeChannel(changed);
     }
     const cleanup = collection.cleanup_;
     if (cleanup !== null) {
@@ -223,16 +209,11 @@ export function disposeCollection<V>(collection: ReactiveCollection, values: Ite
       if (cleanup.subHead_ !== null) {
         cleanup.flags_ |= Flags.Disposed;
         queueAllChannel(cleanup, values);
-        if (cleanup.flags_ & Flags.QueuedSyncSource) {
-          cleanup.source_.set(null);
-        } else {
-          while (cleanup.subHead_ !== null) {
-            cleanup.subHead_.dispose();
-          }
-          cleanup.source_.dispose();
-        }
+      }
+      if (cleanup.flags_ & Flags.QueuedSyncSource) {
+        cleanup.source_.set(null);
       } else {
-        cleanup.source_.dispose();
+        disposeChannel(cleanup);
       }
     }
   }

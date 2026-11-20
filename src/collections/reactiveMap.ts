@@ -12,8 +12,7 @@ import {
   queueAllChannel,
   queueChannel,
   type ReactiveCollection,
-  subscribeChanged,
-  subscribeDisposeValue,
+  subscribeCollection,
   trackCollection,
 } from "./utils";
 
@@ -101,11 +100,11 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public onChanged(fn: (keys: ReadonlySet<K>) => void): Cleanup {
-    return subscribeChanged(this, fn);
+    return subscribeCollection(this, Flags.None, fn);
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeDisposeValue(this, fn);
+    return subscribeCollection(this, Flags.Pending, fn);
   }
 
   public dispose(): void {
@@ -158,19 +157,15 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
     }
     if (super.has(key)) {
       const oldValue = super.get(key)!;
-      if (oldValue !== value) {
-        super.set(key, value);
-        queueChannel(this.cleanup_, oldValue);
-        cancelDisposal(this.cleanup_, value);
-        queueChannel(this.changed_, key);
-        notifyCollection(this);
+      if (oldValue === value) {
+        return this;
       }
-    } else {
-      super.set(key, value);
-      cancelDisposal(this.cleanup_, value);
-      queueChannel(this.changed_, key);
-      notifyCollection(this);
+      queueChannel(this.cleanup_, oldValue);
     }
+    super.set(key, value);
+    cancelDisposal(this.cleanup_, value);
+    queueChannel(this.changed_, key);
+    notifyCollection(this);
     return this;
   }
 
