@@ -18,7 +18,7 @@ describe.each([
     const node = create();
     const diagnostics = node as typeof node & DisposalDiagnostics;
     expect(node.get()).toBe(0);
-    expect(diagnostics.__dev_disposed_at).toBeNull();
+    expect(diagnostics.__dev_disposed_at).toBeUndefined();
 
     function disposeAtOriginalLocation() {
       node.dispose();

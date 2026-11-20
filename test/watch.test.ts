@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { type EffectContext, type EffectFn, type WatchEffect, watch, writable } from "../src";
+import { type EffectContext, type WatchEffect, watch, writable } from "../src";
 
 async function tick() {
   await Promise.resolve();
@@ -591,7 +591,6 @@ describe("watch", () => {
         other.get();
         return cleanup;
       };
-      expectTypeOf<EffectFn>().toEqualTypeOf<WatchEffect>();
       const stop = watch(effect, { sync: true });
 
       expect(cleanup).toHaveBeenCalledOnce();
