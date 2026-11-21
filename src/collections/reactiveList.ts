@@ -139,16 +139,38 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public pop(): V | undefined {
-    return this.splice(-1, 1)[0];
+    if (process.env.NODE_ENV !== "production") {
+      checkCollectionWrite(this);
+    }
+    if (this.items_.length > 0) {
+      const value = this.items_.pop()!;
+      queueChannel(this.cleanup_, value);
+      notifyCollection(this);
+      return value;
+    }
   }
 
   public shift(): V | undefined {
-    return this.splice(0, 1)[0];
+    if (process.env.NODE_ENV !== "production") {
+      checkCollectionWrite(this);
+    }
+    if (this.items_.length > 0) {
+      const value = this.items_.shift()!;
+      queueChannel(this.cleanup_, value);
+      notifyCollection(this);
+      return value;
+    }
   }
 
   public unshift(...items: V[]): number {
-    this.splice(0, 0, ...items);
-    return this.items_.length;
+    if (process.env.NODE_ENV !== "production") {
+      checkCollectionWrite(this);
+    }
+    const length = this.items_.unshift(...items);
+    if (items.length > 0) {
+      this.commit_(items);
+    }
+    return length;
   }
 
   public splice(start: number, deleteCount?: number, ...items: V[]): V[] {

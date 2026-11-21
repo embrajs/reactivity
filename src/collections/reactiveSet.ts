@@ -33,7 +33,7 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
    *
    * @group Events
    */
-  onChanged(fn: (values: ReadonlySet<V>) => void): Cleanup;
+  onChanged(fn: (values: readonly V[]) => void): Cleanup;
   /**
    * Subscribe synchronously to values deleted, cleared, or disposed.
    * Callbacks must not mutate the source set itself.
@@ -62,7 +62,7 @@ export interface ReactiveSet<V> extends Set<V> {
    *
    * @group Events
    */
-  onChanged(fn: (values: ReadonlySet<V>) => void): Cleanup;
+  onChanged(fn: (values: readonly V[]) => void): Cleanup;
   /**
    * Subscribe synchronously to values deleted, cleared, or disposed.
    * Callbacks must not mutate the source set itself.
@@ -97,7 +97,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
     return (this.source_ ??= createCollectionSource(this));
   }
 
-  public onChanged(fn: (values: ReadonlySet<V>) => void): Cleanup {
+  public onChanged(fn: (values: readonly V[]) => void): Cleanup {
     return subscribeCollection(this, Flags.None, fn);
   }
 
@@ -161,8 +161,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
     if (process.env.NODE_ENV !== "production") {
       checkCollectionWrite(this);
     }
-    if (super.has(value)) {
-      super.delete(value);
+    if (super.delete(value)) {
       queueChannel(this.cleanup_, value);
       queueChannel(this.changed_, value);
       notifyCollection(this);
@@ -188,14 +187,19 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
       checkCollectionWrite(this);
     }
     batch(() => {
-      const newValues = new Set<V>();
+      const list = super.size > 0 ? ([] as V[]) : null;
       for (const value of values) {
-        newValues.add(value);
+        list?.push(value);
         this.add(value);
       }
-      for (const value of super.values()) {
-        if (!newValues.has(value)) {
-          this.delete(value);
+      if (list !== null) {
+        let index = 0;
+        for (const value of super.values()) {
+          if (list[index] === value) {
+            index++;
+          } else if (!list.includes(value)) {
+            this.delete(value);
+          }
         }
       }
     });

@@ -155,6 +155,10 @@ describe("ReactiveSet", () => {
       expect(notifySpy).toHaveBeenCalledTimes(1);
       expect(changed).toEqual([[3, 1]]);
       expect(disposed).toEqual([1]);
+
+      const empty = reactiveSet<number>();
+      empty.replace([4, 5]);
+      expect([...empty]).toEqual([4, 5]);
     });
   });
 

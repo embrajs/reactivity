@@ -259,6 +259,14 @@ describe("ReactiveMap", () => {
         ["baz", "bar"],
       ]);
       expect(disposedValues).toEqual([2]);
+
+      // Rename onto existing key holding the same value keeps the value alive
+      map.set("dup", 1);
+      disposedValues.length = 0;
+      map.rename("dup", "bar");
+      expect(map.has("dup")).toBe(false);
+      expect(map.get("bar")).toBe(1);
+      expect(disposedValues).toEqual([]);
     });
   });
 
@@ -302,11 +310,27 @@ describe("ReactiveMap", () => {
       expect(notifySpy).toHaveBeenCalledTimes(2);
       expect(changedKeys[1]).toEqual(["baz", "foo", "bar"]);
       expect(disposedValues).toEqual([2, 1]);
+
+      // Replacing with duplicate keys still removes unvisited keys
+      map.set("keep", 9);
+      changedKeys.length = 0;
+      disposedValues.length = 0;
+      map.replace([
+        ["keep", 10],
+        ["keep", 11],
+      ]);
+      expect([...map.entries()]).toEqual([["keep", 11]]);
+      expect(disposedValues).toEqual([9, 10, 3]);
+
+      // Replacing into an initially empty map
+      const empty = reactiveMap<string, number>();
+      empty.replace([["x", 1]]);
+      expect([...empty.entries()]).toEqual([["x", 1]]);
     });
   });
 
   describe("onChanged synchronization and lifecycle", () => {
-    it("Incrementally syncs a target map with a shared dirty-key Set", () => {
+    it("Incrementally syncs a target map with a shared dirty-key list", () => {
       const source = reactiveMap<string, number>([
         ["a", 1],
         ["b", 2],
@@ -362,6 +386,38 @@ describe("ReactiveMap", () => {
       map.set("y", 2);
       expect(log).toEqual(["1:x", "1:y", "3:y"]);
     });
+
+    it("handles large-batch reset and mid-batch unsubscribe/re-subscription", () => {
+      const map = reactiveMap<string, number>();
+      // Touch $ without subscribing to verify channel still flushes when $ has no observers
+      void map.$;
+
+      let received: string[] = [];
+      const stop = map.onChanged((keys) => {
+        received = [...keys];
+      });
+
+      batch(() => {
+        for (let i = 0; i < 20; i++) {
+          map.set(i === 0 ? "a" : `k${i}`, i);
+        }
+      });
+
+      expect(received).toHaveLength(20);
+      expect(received[0]).toBe("a");
+      expect(received.includes("z")).toBe(false);
+
+      // Unsubscribe mid-batch, then re-subscribe cleanly
+      batch(() => {
+        map.set("stale", 99);
+        stop();
+      });
+
+      const fresh: string[][] = [];
+      map.onChanged((keys) => fresh.push([...keys]));
+      map.set("fresh", 1);
+      expect(fresh).toEqual([["fresh"]]);
+    });
   });
 
   describe("onDisposeValue", () => {
@@ -390,6 +446,52 @@ describe("ReactiveMap", () => {
       map.onDisposeValue(spy);
       map.dispose();
       expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("handles undefined values and self-unsubscription during batch disposal", () => {
+      const map = reactiveMap<string, number | undefined>([
+        ["u", undefined],
+        ["a", 1],
+        ["b", 2],
+      ]);
+      const seen: (number | undefined)[] = [];
+      const stop = map.onDisposeValue((v) => {
+        seen.push(v);
+        if (v === 1) {
+          stop();
+        }
+      });
+
+      expect(map.delete("u")).toBe(true);
+      expect(seen).toEqual([undefined]);
+
+      batch(() => {
+        map.delete("a");
+        map.delete("b");
+      });
+      expect(seen).toEqual([undefined, 1]);
+    });
+
+    it("deduplicates and cancels NaN disposals with SameValueZero", () => {
+      const map = reactiveMap<string, number>([
+        ["a", Number.NaN],
+        ["b", Number.NaN],
+      ]);
+      const disposed: number[] = [];
+      map.onDisposeValue((v) => disposed.push(v));
+
+      batch(() => {
+        map.delete("a");
+        map.set("c", Number.NaN);
+      });
+      expect(disposed).toEqual([]);
+
+      batch(() => {
+        map.delete("b");
+        map.delete("c");
+      });
+      expect(disposed).toHaveLength(1);
+      expect(Number.isNaN(disposed[0])).toBe(true);
     });
   });
 

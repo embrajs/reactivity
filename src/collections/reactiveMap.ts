@@ -8,6 +8,7 @@ import {
   checkCollectionWrite,
   createCollectionSource,
   disposeCollection,
+  hasChannelListeners,
   notifyCollection,
   queueAllChannel,
   queueChannel,
@@ -34,7 +35,7 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
    *
    * @group Events
    */
-  onChanged(fn: (keys: ReadonlySet<K>) => void): Cleanup;
+  onChanged(fn: (keys: readonly K[]) => void): Cleanup;
   /**
    * Subscribe synchronously to values removed, overwritten, cleared, or disposed.
    * Callbacks must not mutate the source map itself.
@@ -63,7 +64,7 @@ export interface ReactiveMap<K, V> extends Map<K, V> {
    *
    * @group Events
    */
-  onChanged(fn: (keys: ReadonlySet<K>) => void): Cleanup;
+  onChanged(fn: (keys: readonly K[]) => void): Cleanup;
   /**
    * Subscribe synchronously to values removed, overwritten, cleared, or disposed.
    * Callbacks must not mutate the source map itself.
@@ -99,7 +100,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
     return (this.source_ ??= createCollectionSource(this));
   }
 
-  public onChanged(fn: (keys: ReadonlySet<K>) => void): Cleanup {
+  public onChanged(fn: (keys: readonly K[]) => void): Cleanup {
     return subscribeCollection(this, Flags.None, fn);
   }
 
@@ -155,12 +156,12 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
     if (process.env.NODE_ENV !== "production") {
       checkCollectionWrite(this);
     }
-    if (super.has(key)) {
-      const oldValue = super.get(key)!;
+    const oldValue = super.get(key);
+    if (oldValue !== undefined || super.has(key)) {
       if (oldValue === value) {
         return this;
       }
-      queueChannel(this.cleanup_, oldValue);
+      queueChannel(this.cleanup_, oldValue!);
     }
     super.set(key, value);
     cancelDisposal(this.cleanup_, value);
@@ -173,10 +174,9 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
     if (process.env.NODE_ENV !== "production") {
       checkCollectionWrite(this);
     }
-    if (super.has(key)) {
-      const oldValue = super.get(key)!;
-      super.delete(key);
-      queueChannel(this.cleanup_, oldValue);
+    const oldValue = hasChannelListeners(this.cleanup_) ? super.get(key) : undefined;
+    if (super.delete(key)) {
+      queueChannel(this.cleanup_, oldValue!);
       queueChannel(this.changed_, key);
       notifyCollection(this);
       return true;
@@ -205,6 +205,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
         const value = super.get(key)!;
         this.delete(key);
         this.set(newKey, value);
+        cancelDisposal(this.cleanup_, value);
       });
     }
   }
@@ -214,14 +215,19 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
       checkCollectionWrite(this);
     }
     batch(() => {
-      const newKeys = new Set<K>();
+      const keys = super.size > 0 ? ([] as K[]) : null;
       for (const [key, value] of entries) {
-        newKeys.add(key);
+        keys?.push(key);
         this.set(key, value);
       }
-      for (const key of super.keys()) {
-        if (!newKeys.has(key)) {
-          this.delete(key);
+      if (keys !== null) {
+        let index = 0;
+        for (const key of super.keys()) {
+          if (keys[index] === key) {
+            index++;
+          } else if (!keys.includes(key)) {
+            this.delete(key);
+          }
         }
       }
       cancelDisposals(this.cleanup_, super.values());

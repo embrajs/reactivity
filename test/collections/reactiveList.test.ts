@@ -156,6 +156,9 @@ describe("ReactiveList", () => {
     expect(disposed).toEqual([10, 20]);
 
     expect(() => list.push(30)).toThrow("disposed");
+    expect(() => list.pop()).toThrow("disposed");
+    expect(() => list.shift()).toThrow("disposed");
+    expect(() => list.unshift(30)).toThrow("disposed");
     expect(consoleError).toHaveBeenCalledWith("ReactiveList disposed at:", disposedAt);
   });
 });
