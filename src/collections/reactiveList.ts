@@ -133,7 +133,8 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     }
     const length = this.items_.push(...items);
     if (items.length > 0) {
-      this.commit_(items);
+      cancelDisposals(this.cleanup_, items);
+      notifyCollection(this);
     }
     return length;
   }
@@ -168,7 +169,8 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     }
     const length = this.items_.unshift(...items);
     if (items.length > 0) {
-      this.commit_(items);
+      cancelDisposals(this.cleanup_, items);
+      notifyCollection(this);
     }
     return length;
   }
@@ -180,7 +182,8 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     const removed = this.items_.splice(start, deleteCount ?? this.items_.length, ...items);
     if (removed.length > 0 || items.length > 0) {
       queueAllChannel(this.cleanup_, removed);
-      this.commit_(items);
+      cancelDisposals(this.cleanup_, items);
+      notifyCollection(this);
     }
     return removed;
   }
@@ -198,7 +201,8 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     if (prev.length !== next.length || prev.some((item, i) => item !== next[i])) {
       this.items_ = next;
       queueAllChannel(this.cleanup_, prev);
-      this.commit_(next);
+      cancelDisposals(this.cleanup_, next);
+      notifyCollection(this);
     }
   }
 
@@ -220,11 +224,6 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
       this.items_.reverse();
       notifyCollection(this);
     }
-  }
-
-  private commit_(inserted: readonly V[]): void {
-    cancelDisposals(this.cleanup_, inserted);
-    notifyCollection(this);
   }
 }
 
