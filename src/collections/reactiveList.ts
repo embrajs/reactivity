@@ -29,8 +29,8 @@ export interface ReadonlyReactiveList<V> extends Iterable<V> {
   readonly $: Readable<ReadonlyReactiveList<V>>;
   readonly length: number;
   get(index: number): V | undefined;
-  /** Returns the backing array as a read-only view. Do not mutate it. */
-  toArray(): readonly V[];
+  /** The backing array as a read-only view. Do not mutate it. */
+  readonly array: readonly V[];
   /**
    * Subscribe synchronously to values removed, overwritten, cleared, or disposed.
    * Callbacks must not mutate the source list itself.
@@ -43,7 +43,7 @@ export interface ReadonlyReactiveList<V> extends Iterable<V> {
 /**
  * A reactive list backed by a plain array. It does not extend Array: indexed
  * access is replaced by `get(i)` so that reads inside `computed` or `watch`
- * are always tracked. Use `toArray()` for other read-only array operations.
+ * are always tracked. Use `array` for other read-only array operations.
  *
  * Ownership tracks values by identity. Removing one of several identical
  * entries reports the value as disposed.
@@ -102,7 +102,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     return this.items_[index];
   }
 
-  public toArray(): readonly V[] {
+  public get array(): readonly V[] {
     trackCollection(this);
     return this.items_;
   }

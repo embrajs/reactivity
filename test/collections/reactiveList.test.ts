@@ -22,15 +22,15 @@ describe("ReactiveList", () => {
     const list = reactiveList(new Set([1, 2, 3]));
     expect(list.length).toBe(3);
     expect(list.get(1)).toBe(2);
-    expect(list.toArray()).toEqual([1, 2, 3]);
+    expect(list.array).toEqual([1, 2, 3]);
     expect([...list]).toEqual([1, 2, 3]);
   });
 
-  it("tracks length, get, toArray, and iteration", () => {
+  it("tracks length, get, array, and iteration", () => {
     const list = reactiveList([10, 20]);
     const len = computed(() => list.length);
     const first = computed(() => list.get(0));
-    const sum = computed(() => list.toArray().reduce((a, b) => a + b, 0));
+    const sum = computed(() => list.array.reduce((a, b) => a + b, 0));
     const joined = computed(() => [...list].join("-"));
     const fixed = derived(list.$, (a) => a.length);
     const watched: number[] = [];
@@ -59,7 +59,7 @@ describe("ReactiveList", () => {
     expect(notify).not.toHaveBeenCalled();
 
     list.set(1, 3);
-    expect(list.toArray()).toEqual([1, 3]);
+    expect(list.array).toEqual([1, 3]);
     expect(notify).toHaveBeenCalledTimes(1);
     expect(disposed).toEqual([2]);
   });
@@ -74,10 +74,10 @@ describe("ReactiveList", () => {
 
     expect(list.push(2, 3)).toBe(2);
     expect(list.unshift(1)).toBe(3);
-    expect(list.toArray()).toEqual([1, 2, 3]);
+    expect(list.array).toEqual([1, 2, 3]);
     expect(list.pop()).toBe(3);
     expect(list.shift()).toBe(1);
-    expect(list.toArray()).toEqual([2]);
+    expect(list.array).toEqual([2]);
     expect(notify).toHaveBeenCalledTimes(4);
     expect(disposed).toEqual([3, 1]);
   });
@@ -88,7 +88,7 @@ describe("ReactiveList", () => {
     expect(notify).not.toHaveBeenCalled();
 
     expect(list.splice(1, 1, 5, 6)).toEqual([2]);
-    expect(list.toArray()).toEqual([1, 5, 6, 3, 4]);
+    expect(list.array).toEqual([1, 5, 6, 3, 4]);
     expect(list.splice(3)).toEqual([3, 4]);
     expect(disposed).toEqual([2, 3, 4]);
 
@@ -104,9 +104,9 @@ describe("ReactiveList", () => {
   it("sort, reverse", () => {
     const { list, notify, disposed } = setup([3, 1, 2]);
     list.sort((a, b) => a - b);
-    expect(list.toArray()).toEqual([1, 2, 3]);
+    expect(list.array).toEqual([1, 2, 3]);
     list.reverse();
-    expect(list.toArray()).toEqual([3, 2, 1]);
+    expect(list.array).toEqual([3, 2, 1]);
     expect(notify).toHaveBeenCalledTimes(2);
     expect(disposed).toEqual([]);
 
@@ -122,7 +122,7 @@ describe("ReactiveList", () => {
     expect(notify).not.toHaveBeenCalled();
 
     list.replace([3, 1]);
-    expect(list.toArray()).toEqual([3, 1]);
+    expect(list.array).toEqual([3, 1]);
     expect(notify).toHaveBeenCalledTimes(1);
     expect(disposed).toEqual([2]);
 
@@ -138,7 +138,7 @@ describe("ReactiveList", () => {
       list.push(last);
       list.unshift(first);
     });
-    expect(list.toArray()).toEqual([1, 2]);
+    expect(list.array).toEqual([1, 2]);
     expect(notify).toHaveBeenCalledTimes(1);
     expect(disposed).toEqual([]);
   });
