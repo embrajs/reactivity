@@ -69,6 +69,7 @@ for (const [extension, isDev] of [
     format: "esm",
     platform: "neutral",
     packages: "external",
+    external: [packageName],
     target: "esnext",
     treeShaking: true,
     define: { __DEV__: String(isDev) },
@@ -94,8 +95,20 @@ await buildDts({
 
 const prodBundle = await readFile(join(outdir, "index.mjs"), "utf8");
 const devBundle = await readFile(join(outdir, "index.dev.mjs"), "utf8");
+const reactProdBundle = await readFile(join(outdir, "react.mjs"), "utf8");
+const reactDevBundle = await readFile(join(outdir, "react.dev.mjs"), "utf8");
 assert(!/process\.env|__DEV__|__dev_|checkCollectionWrite/.test(prodBundle), "Dev diagnostics leaked into index.mjs");
 assert(!/process\.env|__DEV__/.test(devBundle), "Unresolved env token leaked into index.dev.mjs");
 assert(devBundle.includes("__dev_disposed_at"), "Dev diagnostics missing from index.dev.mjs");
+assert(
+  reactProdBundle.includes('"@embra/reactivity"') && reactProdBundle.includes('"react"'),
+  "react.mjs must externally import @embra/reactivity and react",
+);
+assert(!/__DEV__|ValueNode|ComputedNode/.test(reactProdBundle), "Core internals or dev tokens leaked into react.mjs");
+assert(
+  reactDevBundle.includes('"@embra/reactivity"') && reactDevBundle.includes('"react"'),
+  "react.dev.mjs must externally import @embra/reactivity and react",
+);
+assert(!/__DEV__/.test(reactDevBundle), "Unresolved env token leaked into react.dev.mjs");
 
 await writeFile(cachePath, `${JSON.stringify(mangleCache, null, 2)}\n`);
