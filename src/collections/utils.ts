@@ -116,6 +116,15 @@ function pendingChannel(channel: BatchChannel | null | undefined): BatchChannel 
 }
 
 export function notifyCollection(collection: ReactiveCollection): void {
+  if (__DEV__) {
+    runtime.__dev_spy?.({
+      type: "set",
+      node: collection,
+      prevValue: collection,
+      nextValue: collection,
+      changed: true,
+    });
+  }
   const cleanup = pendingChannel(collection.cleanup_);
   const changed = pendingChannel(collection.changed_);
   const rawSource = !(collection.flags_ & Flags.Disposed) ? (collection.source_ as ValueNode | null) : null;
@@ -159,6 +168,7 @@ export function disposeCollection<V>(collection: ReactiveCollection, values: Ite
     collection.flags_ |= Flags.Disposed;
     if (__DEV__) {
       collection.__dev_disposed_at = new Error();
+      runtime.__dev_spy?.({ type: "dispose", node: collection });
     }
     if (collection.source_ !== null) {
       collection.source_.dispose();

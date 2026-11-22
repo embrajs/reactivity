@@ -23,6 +23,19 @@ interface RuntimeQueue {
   tail_: number;
 }
 
+export type DevSpyEvent =
+  | { type: "batch-start" }
+  | { type: "batch-end"; error?: unknown }
+  | { type: "flush-start"; async: boolean }
+  | { type: "flush-end"; async: boolean; error?: unknown }
+  | { type: "set"; node: unknown; prevValue: unknown; nextValue: unknown; changed: boolean }
+  | { type: "compute-start"; node: unknown }
+  | { type: "compute-end"; node: unknown; nextValue: unknown; changed: boolean; error?: unknown }
+  | { type: "effect-start"; node: unknown }
+  | { type: "effect-end"; node: unknown; error?: unknown }
+  | { type: "subscribe"; node: unknown; value: unknown; sync: boolean; count: number }
+  | { type: "dispose"; node: unknown };
+
 export interface Runtime {
   NOOP_: () => void;
   currentObserver_: Observer | null;
@@ -30,6 +43,8 @@ export interface Runtime {
   asyncQueue_: RuntimeQueue;
   /** Development-only write guard; omitted from production evaluation. */
   __dev_currentComputation?: number;
+  /** Development-only spy hook; omitted from production evaluation. */
+  __dev_spy?: (event: DevSpyEvent) => void;
 }
 
 export const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {

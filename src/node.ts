@@ -41,14 +41,27 @@ export function batch<T>(fn: () => T): T {
   const outer = !(syncQueue_.flags_ & Flags.Running);
   if (outer) {
     syncQueue_.flags_ |= Flags.Running;
+    if (__DEV__) {
+      runtime.__dev_spy?.({ type: "batch-start" });
+    }
   }
   try {
     const result = fn();
     if (outer && syncQueue_.head_ < syncQueue_.tail_) {
       flushEffects(Flags.None);
     }
+    if (__DEV__) {
+      if (outer) {
+        runtime.__dev_spy?.({ type: "batch-end" });
+      }
+    }
     return result;
   } catch (error) {
+    if (__DEV__) {
+      if (outer) {
+        runtime.__dev_spy?.({ type: "batch-end", error });
+      }
+    }
     if (outer) {
       clearQueue(syncQueue_);
       clearQueue(asyncQueue_);
@@ -140,7 +153,13 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
     }
     const equal = this.equal_;
     if (equal === null ? this.value_ !== value : equal === false || different(equal, this.value_, value)) {
-      this.value_ = value;
+      if (__DEV__) {
+        const prevValue = this.value_;
+        this.value_ = value;
+        runtime.__dev_spy?.({ type: "set", node: this, prevValue, nextValue: value, changed: true });
+      } else {
+        this.value_ = value;
+      }
       if (this.subHead_ !== null || this.flags_ & Flags.HasSubscriptions) {
         if (!(this.flags_ & Flags.Dirty)) {
           this.flags_ |= Flags.Dirty;
@@ -151,6 +170,10 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
         if (!(this.runtime_.syncQueue_.flags_ & Flags.Running)) {
           flushEffects(Flags.None);
         }
+      }
+    } else {
+      if (__DEV__) {
+        runtime.__dev_spy?.({ type: "set", node: this, prevValue: this.value_, nextValue: value, changed: false });
       }
     }
   };
@@ -273,6 +296,7 @@ ValueNode.prototype = ComputedNode.prototype = {
 
       if (__DEV__) {
         this.__dev_disposed_at = new Error();
+        runtime.__dev_spy?.({ type: "dispose", node: this });
       }
 
       if (kind === Flags.KindComputedNode) {
@@ -358,6 +382,9 @@ function WatchNode(this: WatchNode, callback: WatchEffect, flags: Flags) {
   this.dispose = (): void => {
     if (!(this.flags_ & Flags.Disposed)) {
       this.flags_ |= Flags.Disposed;
+      if (__DEV__) {
+        runtime.__dev_spy?.({ type: "dispose", node: this });
+      }
       if (!(this.flags_ & Flags.Running)) {
         finalizeEffectDisposal(this);
       }
@@ -626,6 +653,7 @@ function updateComputed(node: ComputedNode): void {
   node.flags_ |= Flags.Running;
   if (__DEV__) {
     runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
+    runtime.__dev_spy?.({ type: "compute-start", node });
   }
   try {
     if (dynamic) {
@@ -650,6 +678,9 @@ function updateComputed(node: ComputedNode): void {
         : equal === false || !(node.flags_ & Flags.Initialized) || different(equal, node.value_, value)
     ) {
       node.value_ = value;
+      if (__DEV__) {
+        runtime.__dev_spy?.({ type: "compute-end", node, nextValue: value, changed: true });
+      }
       if (node.flags_ & Flags.HasSubscriptions) {
         if (node.syncSubscriptions_ !== null) {
           node.syncSubscriptions_.flags_ |= Flags.Dirty;
@@ -666,7 +697,16 @@ function updateComputed(node: ComputedNode): void {
           enqueueWatch(link.observer_ as WatchNode, link.observer_.flags_);
         }
       }
+    } else {
+      if (__DEV__) {
+        runtime.__dev_spy?.({ type: "compute-end", node, nextValue: node.value_, changed: false });
+      }
     }
+  } catch (error) {
+    if (__DEV__) {
+      runtime.__dev_spy?.({ type: "compute-end", node, nextValue: node.value_, changed: false, error });
+    }
+    throw error;
   } finally {
     node.flags_ = (node.flags_ | Flags.Initialized) & ~(Flags.Dirty | Flags.Pending | Flags.Running);
     runtime.currentObserver_ = previousObserver;
@@ -717,6 +757,9 @@ export function runEffect(effect: WatchNode): void {
   const previousObserver = runtime.currentObserver_;
   runtime.currentObserver_ = null;
   effect.flags_ |= Flags.Running;
+  if (__DEV__) {
+    runtime.__dev_spy?.({ type: "effect-start", node: effect });
+  }
   try {
     runEffectCleanup(effect);
     if (!(effect.flags_ & Flags.Disposed)) {
@@ -725,6 +768,14 @@ export function runEffect(effect: WatchNode): void {
       runtime.currentObserver_ = effect;
       effect.cleanup_ = effect.callback_() || null;
     }
+    if (__DEV__) {
+      runtime.__dev_spy?.({ type: "effect-end", node: effect });
+    }
+  } catch (error) {
+    if (__DEV__) {
+      runtime.__dev_spy?.({ type: "effect-end", node: effect, error });
+    }
+    throw error;
   } finally {
     runtime.currentObserver_ = previousObserver;
     effect.flags_ &= ~Flags.Running;
@@ -815,7 +866,18 @@ function flushEffects(mode: Flags): void {
 }
 
 function flushAsyncQueue(): void {
-  flushEffects(Flags.QueueModeAsync);
+  if (__DEV__) {
+    runtime.__dev_spy?.({ type: "flush-start", async: true });
+    try {
+      flushEffects(Flags.QueueModeAsync);
+      runtime.__dev_spy?.({ type: "flush-end", async: true });
+    } catch (error) {
+      runtime.__dev_spy?.({ type: "flush-end", async: true, error });
+      throw error;
+    }
+  } else {
+    flushEffects(Flags.QueueModeAsync);
+  }
 }
 
 function broadcastSource(source: Source, list: SubscriptionList): void {
@@ -829,6 +891,21 @@ function broadcastSource(source: Source, list: SubscriptionList): void {
       (equal === null ? list.value_ !== value : equal === false || different(equal, list.value_, value)));
   list.value_ = value;
   if (changed) {
+    if (__DEV__) {
+      if (runtime.__dev_spy) {
+        let count = 0;
+        for (let item = list.subHead_; item !== null; item = item.subNext_) {
+          count++;
+        }
+        runtime.__dev_spy({
+          type: "subscribe",
+          node: source,
+          value,
+          sync: !(flags & Flags.QueueModeAsync),
+          count,
+        });
+      }
+    }
     invokeCallbacks(list, value);
   }
 }
