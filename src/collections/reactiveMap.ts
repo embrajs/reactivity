@@ -24,7 +24,7 @@ import {
  */
 export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
   /**
-   * A Readable that emits the Map itself whenever it changes.
+   * A {@link Readable} that emits the Map itself whenever it changes.
    *
    * @group Readable
    */
@@ -54,7 +54,7 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
  */
 export interface ReactiveMap<K, V> extends Map<K, V> {
   /**
-   * A Readable that emits the Map itself whenever it changes.
+   * A {@link Readable} that emits the Map itself whenever it changes.
    *
    * @group Readable
    */
@@ -74,7 +74,9 @@ export interface ReactiveMap<K, V> extends Map<K, V> {
    * @group Events
    */
   onDisposeValue(fn: (value: V) => void): Cleanup;
+  /** Moves an entry from `key` to `newKey` without disposing its value. */
   rename(key: K, newKey: K): void;
+  /** Replaces all entries. Values kept in the new contents are not disposed. */
   replace(entries: Iterable<readonly [K, V]>): this;
 }
 
@@ -239,7 +241,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
 }
 
 /**
- * Creates a new {@link OwnedReactiveMap}.
+ * Creates a new {@link Owned} {@link ReactiveMap}.
  *
  * @category ReactiveMap
  */

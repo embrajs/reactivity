@@ -1,3 +1,9 @@
+/**
+ * Shallowly compares two arrays element-by-element using `Object.is`.
+ * Useful as an {@link ReadableOptions.equal | equal} comparator for array-valued nodes.
+ *
+ * @category Utilities
+ */
 export function arrayShallowEqual(previous: unknown, next: unknown): boolean {
   if (Object.is(previous, next)) {
     return true;

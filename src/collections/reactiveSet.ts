@@ -22,7 +22,7 @@ import {
  */
 export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
   /**
-   * A Readable that emits the Set itself whenever it changes.
+   * A {@link Readable} that emits the Set itself whenever it changes.
    *
    * @group Readable
    */
@@ -52,7 +52,7 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
  */
 export interface ReactiveSet<V> extends Set<V> {
   /**
-   * A Readable that emits the Set itself whenever it changes.
+   * A {@link Readable} that emits the Set itself whenever it changes.
    *
    * @group Readable
    */
@@ -72,6 +72,7 @@ export interface ReactiveSet<V> extends Set<V> {
    * @group Events
    */
   onDisposeValue(fn: (value: V) => void): Cleanup;
+  /** Replaces all values. Values kept in the new contents are not disposed. */
   replace(values: Iterable<V>): this;
 }
 
@@ -210,7 +211,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
 }
 
 /**
- * Creates a new {@link OwnedReactiveSet}.
+ * Creates a new {@link Owned} {@link ReactiveSet}.
  *
  * @category ReactiveSet
  */

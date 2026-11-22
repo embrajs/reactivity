@@ -1,5 +1,14 @@
 {
   "$schema": "https://typedoc.org/schema.json",
+  "categoryOrder": [
+    "Primitives",
+    "Effects & Scheduling",
+    "ReactiveList",
+    "ReactiveMap",
+    "ReactiveSet",
+    "Utilities",
+    "*"
+  ],
   "cleanOutputDir": true,
   "customCss": "./assets/docs.css",
   "entryPoints": ["./src/index.ts"],

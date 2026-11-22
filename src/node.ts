@@ -17,9 +17,9 @@ import type {
   Cleanup,
   EffectContext,
   Equality,
-  EqualityConfig,
   NormalizedEquality,
   Readable,
+  ReadableOptions,
   Setter,
   SubscribeOptions,
   Subscriber,
@@ -30,6 +30,13 @@ import type {
 export type Source<T = any> = ValueNode<T> | ComputedNode<T>;
 export type Observer = ComputedNode | WatchNode;
 
+/**
+ * Groups multiple writes into a single synchronous notification flush at the end
+ * of the outermost batch. Nested batches defer flushing until the outer batch
+ * completes. A thrown error aborts the batch and discards pending notifications.
+ *
+ * @category Effects & Scheduling
+ */
 export function batch<T>(fn: () => T): T {
   const outer = !(syncQueue_.flags_ & Flags.Running);
   if (outer) {
@@ -78,11 +85,6 @@ export function createLink(source: Source, observer: Observer): Link {
   };
 }
 
-export interface ValueOptions<T> {
-  name?: string;
-  equal?: EqualityConfig<T>;
-}
-
 declare class ValueNode<T = any> implements ISubList, Writable<T> {
   runtime_: Runtime;
   // Keep the shared Source fields in the same construction order as ComputedNode.
@@ -101,10 +103,10 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   set: Setter<T>;
   dispose(): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
-  constructor(value: T, options?: ValueOptions<T>);
+  constructor(value: T, options?: ReadableOptions<T>);
 }
 
-function ValueNode<T>(this: ValueNode<T>, value: T, options?: ValueOptions<T>) {
+function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>) {
   this.flags_ = Flags.KindValueNode;
   this.subHead_ = null;
   this.subTail_ = null;
@@ -176,10 +178,10 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   compute_: ((...values: any[]) => T) | null;
   dispose(): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
-  constructor(compute: (...values: any[]) => T, options?: ValueOptions<T>);
+  constructor(compute: (...values: any[]) => T, options?: ReadableOptions<T>);
 }
 
-function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T, options?: ValueOptions<T>) {
+function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T, options?: ReadableOptions<T>) {
   this.flags_ = Flags.KindComputedNode | Flags.Dirty;
   this.subHead_ = null;
   this.subTail_ = null;

@@ -22,12 +22,14 @@ import {
  */
 export interface ReadonlyReactiveList<V> extends Iterable<V> {
   /**
-   * A Readable that emits the ReactiveList itself whenever it changes.
+   * A {@link Readable} that emits the ReactiveList itself whenever it changes.
    *
    * @group Readable
    */
   readonly $: Readable<ReadonlyReactiveList<V>>;
+  /** Number of elements in the list. */
   readonly length: number;
+  /** Returns the element at `index`, or `undefined` if out of bounds. */
   get(index: number): V | undefined;
   /** The backing array as a read-only view. Do not mutate it. */
   readonly array: readonly V[];
@@ -53,16 +55,23 @@ export interface ReadonlyReactiveList<V> extends Iterable<V> {
 export interface ReactiveList<V> extends ReadonlyReactiveList<V> {
   /** Overwrites the value at an existing index. */
   set(index: number, value: V): void;
+  /** Appends items to the end of the list and returns the new length. */
   push(...items: V[]): number;
+  /** Removes and returns the last item, or `undefined` if empty. */
   pop(): V | undefined;
+  /** Removes and returns the first item, or `undefined` if empty. */
   shift(): V | undefined;
+  /** Prepends items to the start of the list and returns the new length. */
   unshift(...items: V[]): number;
   /** Same as `Array.prototype.splice`, except an `undefined` deleteCount removes to the end. */
   splice(start: number, deleteCount?: number, ...items: V[]): V[];
+  /** Removes all items from the list. */
   clear(): void;
   /** Replaces all items. Values kept in the new contents are not disposed. */
   replace(items: Iterable<V>): void;
+  /** Sorts the list in place using an optional comparator. */
   sort(compareFn?: (a: V, b: V) => number): void;
+  /** Reverses the list in place. */
   reverse(): void;
 }
 
@@ -228,7 +237,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
 }
 
 /**
- * Creates a new {@link OwnedReactiveList}.
+ * Creates a new {@link Owned} {@link ReactiveList}.
  *
  * @category ReactiveList
  */
