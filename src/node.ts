@@ -127,7 +127,7 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
   };
 
   this.set = (value) => {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       if (this.flags_ & Flags.Disposed) {
         if (this.__dev_disposed_at) {
           console.error("ValueNode disposed at:", this.__dev_disposed_at);
@@ -271,7 +271,7 @@ ValueNode.prototype = ComputedNode.prototype = {
       const kind = this.flags_ & Flags.KindMask;
       this.flags_ = kind | Flags.Disposed;
 
-      if (process.env.NODE_ENV !== "production") {
+      if (__DEV__) {
         this.__dev_disposed_at = new Error();
       }
 
@@ -368,17 +368,15 @@ function WatchNode(this: WatchNode, callback: WatchEffect, flags: Flags) {
 function different(equal: Equality, previous: any, next: any): boolean {
   const previousObserver = runtime.currentObserver_;
   runtime.currentObserver_ = null;
-  let previousComputation: unknown;
-  if (process.env.NODE_ENV !== "production") {
-    previousComputation = runtime.__dev_currentComputation;
-    runtime.__dev_currentComputation = equal;
+  if (__DEV__) {
+    runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
   }
   try {
     return !equal(previous, next);
   } finally {
     runtime.currentObserver_ = previousObserver;
-    if (process.env.NODE_ENV !== "production") {
-      runtime.__dev_currentComputation = previousComputation;
+    if (__DEV__) {
+      runtime.__dev_currentComputation!--;
     }
   }
 }
@@ -626,10 +624,8 @@ function updateComputed(node: ComputedNode): void {
   const previousObserver = runtime.currentObserver_;
   const dynamic = !(node.flags_ & Flags.DepsStatic);
   node.flags_ |= Flags.Running;
-  let previousComputation: unknown;
-  if (process.env.NODE_ENV !== "production") {
-    previousComputation = runtime.__dev_currentComputation;
-    runtime.__dev_currentComputation = node;
+  if (__DEV__) {
+    runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
   }
   try {
     if (dynamic) {
@@ -677,8 +673,8 @@ function updateComputed(node: ComputedNode): void {
     if (dynamic) {
       trimDependencies(node);
     }
-    if (process.env.NODE_ENV !== "production") {
-      runtime.__dev_currentComputation = previousComputation;
+    if (__DEV__) {
+      runtime.__dev_currentComputation!--;
     }
   }
 }

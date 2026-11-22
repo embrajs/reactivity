@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { batch, computed, derived, reactiveMap, watch } from "../../src";
+import { setDevMode } from "../setup";
 
 afterEach(() => {
-  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -497,7 +497,7 @@ describe("ReactiveMap", () => {
 
   describe("dispose & diagnostics", () => {
     it("disposes remaining values, disconnects observers, and rejects dev writes", () => {
-      vi.stubEnv("NODE_ENV", "development");
+      setDevMode(true);
       const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const map = reactiveMap<string, number>([
@@ -535,14 +535,14 @@ describe("ReactiveMap", () => {
     });
 
     it("omits __dev_disposed_at in production and throws on write during computation in dev", () => {
-      vi.stubEnv("NODE_ENV", "production");
+      setDevMode(false);
       const prodMap = reactiveMap([["a", 1]]);
       prodMap.dispose();
       expect(Object.hasOwn(prodMap, "__dev_disposed_at")).toBe(false);
       // Accessing $ after dispose when $ was not previously created returns a disposed Readable
       expect(prodMap.$.get()).toBe(prodMap);
 
-      vi.stubEnv("NODE_ENV", "development");
+      setDevMode(true);
       const devMap = reactiveMap([["a", 1]]);
       const bad = computed(() => {
         devMap.set("a", 2);

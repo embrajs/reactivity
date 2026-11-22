@@ -1,10 +1,13 @@
+import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { computed, derived, writable } from "../src";
+import { setDevMode } from "./setup";
 
 type DisposalDiagnostics = { __dev_disposed_at?: Error | null };
 
 afterEach(() => {
-  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -14,7 +17,7 @@ describe.each([
   { name: "derived", create: () => derived([], () => 0) },
 ])("$name disposal diagnostics", ({ create }) => {
   it("records the first disposal call site in development", () => {
-    vi.stubEnv("NODE_ENV", "development");
+    setDevMode(true);
     const node = create();
     const diagnostics = node as typeof node & DisposalDiagnostics;
     expect(node.get()).toBe(0);
@@ -33,7 +36,7 @@ describe.each([
   });
 
   it("does not attach disposal history in production", () => {
-    vi.stubEnv("NODE_ENV", "production");
+    setDevMode(false);
     const node = create();
     node.dispose();
     expect(Object.hasOwn(node, "__dev_disposed_at")).toBe(false);
@@ -41,10 +44,10 @@ describe.each([
 });
 
 it("rejects a development write even when disposal history was not captured", () => {
-  vi.stubEnv("NODE_ENV", "production");
+  setDevMode(false);
   const source = writable(0);
   source.dispose();
-  vi.stubEnv("NODE_ENV", "development");
+  setDevMode(true);
   const log = vi.spyOn(console, "error").mockImplementation(() => {});
   expect(() => source.set(1)).toThrow("disposed");
   expect(source.get()).toBe(0);
@@ -52,7 +55,7 @@ it("rejects a development write even when disposal history was not captured", ()
 });
 
 it("reports the original disposal location when a computation writes a disposed source", () => {
-  vi.stubEnv("NODE_ENV", "development");
+  setDevMode(true);
   const source = writable(0);
   source.dispose();
   const original = (source as typeof source & DisposalDiagnostics).__dev_disposed_at;
@@ -68,4 +71,55 @@ it("reports the original disposal location when a computation writes a disposed 
   } finally {
     output.dispose();
   }
+});
+
+it("resolves development and default ESM conditional exports without process.env", () => {
+  const root = fileURLToPath(new URL("../", import.meta.url));
+  if (!existsSync(new URL("../dist/index.mjs", import.meta.url))) {
+    execFileSync(process.execPath, ["scripts/build.ts"], { cwd: root });
+  }
+
+  const runNode = (args: string[], code: string) =>
+    execFileSync(process.execPath, [...args, "--input-type=module", "-e", code], {
+      cwd: root,
+      encoding: "utf8",
+    }).trim();
+
+  expect(
+    runNode(
+      [],
+      `
+      import { createRequire } from "node:module";
+      import * as prod from "@embra/reactivity";
+      import * as dev from "./dist/index.dev.mjs";
+      delete globalThis.process;
+      const source = prod.writable(1);
+      const doubled = dev.computed(() => source.get() * 2);
+      source.set(3);
+      if (doubled.get() !== 6) throw new Error("shared runtime mismatch");
+      source.dispose();
+      doubled.dispose();
+      const require = createRequire(import.meta.url);
+      const requiredModule = require("@embra/reactivity");
+      console.log(JSON.stringify({
+        prodHasDiagnostics: Object.hasOwn(source, "__dev_disposed_at"),
+        devHasDiagnostics: Object.hasOwn(doubled, "__dev_disposed_at"),
+        sameExport: requiredModule.writable === prod.writable,
+      }));
+    `,
+    ),
+  ).toBe(JSON.stringify({ prodHasDiagnostics: false, devHasDiagnostics: true, sameExport: true }));
+
+  expect(
+    runNode(
+      ["--conditions=development"],
+      `
+      import { writable } from "@embra/reactivity";
+      delete globalThis.process;
+      const source = writable(0);
+      source.dispose();
+      console.log(Object.hasOwn(source, "__dev_disposed_at"));
+    `,
+    ),
+  ).toBe("true");
 });

@@ -122,7 +122,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public set(index: number, value: V): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (index >= 0 && index < this.items_.length) {
@@ -137,7 +137,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public push(...items: V[]): number {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const length = this.items_.push(...items);
@@ -149,7 +149,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public pop(): V | undefined {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (this.items_.length > 0) {
@@ -161,7 +161,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public shift(): V | undefined {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (this.items_.length > 0) {
@@ -173,7 +173,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public unshift(...items: V[]): number {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const length = this.items_.unshift(...items);
@@ -185,7 +185,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public splice(start: number, deleteCount?: number, ...items: V[]): V[] {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const removed = this.items_.splice(start, deleteCount ?? this.items_.length, ...items);
@@ -202,7 +202,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public replace(items: Iterable<V>): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const prev = this.items_;
@@ -216,7 +216,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public sort(compareFn?: (a: V, b: V) => number): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (this.items_.length > 1) {
@@ -226,7 +226,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public reverse(): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (this.items_.length > 1) {

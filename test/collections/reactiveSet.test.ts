@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { batch, computed, derived, reactiveSet, watch } from "../../src";
+import { setDevMode } from "../setup";
 
 afterEach(() => {
-  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -193,7 +193,7 @@ describe("ReactiveSet", () => {
 
   describe("dispose & diagnostics", () => {
     it("disposes remaining values and rejects dev writes", () => {
-      vi.stubEnv("NODE_ENV", "development");
+      setDevMode(true);
       const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const set = reactiveSet([1, 2]);

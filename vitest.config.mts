@@ -13,5 +13,6 @@ export default defineConfig({
       },
     },
     execArgv: ["--expose-gc"],
+    setupFiles: ["./test/setup.ts"],
   },
 });

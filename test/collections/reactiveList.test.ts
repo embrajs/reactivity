@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { batch, computed, derived, reactiveList, watch } from "../../src";
+import { setDevMode } from "../setup";
 
 afterEach(() => {
-  vi.unstubAllEnvs();
   vi.restoreAllMocks();
 });
 
@@ -144,7 +144,7 @@ describe("ReactiveList", () => {
   });
 
   it("disposes remaining values and rejects dev writes", () => {
-    vi.stubEnv("NODE_ENV", "development");
+    setDevMode(true);
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const { list, disposed } = setup([10, 20]);
 

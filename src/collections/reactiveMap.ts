@@ -157,7 +157,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public override set(key: K, value: V): this {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const oldValue = super.get(key);
@@ -175,7 +175,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public override delete(key: K): boolean {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     const oldValue = hasChannelListeners(this.cleanup_) ? super.get(key) : undefined;
@@ -189,7 +189,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public override clear(): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (super.size > 0) {
@@ -201,7 +201,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public rename(key: K, newKey: K): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (key !== newKey && super.has(key)) {
@@ -215,7 +215,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public replace(entries: Iterable<readonly [K, V]>): this {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     batch(() => {

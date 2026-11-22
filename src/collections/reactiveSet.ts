@@ -148,7 +148,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public override add(value: V): this {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (!super.has(value)) {
@@ -161,7 +161,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public override delete(value: V): boolean {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (super.delete(value)) {
@@ -174,7 +174,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public override clear(): void {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     if (super.size > 0) {
@@ -186,7 +186,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public replace(values: Iterable<V>): this {
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       checkCollectionWrite(this);
     }
     batch(() => {

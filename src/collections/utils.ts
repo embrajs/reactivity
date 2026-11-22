@@ -157,7 +157,7 @@ export function checkCollectionWrite(collection: ReactiveCollection): void {
 export function disposeCollection<V>(collection: ReactiveCollection, values: Iterable<V>): void {
   if (!(collection.flags_ & Flags.Disposed)) {
     collection.flags_ |= Flags.Disposed;
-    if (process.env.NODE_ENV !== "production") {
+    if (__DEV__) {
       collection.__dev_disposed_at = new Error();
     }
     if (collection.source_ !== null) {

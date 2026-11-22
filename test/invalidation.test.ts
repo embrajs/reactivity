@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { batch, computed, derived, type Owned, type Readable, watch, writable } from "../src";
+import { setDevMode } from "./setup";
 
 const factories = [
   {
@@ -210,47 +211,46 @@ describe.each([false, true])("independent DAG evaluation, static=%s", (fixed) =>
   });
 });
 
-it.each(["test", "production"])("isolates equality reads during Effect writes in %s", (environment) => {
-  vi.stubEnv("NODE_ENV", environment);
-  try {
-    const control = writable(0);
-    const hidden = writable(0);
-    const input = writable(0, {
-      equal: (a, b) => {
-        hidden.get();
-        return a === b;
-      },
-    });
-    const output = derived(input, (value) => value * 2, { equal: (a, b) => a === b });
-    const callback = vi.fn();
-    const cleanup = vi.fn();
-    const writer = vi.fn();
-    const stopReader = watch(
-      () => {
-        callback(output.get());
-        return cleanup;
-      },
-      { sync: true },
-    );
-    const stopWriter = watch(
-      () => {
-        writer();
-        input.set(control.get());
-      },
-      { sync: true },
-    );
-    hidden.set(1);
-    expect(writer).toHaveBeenCalledOnce();
-    expect(callback.mock.calls).toEqual([[0]]);
-    control.set(2);
-    expect(writer).toHaveBeenCalledTimes(2);
-    expect(callback.mock.calls).toEqual([[0], [4]]);
-    expect(cleanup).toHaveBeenCalledOnce();
-    stopWriter();
-    stopReader();
-    output.dispose();
-    expect(cleanup).toHaveBeenCalledTimes(2);
-  } finally {
-    vi.unstubAllEnvs();
-  }
+it.each([
+  ["development", true],
+  ["production", false],
+] as const)("isolates equality reads during Effect writes in %s", (_environment, isDev) => {
+  setDevMode(isDev);
+  const control = writable(0);
+  const hidden = writable(0);
+  const input = writable(0, {
+    equal: (a, b) => {
+      hidden.get();
+      return a === b;
+    },
+  });
+  const output = derived(input, (value) => value * 2, { equal: (a, b) => a === b });
+  const callback = vi.fn();
+  const cleanup = vi.fn();
+  const writer = vi.fn();
+  const stopReader = watch(
+    () => {
+      callback(output.get());
+      return cleanup;
+    },
+    { sync: true },
+  );
+  const stopWriter = watch(
+    () => {
+      writer();
+      input.set(control.get());
+    },
+    { sync: true },
+  );
+  hidden.set(1);
+  expect(writer).toHaveBeenCalledOnce();
+  expect(callback.mock.calls).toEqual([[0]]);
+  control.set(2);
+  expect(writer).toHaveBeenCalledTimes(2);
+  expect(callback.mock.calls).toEqual([[0], [4]]);
+  expect(cleanup).toHaveBeenCalledOnce();
+  stopWriter();
+  stopReader();
+  output.dispose();
+  expect(cleanup).toHaveBeenCalledTimes(2);
 });

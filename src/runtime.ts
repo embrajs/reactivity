@@ -29,7 +29,7 @@ export interface Runtime {
   syncQueue_: RuntimeQueue;
   asyncQueue_: RuntimeQueue;
   /** Development-only write guard; omitted from production evaluation. */
-  __dev_currentComputation?: unknown;
+  __dev_currentComputation?: number;
 }
 
 export const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {
