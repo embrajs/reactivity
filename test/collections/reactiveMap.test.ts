@@ -144,12 +144,12 @@ describe("ReactiveMap", () => {
 
       batch(() => {
         map.set("foo", 1);
-        map.set("bar", 2);
-        map.set("foo", 3);
+        map.set("foo", 2);
+        map.set("bar", 3);
       });
 
-      expect(map.get("foo")).toBe(3);
-      expect(map.get("bar")).toBe(2);
+      expect(map.get("foo")).toBe(2);
+      expect(map.get("bar")).toBe(3);
       expect(notifySpy).toHaveBeenCalledTimes(1);
       expect(changedKeys).toEqual([["foo", "bar"]]);
       expect(disposedValues).toEqual([1]);

@@ -31,6 +31,7 @@ export interface ReadonlyReactiveMap<K, V> extends ReadonlyMap<K, V> {
   readonly $: Readable<ReadonlyReactiveMap<K, V>>;
   /**
    * Subscribe synchronously to dirty keys modified in the current batch.
+   * May contain duplicate keys; deduplicate with a Set if needed.
    * Callbacks must not mutate the source map itself.
    *
    * @group Events
@@ -60,6 +61,7 @@ export interface ReactiveMap<K, V> extends Map<K, V> {
   readonly $: Readable<ReadonlyReactiveMap<K, V>>;
   /**
    * Subscribe synchronously to dirty keys modified in the current batch.
+   * May contain duplicate keys; deduplicate with a Set if needed.
    * Callbacks must not mutate the source map itself.
    *
    * @group Events

@@ -41,13 +41,7 @@ export function subscribeCollection(collection: ReactiveCollection, flags: Flags
       fn.call(this, items);
     }
     if (list.next_ === null) {
-      if (items.length > 16) {
-        items.length = 0;
-      } else {
-        while (items.length > 0) {
-          items.pop();
-        }
-      }
+      items.length = 0;
     }
   }, SYNC_SUB);
 }
@@ -57,8 +51,13 @@ export function hasChannelListeners(channel: BatchChannel | null | undefined): c
 }
 
 export function queueChannel<T>(channel: BatchChannel<T> | null, value: T): void {
-  if (hasChannelListeners(channel) && !channel.value_.includes(value)) {
-    channel.value_.push(value);
+  if (hasChannelListeners(channel)) {
+    const items = channel.value_;
+    const last = items[items.length - 1];
+    // biome-ignore lint/suspicious/noSelfCompare: SameValueZero check for NaN
+    if (items.length === 0 || (last !== value && (last === last || value === value))) {
+      items.push(value);
+    }
   }
 }
 
@@ -66,9 +65,7 @@ export function queueAllChannel<T>(channel: BatchChannel<T> | null, values: Iter
   if (hasChannelListeners(channel)) {
     const items = channel.value_;
     for (const value of values) {
-      if (!items.includes(value)) {
-        items.push(value);
-      }
+      items.push(value);
     }
   }
 }

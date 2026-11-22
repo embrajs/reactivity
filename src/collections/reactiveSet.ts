@@ -29,6 +29,7 @@ export interface ReadonlyReactiveSet<V> extends ReadonlySet<V> {
   readonly $: Readable<ReadonlyReactiveSet<V>>;
   /**
    * Subscribe synchronously to values added or deleted in the current batch.
+   * May contain duplicate values; deduplicate with a Set if needed.
    * Callbacks must not mutate the source set itself.
    *
    * @group Events
@@ -58,6 +59,7 @@ export interface ReactiveSet<V> extends Set<V> {
   readonly $: Readable<ReadonlyReactiveSet<V>>;
   /**
    * Subscribe synchronously to values added or deleted in the current batch.
+   * May contain duplicate values; deduplicate with a Set if needed.
    * Callbacks must not mutate the source set itself.
    *
    * @group Events
