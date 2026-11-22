@@ -445,7 +445,11 @@
     margin: var(--dim-container-main-margin-y) auto;
     /* toolbar, footer, margin */
     min-height: calc(
-      100svh - var(--dim-header-height) - var(--dim-footer-height) - 2 * var(--dim-container-main-margin-y)
+      100svh -
+      var(--dim-header-height) -
+      var(--dim-footer-height) -
+      2 *
+      var(--dim-container-main-margin-y)
     );
   }
 
@@ -511,14 +515,6 @@
   }
   :target {
     scroll-margin-block: calc(var(--dim-header-height) + 0.5rem);
-  }
-
-  math[display="block"] {
-    position: relative;
-    padding: 10px;
-    border: 1px solid var(--color-accent);
-    border-radius: 0.8em;
-    margin-bottom: 8px;
   }
 
   code,
@@ -1037,7 +1033,7 @@
 
     cursor: pointer;
   }
-  .tsd-accordion-summary > a {
+  .tsd-accordion-summary a {
     width: calc(100% - 1.5rem);
   }
   .tsd-accordion-summary > * {
@@ -1569,7 +1565,11 @@
   @media (min-width: 770px) and (max-width: 1399px) {
     .col-sidebar {
       max-height: calc(
-        100vh - var(--dim-header-height) - var(--dim-footer-height) - 2 * var(--dim-container-main-margin-y)
+        100vh -
+        var(--dim-header-height) -
+        var(--dim-footer-height) -
+        2 *
+        var(--dim-container-main-margin-y)
       );
       overflow: auto;
       position: sticky;
@@ -1606,7 +1606,11 @@
     .page-menu,
     .site-menu {
       max-height: calc(
-        100vh - var(--dim-header-height) - var(--dim-footer-height) - 2 * var(--dim-container-main-margin-y)
+        100vh -
+        var(--dim-header-height) -
+        var(--dim-footer-height) -
+        2 *
+        var(--dim-container-main-margin-y)
       );
       overflow: auto;
       position: sticky;
