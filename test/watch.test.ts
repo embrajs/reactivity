@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-import { type EffectContext, type WatchEffect, watch, writable } from "../src";
+import { batch, computed, type EffectContext, type WatchEffect, watch, writable } from "../src";
 
 async function tick() {
   await Promise.resolve();
@@ -807,6 +807,55 @@ describe("watch", () => {
       expect(source.deref()).toBeUndefined();
       expect(() => stopFirst()).not.toThrow();
       expect(() => stopSecond()).not.toThrow();
+    });
+
+    it("skips non-dirty sibling links during repeated watch writes in a batch", () => {
+      const source = writable(0);
+      const comp = computed(() => source.get() * 2);
+      const stopSub = comp.subscribe(() => {}, { sync: true, immediate: false });
+      const seen: number[] = [];
+      const stopWatch = watch(
+        () => {
+          seen.push(source.get());
+        },
+        { sync: true },
+      );
+
+      batch(() => {
+        source.set(1);
+        source.set(2);
+      });
+
+      expect(seen).toEqual([0, 2]);
+      expect(comp.get()).toBe(4);
+      stopWatch();
+      stopSub();
+      comp.dispose();
+      source.dispose();
+    });
+
+    it("ignores a watch disposed mid-run when upstream pending propagates through a computed", () => {
+      const source = writable(0);
+      const comp = computed(() => source.get() * 2);
+      const seen: number[] = [];
+      let stopWatch!: () => void;
+      stopWatch = watch(
+        () => {
+          const val = comp.get();
+          seen.push(val);
+          if (val === 2) {
+            stopWatch();
+            source.set(2);
+          }
+        },
+        { sync: true },
+      );
+
+      source.set(1);
+      expect(seen).toEqual([0, 2]);
+      expect(comp.get()).toBe(4);
+      comp.dispose();
+      source.dispose();
     });
   });
 });

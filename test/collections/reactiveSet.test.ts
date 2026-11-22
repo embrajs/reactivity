@@ -210,5 +210,16 @@ describe("ReactiveSet", () => {
       expect(() => set.add(3)).toThrow("disposed");
       expect(consoleError).toHaveBeenCalledWith("ReactiveSet disposed at:", firstDisposedAt);
     });
+
+    it("supports all mutators in production mode", () => {
+      setDevMode(false);
+      const set = reactiveSet([1]);
+      set.add(2);
+      expect(set.delete(1)).toBe(true);
+      set.replace([3, 4]);
+      expect([...set]).toEqual([3, 4]);
+      set.clear();
+      expect(set.size).toBe(0);
+    });
   });
 });

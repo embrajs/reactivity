@@ -551,5 +551,17 @@ describe("ReactiveMap", () => {
       expect(() => bad.get()).toThrow("write during computation");
       bad.dispose();
     });
+
+    it("supports all mutators in production mode", () => {
+      setDevMode(false);
+      const map = reactiveMap([["a", 1]]);
+      map.set("b", 2);
+      map.rename("b", "c");
+      expect(map.delete("a")).toBe(true);
+      map.replace([["x", 10]]);
+      expect([...map.entries()]).toEqual([["x", 10]]);
+      map.clear();
+      expect(map.size).toBe(0);
+    });
   });
 });

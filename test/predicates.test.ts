@@ -11,6 +11,7 @@ import {
   type Writable,
   writable,
 } from "../src";
+import { CONTRACT_SYMBOL, CONTRACT_VERSION } from "../src/constants";
 
 describe("readable predicates", () => {
   it("recognizes each node kind without evaluating it", () => {
@@ -99,6 +100,12 @@ describe("readable predicates", () => {
     }
     expect(get).not.toHaveBeenCalled();
     expect(set).not.toHaveBeenCalled();
+  });
+
+  it("treats a contract-compatible readable without a set property as non-writable", () => {
+    const readOnlyLike = { [CONTRACT_SYMBOL]: CONTRACT_VERSION, get: () => 1 };
+    expect(isReadable(readOnlyLike)).toBe(true);
+    expect(isWritable(readOnlyLike)).toBe(false);
   });
 
   it("narrows unknown values and extracts readable value types", () => {

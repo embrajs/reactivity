@@ -293,9 +293,9 @@ function traceFn<T extends (...args: any[]) => any>(fn: T, config?: TraceConfig)
       }
       const duration = performance.now() - start;
       const observer = runtime.currentObserver_;
-      const kind: NodeKind = observer !== null ? (getNodeKind(observer) ?? "watch") : "watch";
+      const kind: NodeKind = getNodeKind(observer) ?? "watch";
       const deps = observer !== null ? diffDeps(entry.oldDeps, collectObserverDeps(observer, true)) : [];
-      const cause = observer !== null ? getSpyCause(observer) : undefined;
+      const cause = getSpyCause(observer);
 
       const traceEvent: TraceEvent = {
         target: fn,

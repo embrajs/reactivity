@@ -200,7 +200,8 @@ describe("inspect", () => {
     const set$ = writable(new Set([1]));
     const obj$ = writable({ x: 1 });
     const str$ = writable("abc");
-    const root$ = derived([fnVal$, anonFn$, arr$, map$, set$, obj$, str$], () => 0);
+    const nullProto$ = writable(Object.create(null));
+    const root$ = derived([fnVal$, anonFn$, arr$, map$, set$, obj$, str$, nullProto$], () => 0);
     const formattedValues = formatTree(getDependencyTree(root$)!);
     expect(formattedValues).toContain("[Function: namedFn]");
     expect(formattedValues).toContain("Array(2)");
@@ -213,6 +214,7 @@ describe("inspect", () => {
     const stopWatch = watch(() => {
       c$.get();
     });
+    const watchNode = getObserverTree(c$)!.children.find((node) => node.kind === "watch")!.node;
     batch(() => {
       a$.set(3);
       expect(formatTree(getObserverTree(a$)!)).toContain("watch");
@@ -233,6 +235,7 @@ describe("inspect", () => {
     stopListSub();
 
     stopWatch();
+    expect(inspect(watchNode)).toMatchObject({ kind: "watch", name: "", disposed: true });
     stopSub();
     stopAsyncSub();
     expect(formatTree(getDependencyTree(c$)!)).toContain("[dirty]");

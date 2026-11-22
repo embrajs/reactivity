@@ -91,7 +91,7 @@ function formatEventLine(event: SpyEvent, includeTiming: boolean, state: { depth
       state.depth = Math.max(0, state.depth - 1);
       return event.error !== undefined ? `${pad()}} [error: ${formatError(event.error)}]` : `${pad()}}`;
     case "flush-start": {
-      const line = `${pad()}flush(${event.async ? "async" : "sync"}) {`;
+      const line = `${pad()}flush(async) {`;
       state.depth++;
       return line;
     }

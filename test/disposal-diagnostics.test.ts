@@ -2,7 +2,7 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { computed, derived, writable } from "../src";
+import { batch, computed, derived, watch, writable } from "../src";
 import { setDevMode } from "./setup";
 
 type DisposalDiagnostics = { __dev_disposed_at?: Error | null };
@@ -122,4 +122,51 @@ it("resolves development and default ESM conditional exports without process.env
     `,
     ),
   ).toBe("true");
+});
+
+describe("production mode behavior", () => {
+  it("handles batch errors, unchanged/throwing computeds, throwing watches, and async flushes without __DEV__", async () => {
+    setDevMode(false);
+
+    expect(() =>
+      batch(() => {
+        throw new Error("prod-batch-err");
+      }),
+    ).toThrow("prod-batch-err");
+
+    const source = writable(1);
+    const clamped = computed(() => (source.get() > 0 ? 1 : 0));
+    expect(clamped.get()).toBe(1);
+    source.set(2);
+    expect(clamped.get()).toBe(1);
+
+    const broken = computed(() => {
+      if (source.get() > 2) {
+        throw new Error("prod-compute-err");
+      }
+      return 0;
+    });
+    expect(broken.get()).toBe(0);
+    source.set(3);
+    expect(() => broken.get()).toThrow("prod-compute-err");
+
+    expect(() =>
+      watch(() => {
+        throw new Error("prod-watch-err");
+      }),
+    ).toThrow("prod-watch-err");
+
+    const asyncSource = writable(0);
+    const seen: number[] = [];
+    const stopSub = asyncSource.subscribe((v) => seen.push(v), { immediate: false });
+    asyncSource.set(10);
+    await Promise.resolve();
+    expect(seen).toEqual([10]);
+
+    stopSub();
+    broken.dispose();
+    clamped.dispose();
+    source.dispose();
+    asyncSource.dispose();
+  });
 });

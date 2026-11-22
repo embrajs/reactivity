@@ -301,6 +301,47 @@ describe("spy", () => {
     expect(flatLogger.calls.some((c) => /set writable@[0-9a-f]{4}:/.test(c))).toBe(true);
     expect(flatLogger.calls.some((c) => c.includes("dispose"))).toBe(true);
     expect(flatLogger.calls.some((c) => c.startsWith("error:"))).toBe(true);
+
+    // Default console logger fallback, flat mode with printStack: false, and nested computeds in cascade mode
+    const consoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "group").mockImplementation(() => {});
+    vi.spyOn(console, "groupEnd").mockImplementation(() => {});
+    const stopDefault = spy();
+    const def$ = writable(0, { name: "def" });
+    def$.set(1);
+    stopDefault();
+    expect(consoleLog).toHaveBeenCalled();
+
+    const flatDefaultLogger = createMockLogger();
+    const stopFlatDefault = spy({ cascade: false, logger: flatDefaultLogger });
+    const f$ = writable(0, { name: "f" });
+    const stopFWatch = watch(
+      () => {
+        f$.get();
+      },
+      { sync: true },
+    );
+    f$.set(1);
+    stopFWatch();
+    stopFlatDefault();
+    expect(flatDefaultLogger.calls.some((c) => c === "trace")).toBe(false);
+
+    const nestedLogger = createMockLogger();
+    const stopNested = spy({ logger: nestedLogger });
+    const base$ = writable(1, { name: "base" });
+    const inner$ = computed(() => base$.get() * 2, { name: "inner" });
+    const outer$ = computed(() => inner$.get() + 1, { name: "outer" });
+    const stopNestedWatch = watch(
+      () => {
+        outer$.get();
+      },
+      { sync: true },
+    );
+    base$.set(2);
+    stopNestedWatch();
+    stopNested();
+    expect(nestedLogger.calls.some((c) => c.startsWith("group:[embra] computed(outer)"))).toBe(true);
+    expect(nestedLogger.calls.some((c) => c === "trace")).toBe(false);
   });
 
   it("warns once globally and returns a no-op in production", () => {

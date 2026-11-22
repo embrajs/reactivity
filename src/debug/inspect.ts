@@ -293,10 +293,7 @@ function buildTree(target: unknown, direction: "deps" | "subs"): GraphTreeNode |
   };
   const related = direction === "deps" ? snap.deps : snap.subs;
   for (const child of related) {
-    const childTree = buildTree(child, direction);
-    if (childTree !== null) {
-      treeNode.children.push(childTree);
-    }
+    treeNode.children.push(buildTree(child, direction)!);
   }
   return treeNode;
 }

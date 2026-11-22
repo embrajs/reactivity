@@ -1,5 +1,4 @@
 import type { Source } from "../node";
-import { isReadable } from "../reactivity";
 import { type DevSpyEvent, NOOP_, runtime } from "../runtime";
 import type { Cleanup } from "../types";
 import { formatNodeLabel, getNodeName, isReactiveCollection, type ReactiveCollectionInternal } from "./inspect";
@@ -129,9 +128,7 @@ export function getSpyCause(node: unknown): SpyCause | undefined {
 function recordCauses(sourceNode: unknown, prevValue: unknown, nextValue: unknown): void {
   const source: Source | null = isReactiveCollection(sourceNode)
     ? (sourceNode as ReactiveCollectionInternal).source_
-    : isReadable(sourceNode)
-      ? (sourceNode as Source)
-      : null;
+    : (sourceNode as Source);
   if (source === null || source.subHead_ === null) {
     return;
   }

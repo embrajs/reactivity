@@ -161,4 +161,30 @@ describe("ReactiveList", () => {
     expect(() => list.unshift(30)).toThrow("disposed");
     expect(consoleError).toHaveBeenCalledWith("ReactiveList disposed at:", disposedAt);
   });
+
+  it("supports all mutators and disposal in production mode without dev diagnostics", () => {
+    setDevMode(false);
+    const list = reactiveList([3, 1, 2]);
+    list.set(0, 4);
+    list.push(5);
+    expect(list.pop()).toBe(5);
+    expect(list.shift()).toBe(4);
+    list.unshift(0);
+    list.sort((a, b) => a - b);
+    list.reverse();
+    list.splice(1, 1, 9);
+    list.replace([7, 8]);
+    expect(list.array).toEqual([7, 8]);
+
+    list.dispose();
+    list.push(1);
+    expect(list.array).toEqual([7, 8, 1]);
+
+    const prodList = reactiveList([1]);
+    prodList.dispose();
+    setDevMode(true);
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    expect(() => prodList.push(2)).toThrow("disposed");
+    expect(consoleError).not.toHaveBeenCalled();
+  });
 });

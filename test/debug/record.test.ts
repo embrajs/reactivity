@@ -146,14 +146,82 @@ describe("record", () => {
         map$.set(new Map());
         set$.set(new Set());
         circ$.set(circular);
+        const arr$ = writable<number[]>([], { name: "arr" });
+        arr$.set([1, 2]);
+        const nullCirc: any = Object.create(null);
+        nullCirc.self = nullCirc;
+        const nullCirc$ = writable<any>(null, { name: "nullCirc" });
+        nullCirc$.set(nullCirc);
       },
-      { filter: /^(fn|map|set|circ)$/ },
+      { filter: /^(fn|map|set|circ|arr|nullCirc)$/ },
     );
-    expect(rec.stats.sets).toBe(4);
+    expect(rec.stats.sets).toBe(6);
     expect(rec.text).toContain("[Function: named]");
     expect(rec.text).toContain("Map(0)");
     expect(rec.text).toContain("Set(0)");
     expect(rec.text).toContain("-> Object");
+    expect(rec.text).toContain("Array(2)");
+  });
+
+  it("records effect execution without timing, batch non-Error throws, sync effect throws, and async flush errors", async () => {
+    const a$ = writable(0, { name: "a" });
+    let shouldThrow = false;
+    const stopSyncWatch = watch(
+      function syncEff() {
+        a$.get();
+        if (shouldThrow) {
+          throw new Error("eff-boom");
+        }
+      },
+      { sync: true },
+    );
+
+    const recNoTiming = record(() => {
+      a$.set(1);
+    });
+    expect(recNoTiming.text).toContain("effect watch(syncEff) <- triggered by writable(a): 0 -> 1");
+    expect(recNoTiming.text).not.toContain("ms)");
+
+    shouldThrow = true;
+    const recSyncErr = record(() => {
+      a$.set(2);
+    });
+    expect(recSyncErr.error).toBeInstanceOf(Error);
+    expect(recSyncErr.stats.errors).toBe(1);
+    expect(recSyncErr.text).toContain("effect watch(syncEff) threw: eff-boom");
+    stopSyncWatch();
+
+    const recBatchStrErr = record(() => {
+      batch(() => {
+        throw "raw-batch-err";
+      });
+    });
+    expect(recBatchStrErr.error).toBe("raw-batch-err");
+    expect(recBatchStrErr.stats.errors).toBe(1);
+    expect(recBatchStrErr.text).toContain("} [error: raw-batch-err]");
+
+    const b$ = writable(0, { name: "b" });
+    const stopAsyncWatch = watch(function asyncEff() {
+      if (b$.get() > 0) {
+        throw new Error("async-eff-boom");
+      }
+    });
+    const unhandled: unknown[] = [];
+    const onUnhandled = (err: unknown) => unhandled.push(err);
+    process.on("uncaughtException", onUnhandled);
+    try {
+      const recAsyncErr = await record(async () => {
+        b$.set(1);
+        await new Promise((r) => setTimeout(r, 10));
+      });
+      expect(unhandled).toHaveLength(1);
+      expect(recAsyncErr.stats.errors).toBeGreaterThanOrEqual(2);
+      expect(recAsyncErr.text).toContain("effect watch(asyncEff) threw: async-eff-boom");
+      expect(recAsyncErr.text).toContain("} [error: async-eff-boom]");
+    } finally {
+      process.off("uncaughtException", onUnhandled);
+      stopAsyncWatch();
+    }
   });
 
   it("warns once and still runs fn in production mode", () => {
