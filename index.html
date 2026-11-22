@@ -83,23 +83,269 @@
                 alt="Coverage Status"
               ></a
             >
-            <a href="https://deno.bundlejs.com/?q=@embra/reactivity&amp;treeshake=%5B*%5D"
-              ><img
-                src="https://deno.bundlejs.com/badge?q=@embra/reactivity&amp;treeshake=%5B*%5D"
-                alt="minified-size"
-              ></a
-            >
           </p>
-          <p>A lightweight, ownership-based, composable and explicit reactivity system.</p>
+          <p>Fine-grained reactivity with explicit ownership, built for AI agents.</p>
+          <h2 id="features" class="tsd-anchor-link">
+            Features<a href="#features" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <ul>
+            <li>
+              <strong>Explicit boundaries, zero proxy magic</strong>: No <code>Proxy</code> traps or hidden mutation
+              channels; <code>readable()</code> returns a <code>[source, set]</code> tuple so read/write boundaries stay
+              clear when reading or editing code in isolation.
+            </li>
+            <li>
+              <strong>Dynamic and static derivation</strong>: <code>computed()</code> tracks dependencies automatically,
+              while <code>derived()</code> declares static dependencies explicitly. Both evaluate lazily and disconnect
+              automatically when unobserved.
+            </li>
+            <li>
+              <strong>Zero-cost ownership &amp; loud failures</strong>: Ownership is enforced at the type level with no
+              runtime wrapper overhead—creators receive <code>Owned&lt;T&gt;</code>, while passing
+              <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> hides <code>dispose()</code> with zero
+              extra allocation. Dependency cycles and dev-mode writes to disposed sources fail immediately with the
+              original disposal stack trace.
+            </li>
+            <li>
+              <strong>Predictable scheduling</strong>: <code>watch()</code> and <code>source.subscribe()</code> batch
+              notifications in a microtask by default, with <code>{ sync: true }</code> and <code>batch()</code> when
+              synchronous execution is needed.
+            </li>
+            <li>
+              <strong>Text-native observability</strong>: <code>@embra/reactivity/debug</code> provides non-intrusive
+              snapshots (<code>inspect</code>), plain-text dependency and observer trees (<code>formatTree</code>),
+              causal attribution (<code>spy</code>
+              / <code>trace</code>), and deterministic text timelines (<code>record</code>)—designed for tests and AI
+              agent diagnostics, with zero production overhead via package export conditions.
+            </li>
+          </ul>
           <h2 id="install" class="tsd-anchor-link">
             Install<a href="#install" aria-label="Permalink" class="tsd-anchor-icon"
               ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
             >
           </h2>
           <pre
-          ><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">add</span><span class="hl-1"> @</span><span class="hl-0">embra</span><span class="hl-1">/</span><span class="hl-0">reactivity</span>
-</code><button>Copy</button></pre>
+          ><code class="sh"><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">@embra/reactivity</span>
+</code><button type="button">Copy</button></pre>
 
+          <table>
+            <thead>
+              <tr>
+                <th>Entry Point</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>@embra/reactivity</code></td>
+                <td>
+                  Core primitives (<code>writable</code>, <code>readable</code>, <code>computed</code>,
+                  <code>derived</code>, <code>watch</code>, <code>batch</code>) and reactive collections
+                </td>
+              </tr>
+              <tr>
+                <td><code>@embra/reactivity/react</code></td>
+                <td>
+                  React hooks (<code>useValue</code>, <code>useComputed</code>, <code>useDerived</code>,
+                  <code>useWatch</code>, etc.) and <code>&lt;Reactive&gt;</code>
+                </td>
+              </tr>
+              <tr>
+                <td><code>@embra/reactivity/debug</code></td>
+                <td>Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 id="quick-start" class="tsd-anchor-link">
+            Quick Start<a href="#quick-start" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">batch</span><span class="hl-1">, </span><span class="hl-4">computed</span><span class="hl-1">, </span><span class="hl-4">derived</span><span class="hl-1">, </span><span class="hl-4">watch</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">firstName$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;Ada&quot;</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">lastName$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;Lovelace&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-7">// Dynamic dependency tracking</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">fullName$</span><span class="hl-1"> = </span><span class="hl-0">computed</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-2">`</span><span class="hl-5">${</span><span class="hl-4">firstName$</span><span class="hl-8">.</span><span class="hl-4">value</span><span class="hl-5">}</span><span class="hl-2"> </span><span class="hl-5">${</span><span class="hl-4">lastName$</span><span class="hl-8">.</span><span class="hl-4">value</span><span class="hl-5">}</span><span class="hl-2">`</span><span class="hl-1">);</span><br/><br/><span class="hl-7">// Explicit static dependencies</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">greeting$</span><span class="hl-1"> = </span><span class="hl-0">derived</span><span class="hl-1">(</span><span class="hl-4">fullName$</span><span class="hl-1">, (</span><span class="hl-4">name</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-2">`Hello, </span><span class="hl-5">${</span><span class="hl-4">name</span><span class="hl-5">}</span><span class="hl-2">!`</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">stop</span><span class="hl-1"> = </span><span class="hl-0">watch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">greeting$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">);</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-0">batch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">firstName$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-2">&quot;Grace&quot;</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">lastName$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-2">&quot;Hopper&quot;</span><span class="hl-1">;</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-0">stop</span><span class="hl-1">();</span>
+</code><button type="button">Copy</button></pre>
+
+          <h2 id="core-concepts" class="tsd-anchor-link">
+            Core Concepts<a href="#core-concepts" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <h3 id="state-encapsulation---" class="tsd-anchor-link">
+            State &amp; Encapsulation (<code>writable</code>
+            / <code>readable</code>)<a href="#state-encapsulation---" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <p>
+            Use <code>writable()</code> for mutable state and <code>readable()</code> when you want to keep the setter
+            private:
+          </p>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">arrayShallowEqual</span><span class="hl-1">, </span><span class="hl-4">readable</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-4">count$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-9">1</span><span class="hl-1">;</span><br/><span class="hl-4">count$</span><span class="hl-1">.</span><span class="hl-0">set</span><span class="hl-1">(</span><span class="hl-9">2</span><span class="hl-1">);</span><br/><br/><span class="hl-5">function</span><span class="hl-1"> </span><span class="hl-0">createCounter</span><span class="hl-1">(</span><span class="hl-4">initial</span><span class="hl-1"> = </span><span class="hl-9">0</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> [</span><span class="hl-6">value$</span><span class="hl-1">, </span><span class="hl-6">setValue</span><span class="hl-1">] = </span><span class="hl-0">readable</span><span class="hl-1">(</span><span class="hl-4">initial</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-4">value$</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-0">increment</span><span class="hl-4">:</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-0">setValue</span><span class="hl-1">(</span><span class="hl-4">value$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> + </span><span class="hl-9">1</span><span class="hl-1">),</span><br/><span class="hl-1">  };</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-7">// Custom equality: defaults to Object.is; pass `false` to always propagate</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">items$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">([</span><span class="hl-9">1</span><span class="hl-1">, </span><span class="hl-9">2</span><span class="hl-1">, </span><span class="hl-9">3</span><span class="hl-1">], { </span><span class="hl-4">equal:</span><span class="hl-1"> </span><span class="hl-4">arrayShallowEqual</span><span class="hl-1"> });</span>
+</code><button type="button">Copy</button></pre>
+
+          <h3 id="derived-state-" class="tsd-anchor-link">
+            Derived State (<code>computed</code>
+            / <code>derived</code>)<a href="#derived-state-" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <p>
+            <code>computed()</code>
+            tracks any <code>Readable</code> accessed via <code>.value</code> or <code>.get()</code> during evaluation.
+            <code>derived()</code> takes a single <code>Readable</code> or a tuple of <code>Readable</code>s upfront to
+            avoid dynamic tracking overhead:
+          </p>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">computed</span><span class="hl-1">, </span><span class="hl-4">derived</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">price$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">10</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">qty$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">2</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">discount$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0.1</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">subtotal$</span><span class="hl-1"> = </span><span class="hl-0">derived</span><span class="hl-1">([</span><span class="hl-4">price$</span><span class="hl-1">, </span><span class="hl-4">qty$</span><span class="hl-1">], (</span><span class="hl-4">price</span><span class="hl-1">, </span><span class="hl-4">qty</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">price</span><span class="hl-1"> * </span><span class="hl-4">qty</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">total$</span><span class="hl-1"> = </span><span class="hl-0">computed</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">subtotal</span><span class="hl-1"> = </span><span class="hl-4">subtotal$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-4">subtotal</span><span class="hl-1"> &gt; </span><span class="hl-9">0</span><span class="hl-1"> ? </span><span class="hl-4">subtotal</span><span class="hl-1"> * (</span><span class="hl-9">1</span><span class="hl-1"> - </span><span class="hl-4">discount$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">) : </span><span class="hl-9">0</span><span class="hl-1">;</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+
+          <p>
+            Both <code>computed()</code> and <code>derived()</code> are lazy: they only compute when read or observed,
+            and automatically disconnect from upstream dependencies when their last observer leaves.
+          </p>
+          <h3 id="effects-subscriptions-scheduling-----" class="tsd-anchor-link">
+            Effects, Subscriptions &amp; Scheduling (<code>watch</code>
+            / <code>subscribe</code> / <code>batch</code>)<a
+              href="#effects-subscriptions-scheduling-----"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <ul>
+            <li>
+              <code>watch(effect, { sync })</code>
+              runs immediately, tracks all <code>Readable</code>s read during execution, and supports returning a
+              cleanup function.
+            </li>
+            <li>
+              <code>source.subscribe(fn, { sync, immediate })</code>
+              observes a single <code>Readable</code> directly (<code>immediate</code>
+              defaults to <code>true</code>).
+            </li>
+            <li>
+              Both run asynchronously in a microtask by default (<code>sync: false</code>). Inside either callback,
+              <code>this.dispose()</code> disposes the current effect or subscription.
+            </li>
+          </ul>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">batch</span><span class="hl-1">, </span><span class="hl-4">watch</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">query$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;&quot;</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">stopWatch</span><span class="hl-1"> = </span><span class="hl-0">watch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">q</span><span class="hl-1"> = </span><span class="hl-4">query$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">controller</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-0">AbortController</span><span class="hl-1">();</span><br/><span class="hl-1">  </span><span class="hl-7">// ...fetch with controller.signal</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> () </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">controller</span><span class="hl-1">.</span><span class="hl-0">abort</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">stopSub</span><span class="hl-1"> = </span><span class="hl-4">query$</span><span class="hl-1">.</span><span class="hl-0">subscribe</span><span class="hl-1">(</span><br/><span class="hl-1">  </span><span class="hl-5">function</span><span class="hl-1"> (</span><span class="hl-4">value</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-3">if</span><span class="hl-1"> (</span><span class="hl-4">value</span><span class="hl-1"> === </span><span class="hl-2">&quot;done&quot;</span><span class="hl-1">) {</span><br/><span class="hl-1">      </span><span class="hl-5">this</span><span class="hl-1">.</span><span class="hl-0">dispose</span><span class="hl-1">();</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  },</span><br/><span class="hl-1">  { </span><span class="hl-4">sync:</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1">, </span><span class="hl-4">immediate:</span><span class="hl-1"> </span><span class="hl-5">false</span><span class="hl-1"> },</span><br/><span class="hl-1">);</span><br/><br/><span class="hl-0">batch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">query$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-2">&quot;a&quot;</span><span class="hl-1">;</span><br/><span class="hl-1">  </span><span class="hl-4">query$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-2">&quot;ab&quot;</span><span class="hl-1">;</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+
+          <h3 id="ownership-lifecycle-" class="tsd-anchor-link">
+            Ownership &amp; Lifecycle (<code>Owned&lt;T&gt;</code>)<a
+              href="#ownership-lifecycle-"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <p>
+            Every <code>writable</code>, <code>readable</code>, <code>computed</code>, <code>derived</code>, and
+            reactive collection returns an <code>Owned&lt;T&gt;</code> with a <code>dispose()</code> method for explicit
+            lifecycle control when needed. <code>Owned&lt;T&gt;</code> is a zero-cost type-level boundary—passing a node
+            as <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> across module boundaries hides
+            <code>dispose()</code> without creating any runtime wrapper:
+          </p>
+          <pre
+          ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">source$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">42</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">doubled$</span><span class="hl-1"> = </span><span class="hl-0">derived</span><span class="hl-1">(</span><span class="hl-4">source$</span><span class="hl-1">, (</span><span class="hl-4">n</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">n</span><span class="hl-1"> * </span><span class="hl-9">2</span><span class="hl-1">);</span><br/><br/><span class="hl-4">source$</span><span class="hl-1">.</span><span class="hl-0">dispose</span><span class="hl-1">();</span><br/><span class="hl-4">source$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">; </span><span class="hl-7">// 42 (preserved as a frozen input)</span><br/><span class="hl-4">doubled$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">; </span><span class="hl-7">// 84</span><br/><br/><span class="hl-7">// In development builds, writing to a disposed source throws an error</span><br/><span class="hl-7">// that includes the stack trace of the original dispose() call:</span><br/><span class="hl-7">// source$.value = 100;</span>
+</code><button type="button">Copy</button></pre>
+
+          <h3 id="reactive-collections-" class="tsd-anchor-link">
+            Reactive Collections (<code>reactiveList</code>
+            / <code>reactiveMap</code> / <code>reactiveSet</code>)<a
+              href="#reactive-collections-"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <p>
+            Reactive collections provide tracked reads, a <code>.$</code> <code>Readable</code> representing the
+            collection itself, and <code>onDisposeValue</code> to clean up owned items when they are removed,
+            overwritten, cleared, or when the collection is disposed:
+          </p>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">derived</span><span class="hl-1">, </span><span class="hl-4">reactiveList</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">todos</span><span class="hl-1"> = </span><span class="hl-0">reactiveList</span><span class="hl-1">([</span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;Learn @embra/reactivity&quot;</span><span class="hl-1">)]);</span><br/><br/><span class="hl-7">// `.get(index)` is tracked inside computed/watch; `.$` can be passed to derived/subscribe</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count$</span><span class="hl-1"> = </span><span class="hl-0">derived</span><span class="hl-1">(</span><span class="hl-4">todos</span><span class="hl-1">.</span><span class="hl-4">$</span><span class="hl-1">, (</span><span class="hl-4">list</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">list</span><span class="hl-1">.</span><span class="hl-4">length</span><span class="hl-1">);</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">stopCleanup</span><span class="hl-1"> = </span><span class="hl-4">todos</span><span class="hl-1">.</span><span class="hl-0">onDisposeValue</span><span class="hl-1">((</span><span class="hl-4">item</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">item</span><span class="hl-1">.</span><span class="hl-0">dispose</span><span class="hl-1">();</span><br/><span class="hl-1">});</span><br/><br/><span class="hl-4">todos</span><span class="hl-1">.</span><span class="hl-0">push</span><span class="hl-1">(</span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;Build an app&quot;</span><span class="hl-1">));</span><br/><span class="hl-4">todos</span><span class="hl-1">.</span><span class="hl-0">shift</span><span class="hl-1">(); </span><span class="hl-7">// Automatically disposes the removed writable via onDisposeValue</span><br/><br/><span class="hl-0">stopCleanup</span><span class="hl-1">();</span>
+</code><button type="button">Copy</button></pre>
+
+          <p>
+            <code>reactiveMap</code>
+            and <code>reactiveSet</code> follow the same pattern with <code>.$</code> and <code>onDisposeValue</code>.
+          </p>
+          <h2 id="react-integration-" class="tsd-anchor-link">
+            React Integration (<code>@embra/reactivity/react</code>)<a
+              href="#react-integration-"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <p>
+            Use <code>useValue()</code> to subscribe a component to a <code>Readable</code> (defaults to
+            <code>sync: true</code> so controlled inputs and immediate UI updates stay in sync), or
+            <code>&lt;Reactive&gt;</code> to isolate re-renders to a small subtree:
+          </p>
+          <pre
+          ><code class="tsx"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">Reactive</span><span class="hl-1">, </span><span class="hl-4">useValue</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity/react&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-5">function</span><span class="hl-1"> </span><span class="hl-0">Counter</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count</span><span class="hl-1"> = </span><span class="hl-0">useValue</span><span class="hl-1">(</span><span class="hl-4">count$</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> </span><span class="hl-10">&lt;</span><span class="hl-11">button</span><span class="hl-1"> </span><span class="hl-12">onClick</span><span class="hl-1">=</span><span class="hl-5">{</span><span class="hl-8">() </span><span class="hl-5">=&gt;</span><span class="hl-8"> </span><span class="hl-4">count$</span><span class="hl-8">.</span><span class="hl-0">set</span><span class="hl-8">(</span><span class="hl-4">count</span><span class="hl-8"> </span><span class="hl-1">+</span><span class="hl-8"> </span><span class="hl-9">1</span><span class="hl-8">)</span><span class="hl-5">}</span><span class="hl-10">&gt;</span><span class="hl-5">{</span><span class="hl-4">count</span><span class="hl-5">}</span><span class="hl-10">&lt;/</span><span class="hl-11">button</span><span class="hl-10">&gt;</span><span class="hl-1">;</span><br/><span class="hl-1">}</span><br/><br/><span class="hl-5">function</span><span class="hl-1"> </span><span class="hl-0">IsolatedCounter</span><span class="hl-1">() {</span><br/><span class="hl-1">  </span><span class="hl-3">return</span><span class="hl-1"> (</span><br/><span class="hl-1">    </span><span class="hl-10">&lt;</span><span class="hl-11">div</span><span class="hl-10">&gt;</span><br/><span class="hl-1">      </span><span class="hl-10">&lt;</span><span class="hl-13">Reactive</span><span class="hl-10">&gt;</span><span class="hl-5">{</span><span class="hl-8">() </span><span class="hl-5">=&gt;</span><span class="hl-8"> </span><span class="hl-10">&lt;</span><span class="hl-11">span</span><span class="hl-10">&gt;</span><span class="hl-8">Count: </span><span class="hl-5">{</span><span class="hl-4">count$</span><span class="hl-8">.</span><span class="hl-4">value</span><span class="hl-5">}</span><span class="hl-10">&lt;/</span><span class="hl-11">span</span><span class="hl-10">&gt;</span><span class="hl-5">}</span><span class="hl-10">&lt;/</span><span class="hl-13">Reactive</span><span class="hl-10">&gt;</span><br/><span class="hl-1">    </span><span class="hl-10">&lt;/</span><span class="hl-11">div</span><span class="hl-10">&gt;</span><br/><span class="hl-1">  );</span><br/><span class="hl-1">}</span>
+</code><button type="button">Copy</button></pre>
+
+          <p>
+            Additional hooks exported by <code>@embra/reactivity/react</code>: <code>useWritable</code>,
+            <code>useReadable</code>, <code>useComputed</code>, <code>useComputedValue</code>, <code>useDerived</code>,
+            <code>useDerivedValue</code>, and <code>useWatch</code>. See the
+            <a href="https://embrajs.github.io/reactivity">API Reference</a> for details.
+          </p>
+          <h2 id="debugging-" class="tsd-anchor-link">
+            Debugging (<code>@embra/reactivity/debug</code>)<a
+              href="#debugging-"
+              aria-label="Permalink"
+              class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <p>
+            <code>@embra/reactivity/debug</code>
+            emits structured snapshots and deterministic plain-text timelines (timestamps are off by default in
+            <code>record()</code>), allowing both test suites and AI agents to inspect reactive graphs without a browser
+            UI. For interactive browser debugging, <code>customFormatter()</code> registers a Chrome DevTools custom
+            object formatter.
+          </p>
+          <pre
+          ><code class="ts"><span class="hl-3">import</span><span class="hl-1"> { </span><span class="hl-4">computed</span><span class="hl-1">, </span><span class="hl-4">writable</span><span class="hl-1"> } </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity&quot;</span><span class="hl-1">;</span><br/><span class="hl-3">import</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">customFormatter</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">formatTree</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">getDependencyTree</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">inspect</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">record</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">spy</span><span class="hl-1">,</span><br/><span class="hl-1">  </span><span class="hl-4">trace</span><span class="hl-1">,</span><br/><span class="hl-1">} </span><span class="hl-3">from</span><span class="hl-1"> </span><span class="hl-2">&quot;@embra/reactivity/debug&quot;</span><span class="hl-1">;</span><br/><br/><span class="hl-7">// Enable Chrome DevTools custom object formatter</span><br/><span class="hl-0">customFormatter</span><span class="hl-1">();</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">a$</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">, { </span><span class="hl-4">name:</span><span class="hl-1"> </span><span class="hl-2">&quot;a&quot;</span><span class="hl-1"> });</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">b$</span><span class="hl-1"> = </span><span class="hl-0">computed</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">a$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> * </span><span class="hl-9">2</span><span class="hl-1">, { </span><span class="hl-4">name:</span><span class="hl-1"> </span><span class="hl-2">&quot;b&quot;</span><span class="hl-1"> });</span><br/><br/><span class="hl-7">// Non-intrusive snapshot (does not trigger computation or tracking)</span><br/><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-0">inspect</span><span class="hl-1">(</span><span class="hl-4">b$</span><span class="hl-1">));</span><br/><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-0">formatTree</span><span class="hl-1">(</span><span class="hl-0">getDependencyTree</span><span class="hl-1">(</span><span class="hl-4">b$</span><span class="hl-1">)));</span><br/><br/><span class="hl-7">// Trace a specific node or spy on all graph activity (dev build only; no-ops in prod)</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">untrace</span><span class="hl-1"> = </span><span class="hl-0">trace</span><span class="hl-1">(</span><span class="hl-4">b$</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">unspy</span><span class="hl-1"> = </span><span class="hl-0">spy</span><span class="hl-1">({ </span><span class="hl-4">filter:</span><span class="hl-1"> </span><span class="hl-2">&quot;b&quot;</span><span class="hl-1"> });</span><br/><br/><span class="hl-7">// Record events and stats during an action</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">result</span><span class="hl-1"> = </span><span class="hl-0">record</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">a$</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1"> = </span><span class="hl-9">2</span><span class="hl-1">;</span><br/><span class="hl-1">});</span><br/><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">result</span><span class="hl-1">.</span><span class="hl-4">text</span><span class="hl-1">, </span><span class="hl-4">result</span><span class="hl-1">.</span><span class="hl-4">stats</span><span class="hl-1">);</span><br/><br/><span class="hl-0">untrace</span><span class="hl-1">();</span><br/><span class="hl-0">unspy</span><span class="hl-1">();</span>
+</code><button type="button">Copy</button></pre>
+
+          <h2 id="design-contracts" class="tsd-anchor-link">
+            Design Contracts<a href="#design-contracts" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <ul>
+            <li>
+              <strong
+                ><code>computed</code>, <code>derived</code>, and <code>equal</code> callbacks must be read-only</strong
+              >: Do not write to reactive state inside derivations or equality comparators.
+            </li>
+            <li><strong>Acyclic dependency graph</strong>: Cycles throw immediately when detected.</li>
+            <li>
+              <strong>Fail-fast batching</strong>: Errors thrown in computations, comparators, effects, or
+              <code>batch()</code> abort the current batch/flush; dispose and recreate affected nodes and effects rather
+              than reusing a failed graph.
+            </li>
+            <li><strong>No writes after disposal</strong>: Never write to a disposed source node or collection.</li>
+          </ul>
+          <h2 id="documentation" class="tsd-anchor-link">
+            Documentation<a href="#documentation" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h2>
+          <p>
+            Full API documentation is available at
+            <a href="https://embrajs.github.io/reactivity">embrajs.github.io/reactivity</a>.
+          </p>
           <h2 id="license" class="tsd-anchor-link">
             License<a href="#license" aria-label="Permalink" class="tsd-anchor-icon"
               ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
@@ -141,7 +387,65 @@
               <a href="#embrareactivity"><span>@embra/reactivity</span></a>
               <ul>
                 <li>
+                  <a href="#features"><span>Features</span></a>
+                </li>
+                <li>
                   <a href="#install"><span>Install</span></a>
+                </li>
+                <li>
+                  <a href="#quick-start"
+                    ><span>Quick <wbr>Start</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#core-concepts"
+                    ><span>Core <wbr>Concepts</span></a
+                  >
+                </li>
+                <li>
+                  <ul>
+                    <li>
+                      <a href="#state-encapsulation---"
+                        ><span>State &amp; <wbr>Encapsulation ( / )</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#derived-state-"
+                        ><span>Derived <wbr>State ( / )</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#effects-subscriptions-scheduling-----"
+                        ><span>Effects, <wbr>Subscriptions &amp; <wbr>Scheduling ( / / )</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#ownership-lifecycle-"
+                        ><span>Ownership &amp; <wbr>Lifecycle ()</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="#reactive-collections-"
+                        ><span>Reactive <wbr>Collections ( / / )</span></a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#react-integration-"
+                    ><span>React <wbr>Integration ()</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#debugging-"><span>Debugging ()</span></a>
+                </li>
+                <li>
+                  <a href="#design-contracts"
+                    ><span>Design <wbr>Contracts</span></a
+                  >
+                </li>
+                <li>
+                  <a href="#documentation"><span>Documentation</span></a>
                 </li>
                 <li>
                   <a href="#license"><span>License</span></a>
