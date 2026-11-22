@@ -80,8 +80,24 @@ describe("spy", () => {
     ]);
 
     const computeEvents = events.filter((e) => e.type === "compute-end");
-    expect(computeEvents[0]).toMatchObject({ prevValue: 2, nextValue: 4, changed: true });
-    expect(computeEvents[1]).toMatchObject({ prevValue: true, nextValue: true, changed: false });
+    expect(computeEvents[0]).toMatchObject({
+      prevValue: 2,
+      nextValue: 4,
+      changed: true,
+      cause: { source: count$, prevValue: 1, nextValue: 2 },
+    });
+    expect(computeEvents[1]).toMatchObject({
+      prevValue: true,
+      nextValue: true,
+      changed: false,
+      cause: { source: count$, prevValue: 1, nextValue: 2 },
+    });
+    expect(events.find((e) => e.type === "subscribe")).toMatchObject({
+      cause: { source: count$, prevValue: 1, nextValue: 2 },
+    });
+    expect(events.find((e) => e.type === "effect-end")).toMatchObject({
+      cause: { source: count$, prevValue: 1, nextValue: 2 },
+    });
 
     // Async flush
     events.length = 0;
@@ -282,7 +298,7 @@ describe("spy", () => {
     stopFlat();
 
     expect(flatLogger.calls.some((c) => c.startsWith("group:"))).toBe(false);
-    expect(flatLogger.calls.some((c) => c.includes("set writable:"))).toBe(true);
+    expect(flatLogger.calls.some((c) => /set writable@[0-9a-f]{4}:/.test(c))).toBe(true);
     expect(flatLogger.calls.some((c) => c.includes("dispose"))).toBe(true);
     expect(flatLogger.calls.some((c) => c.startsWith("error:"))).toBe(true);
   });

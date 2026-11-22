@@ -9,6 +9,12 @@ export {
   type NodeSnapshot,
 } from "./inspect";
 export {
+  type RecordOptions,
+  type RecordResult,
+  type RecordStats,
+  record,
+} from "./record";
+export {
   type SpyCause,
   type SpyConsoleOptions,
   type SpyEvent,

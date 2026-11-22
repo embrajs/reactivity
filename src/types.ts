@@ -121,6 +121,12 @@ export interface Readable<T = any> {
    * additional callback for existing subscribers.
    */
   subscribe(fn: Subscriber<T>, options?: SubscribeOptions): Cleanup;
+  /** Returns the JSON representation of the current value. */
+  toJSON(key?: string): unknown;
+  /** Returns the string representation of the current value. */
+  toString(): string;
+  /** Returns the current primitive value. */
+  valueOf(): T;
 }
 
 /**

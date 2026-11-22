@@ -166,9 +166,30 @@ describe("inspect", () => {
     expect(obsTree.children.length).toBe(2);
 
     const formattedDep = formatTree(depTree);
-    expect(formattedDep).toContain("derived(c) = 3 [subs:2]");
+    expect(formattedDep).toContain("derived(c) = 3 [sync:1, async:1]");
     expect(formattedDep).toContain("├─ writable(a) = 1");
     expect(formattedDep).toContain("└─ computed(b) = 2");
+
+    // Direct target overload and invalid target
+    expect(formatTree(c$)).toBe(formattedDep);
+    expect(formatTree(a$, "subs")).toBe(formatTree(getObserverTree(a$)!));
+    expect(formatTree(null)).toBe("");
+
+    // compute_.name fallback and stable 4-hex handles for anonymous nodes
+    const namedFnComputed$ = computed(function calcTotal() {
+      return a$.get();
+    });
+    expect(inspect(namedFnComputed$)?.name).toBe("calcTotal");
+    expect(formatTree(namedFnComputed$)).toContain("computed(calcTotal)");
+
+    const anon1$ = writable(1);
+    const anon2$ = writable(2);
+    const tree1 = formatTree(anon1$);
+    const tree2 = formatTree(anon1$);
+    const tree3 = formatTree(anon2$);
+    expect(tree1).toMatch(/^writable@[0-9a-f]{4} = 1$/);
+    expect(tree1).toBe(tree2);
+    expect(tree3).toMatch(/^writable@[0-9a-f]{4} = 2$/);
 
     // Mark dirty & pending to cover tree status tags and various value summaries
     a$.set(2);
@@ -208,7 +229,7 @@ describe("inspect", () => {
 
     const list = reactiveList([1]);
     const stopListSub = list.$.subscribe(() => {});
-    expect(formatTree(getObserverTree(list)!)).toContain("list = Array(1)");
+    expect(formatTree(getObserverTree(list)!)).toMatch(/list@[0-9a-f]{4} = Array\(1\)/);
     stopListSub();
 
     stopWatch();

@@ -2,7 +2,7 @@ import type { Source } from "../node";
 import { isReadable } from "../reactivity";
 import { type DevSpyEvent, NOOP_, runtime } from "../runtime";
 import type { Cleanup } from "../types";
-import { getNodeKind, getNodeName, isReactiveCollection, type ReactiveCollectionInternal } from "./inspect";
+import { formatNodeLabel, getNodeName, isReactiveCollection, type ReactiveCollectionInternal } from "./inspect";
 
 let devOnlyWarned = false;
 
@@ -46,11 +46,12 @@ export type SpyEvent =
       nextValue: unknown;
       changed: boolean;
       duration: number;
+      cause?: SpyCause;
       error?: unknown;
     }
   | { type: "effect-start"; node: unknown }
-  | { type: "effect-end"; node: unknown; duration: number; error?: unknown }
-  | { type: "subscribe"; node: unknown; value: unknown; sync: boolean; count: number }
+  | { type: "effect-end"; node: unknown; duration: number; cause?: SpyCause; error?: unknown }
+  | { type: "subscribe"; node: unknown; value: unknown; sync: boolean; count: number; cause?: SpyCause }
   | { type: "dispose"; node: unknown };
 
 /**
@@ -170,6 +171,7 @@ function dispatchSpyEvent(raw: DevSpyEvent): void {
     event = raw;
   } else if (raw.type === "compute-end") {
     const frame = startStack.pop()!;
+    const cause = getSpyCause(raw.node);
     event = {
       type: "compute-end",
       node: raw.node,
@@ -177,6 +179,7 @@ function dispatchSpyEvent(raw: DevSpyEvent): void {
       nextValue: raw.nextValue,
       changed: raw.changed,
       duration: performance.now() - frame.startTime,
+      ...(cause !== undefined ? { cause } : {}),
       ...(raw.error !== undefined ? { error: raw.error } : {}),
     };
   } else if (raw.type === "effect-start") {
@@ -184,11 +187,19 @@ function dispatchSpyEvent(raw: DevSpyEvent): void {
     event = raw;
   } else if (raw.type === "effect-end") {
     const frame = startStack.pop()!;
+    const cause = getSpyCause(raw.node);
     event = {
       type: "effect-end",
       node: raw.node,
       duration: performance.now() - frame.startTime,
+      ...(cause !== undefined ? { cause } : {}),
       ...(raw.error !== undefined ? { error: raw.error } : {}),
+    };
+  } else if (raw.type === "subscribe") {
+    const cause = getSpyCause(raw.node);
+    event = {
+      ...raw,
+      ...(cause !== undefined ? { cause } : {}),
     };
   } else {
     if (raw.type === "set" && raw.changed) {
@@ -203,12 +214,6 @@ function dispatchSpyEvent(raw: DevSpyEvent): void {
     }
     entry.fn(event);
   }
-}
-
-function formatNodeLabel(target: unknown): string {
-  const kind = getNodeKind(target) ?? "node";
-  const name = getNodeName(target);
-  return name ? `${kind}(${name})` : kind;
 }
 
 function createConsoleListener(options?: SpyConsoleOptions): SpyListener {
@@ -333,9 +338,13 @@ function createConsoleListener(options?: SpyConsoleOptions): SpyListener {
           openGroup(frame.label);
         }
         const time = `${event.duration.toFixed(2)}ms`;
-        const cause = getSpyCause(event.node);
-        if (cause !== undefined) {
-          logger.log(`triggered by ${formatNodeLabel(cause.source)}:`, cause.prevValue, "->", cause.nextValue);
+        if (event.cause !== undefined) {
+          logger.log(
+            `triggered by ${formatNodeLabel(event.cause.source)}:`,
+            event.cause.prevValue,
+            "->",
+            event.cause.nextValue,
+          );
         }
         if (event.error !== undefined) {
           logger.error(`threw (${time}):`, event.error);

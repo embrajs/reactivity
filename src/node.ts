@@ -116,6 +116,9 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   set: Setter<T>;
   dispose(): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
+  toJSON(key?: string): unknown;
+  toString(): string;
+  valueOf(): T;
   constructor(value: T, options?: ReadableOptions<T>);
 }
 
@@ -201,6 +204,9 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   compute_: ((...values: any[]) => T) | null;
   dispose(): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
+  toJSON(key?: string): unknown;
+  toString(): string;
+  valueOf(): T;
   constructor(compute: (...values: any[]) => T, options?: ReadableOptions<T>);
 }
 
@@ -241,6 +247,19 @@ ValueNode.prototype = ComputedNode.prototype = {
   },
 
   set: NOOP_,
+
+  toJSON(key?: string): unknown {
+    const value = this.get() as { toJSON?: (key?: string) => unknown } | null | undefined;
+    return typeof value?.toJSON === "function" ? value.toJSON(key) : value;
+  },
+
+  toString(): string {
+    return String(this.get());
+  },
+
+  valueOf(): any {
+    return this.get();
+  },
 
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup {
     const previousObserver = this.runtime_.currentObserver_;

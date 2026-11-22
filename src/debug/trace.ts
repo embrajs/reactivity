@@ -7,6 +7,7 @@ import { runtime } from "../runtime";
 import type { Cleanup, Readable } from "../types";
 import {
   collectObserverDeps,
+  formatNodeLabel,
   getCollectionSnapshot,
   getNodeKind,
   getNodeName,
@@ -93,23 +94,6 @@ const fnEntries = new WeakMap<(...args: never) => unknown, FnTraceEntry>();
 let activeNodeCount = 0;
 let nodeSpyCleanup: Cleanup | null = null;
 
-function formatDepLabel(dep: unknown, fallbackIndex: { value: number }, names: WeakMap<object, string>): string {
-  if (typeof dep === "object" && dep !== null && names.has(dep)) {
-    return names.get(dep)!;
-  }
-  const kind = getNodeKind(dep) ?? "unknown";
-  const rawName = getNodeName(dep);
-  const label = rawName || String(fallbackIndex.value++);
-  const formatted = `${kind}(${label})`;
-  if (typeof dep === "object" && dep !== null) {
-    names.set(dep, formatted);
-  }
-  return formatted;
-}
-
-const depLabelCache = new WeakMap<object, string>();
-const depFallbackIndex = { value: 1 };
-
 function diffDeps(oldDeps: Map<unknown, unknown>, currentDeps: Source[]): TraceDepDiff[] {
   const diffs: TraceDepDiff[] = [];
   const nextDeps = new Map<unknown, unknown>();
@@ -158,9 +142,8 @@ function logTraceEvent(event: TraceEvent, traceLocation: Error, config?: TraceCo
   }
 
   const openGroup = (config?.defaultExpand ?? true) ? console.group : console.groupCollapsed;
-  const headerName = event.name ? `(${event.name})` : "";
   const customName = config?.name ? `: ${config.name}` : "";
-  openGroup(`[embra] trace ${event.kind}${headerName}${customName}`);
+  openGroup(`[embra] trace ${formatNodeLabel(event.target)}${customName}`);
 
   if (config?.printStack ?? true) {
     console.groupCollapsed("trace location");
@@ -177,10 +160,8 @@ function logTraceEvent(event: TraceEvent, traceLocation: Error, config?: TraceCo
   }
 
   if (event.cause !== undefined) {
-    const causeName = getNodeName(event.cause.source);
-    const causeKind = getNodeKind(event.cause.source) ?? "source";
     console.log(
-      `triggered by ${causeKind}${causeName ? `(${causeName})` : ""}:`,
+      `triggered by ${formatNodeLabel(event.cause.source)}:`,
       event.cause.prevValue,
       "->",
       event.cause.nextValue,
@@ -194,7 +175,7 @@ function logTraceEvent(event: TraceEvent, traceLocation: Error, config?: TraceCo
   }
 
   for (const diff of event.deps) {
-    const label = formatDepLabel(diff.dep, depFallbackIndex, depLabelCache);
+    const label = formatNodeLabel(diff.dep);
     if (diff.status === "added") {
       console.log(`(+) ${label} ->`, diff.value);
     } else if (diff.status === "updated") {
@@ -244,7 +225,7 @@ function handleNodeEvent(spyEvent: SpyEvent): void {
     prevValue,
     ...(spyEvent.type === "compute-end" ? { duration: spyEvent.duration } : {}),
     ...(spyEvent.type === "compute-end" && spyEvent.error !== undefined ? { error: spyEvent.error } : {}),
-    ...(spyEvent.type === "compute-end" ? { cause: getSpyCause(target) } : {}),
+    ...(spyEvent.type === "compute-end" ? { cause: spyEvent.cause } : {}),
     deps,
   };
 

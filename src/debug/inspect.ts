@@ -113,12 +113,42 @@ export function getNodeKind(target: unknown): NodeKind | null {
 /** @internal */
 export function getNodeName(target: unknown): string {
   if (isReadable(target)) {
-    return (target as Source).name || "";
+    const source = target as Source;
+    if (source.name) {
+      return source.name;
+    }
+    if ((source.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
+      return (source as ComputedNode).compute_?.name || "";
+    }
+    return "";
   }
   if (isWatchNode(target)) {
-    return (target as WatchNode).callback_.name || "";
+    const cb = (target as WatchNode).callback_;
+    return cb !== NOOP_ ? cb.name || "" : "";
   }
   return "";
+}
+
+const anonHandles = new WeakMap<object, string>();
+
+/** @internal */
+export function formatNodeLabel(target: unknown): string {
+  const kind = getNodeKind(target) ?? "node";
+  const name = getNodeName(target);
+  if (name) {
+    return `${kind}(${name})`;
+  }
+  if (typeof target === "object" && target !== null) {
+    let handle = anonHandles.get(target);
+    if (handle === undefined) {
+      handle = Math.floor(Math.random() * 0x10000)
+        .toString(16)
+        .padStart(4, "0");
+      anonHandles.set(target, handle);
+    }
+    return `${kind}@${handle}`;
+  }
+  return kind;
 }
 
 /** @internal */
@@ -225,7 +255,7 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
   const isComputed = kind === "computed" || kind === "derived";
   return {
     kind,
-    name: source.name || "",
+    name: getNodeName(source),
     value: source.value_,
     initialized: isComputed ? !!(flags & Flags.Initialized) : true,
     dirty: !!(flags & Flags.Dirty),
@@ -325,11 +355,13 @@ function formatTreeNode(node: GraphTreeNode, prefix: string, isLast: boolean, is
   if (node.disposed) {
     tags.push("disposed");
   }
-  const totalSubs = node.syncSubscriberCount + node.asyncSubscriberCount;
-  if (totalSubs > 0) {
-    tags.push(`subs:${totalSubs}`);
+  if (node.syncSubscriberCount > 0) {
+    tags.push(`sync:${node.syncSubscriberCount}`);
   }
-  const label = `${node.kind}${node.name ? `(${node.name})` : ""}`;
+  if (node.asyncSubscriberCount > 0) {
+    tags.push(`async:${node.asyncSubscriberCount}`);
+  }
+  const label = formatNodeLabel(node.node);
   const valuePart = node.kind === "watch" ? "" : ` = ${formatValueSummary(node.value)}`;
   const tagPart = tags.length > 0 ? ` [${tags.join(", ")}]` : "";
   const connector = isRoot ? "" : isLast ? "└─ " : "├─ ";
@@ -342,11 +374,27 @@ function formatTreeNode(node: GraphTreeNode, prefix: string, isLast: boolean, is
 }
 
 /**
- * Formats a {@link GraphTreeNode} into a human-readable ASCII tree string.
+ * Formats a {@link GraphTreeNode} or a reactive node/collection into a human-readable ASCII tree string.
  *
  * @category Debug
  */
-export function formatTree(tree: GraphTreeNode): string {
+export function formatTree(tree: GraphTreeNode): string;
+export function formatTree(target: unknown, direction?: "deps" | "subs"): string;
+export function formatTree(targetOrTree: unknown, direction: "deps" | "subs" = "deps"): string {
+  const isTree =
+    typeof targetOrTree === "object" &&
+    targetOrTree !== null &&
+    "children" in targetOrTree &&
+    "node" in targetOrTree &&
+    Array.isArray((targetOrTree as GraphTreeNode).children);
+  const tree = isTree
+    ? (targetOrTree as GraphTreeNode)
+    : direction === "subs"
+      ? getObserverTree(targetOrTree)
+      : getDependencyTree(targetOrTree);
+  if (tree === null) {
+    return "";
+  }
   const lines: string[] = [];
   formatTreeNode(tree, "", true, true, lines);
   return lines.join("\n");

@@ -33,6 +33,8 @@ export interface ReadonlyReactiveList<V> extends Iterable<V> {
   get(index: number): V | undefined;
   /** The backing array as a read-only view. Do not mutate it. */
   readonly array: readonly V[];
+  /** Returns the JSON representation of the list. */
+  toJSON(): readonly V[];
   /**
    * Subscribe synchronously to values removed, overwritten, cleared, or disposed.
    * Callbacks must not mutate the source list itself.
@@ -112,6 +114,11 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public get array(): readonly V[] {
+    trackCollection(this);
+    return this.items_;
+  }
+
+  public toJSON(): readonly V[] {
     trackCollection(this);
     return this.items_;
   }
