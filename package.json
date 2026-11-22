@@ -1,7 +1,7 @@
 {
   "name": "@embra/reactivity",
   "version": "0.1.0",
-  "description": "A lightweight, ownership-based, composable and explicit reactivity system.",
+  "description": "Fine-grained reactivity with explicit ownership, built for AI agents.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/embrajs/reactivity.git"
@@ -48,6 +48,8 @@
     "release": "commit-and-tag-version"
   },
   "keywords": [
+    "reactivity",
+    "signals",
     "observable",
     "react",
     "reactive",
