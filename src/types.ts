@@ -111,23 +111,73 @@ export interface SubscribeOptions {
  */
 export interface Readable<T = any> {
   [CONTRACT_SYMBOL]: CONTRACT_VERSION;
-  /** Current value. Reading inside {@link computed} or {@link watch} tracks this source as a dependency. */
+  /**
+   * Current value (shorthand for {@link get}).
+   *
+   * Reading inside {@link computed} or {@link watch} tracks this source as a
+   * dependency. Use {@link untrack} to read without tracking.
+   */
   readonly value: T;
-  /** Returns the current value. Tracks this source as a dependency when called inside {@link computed} or {@link watch}. */
+  /**
+   * Bound getter that returns the current value.
+   *
+   * Tracks this source as a dependency when called inside {@link computed} or
+   * {@link watch}. Safe to pass around without a receiver.
+   *
+   * @example
+   * ```ts
+   * const count = writable(0);
+   * const getCount = count.get;
+   * getCount(); // 0
+   * ```
+   */
   get(): T;
   /**
-   * Subscribes to value changes on this source.
+   * Subscribes to value changes on this source and returns a {@link Cleanup}
+   * function to unsubscribe.
    *
-   * Shares a consumed-value baseline and broadcast value with subscriptions to
-   * this source in the same scheduling mode. Joining pending work can cause an
-   * additional callback for existing subscribers.
+   * By default, delivers the current value immediately (`immediate: true`) and
+   * batches subsequent updates into a microtask (`sync: false`). Each
+   * subscription tracks its own consumed-value baseline and reads the latest
+   * value when its turn runs. Call `this.dispose()` inside `fn` to unsubscribe
+   * from within the callback.
+   *
+   * @example
+   * ```ts
+   * const count = writable(0);
+   * const stop = count.subscribe(
+   *   (value) => console.log(value),
+   *   { immediate: false },
+   * );
+   * count.set(1); // logs 1 in a microtask
+   * stop();
+   * ```
    */
   subscribe(fn: Subscriber<T>, options?: SubscribeOptions): Cleanup;
-  /** Returns the JSON representation of the current value. */
+  /**
+   * Returns the JSON representation of the current value (delegating to the
+   * value's own `toJSON(key)` if present), allowing `JSON.stringify(source)`
+   * to serialize the underlying value directly.
+   *
+   * Reads through {@link get}, so it tracks when called inside {@link computed}
+   * or {@link watch}.
+   */
   toJSON(key?: string): unknown;
-  /** Returns the string representation of the current value. */
+  /**
+   * Returns `String(this.get())`, allowing implicit string coercion such as
+   * template literals (`` `${source}` ``).
+   *
+   * Reads through {@link get}, so it tracks when called inside {@link computed}
+   * or {@link watch}.
+   */
   toString(): string;
-  /** Returns the current primitive value. */
+  /**
+   * Returns the current value via {@link get}, enabling primitive coercion in
+   * expressions.
+   *
+   * Reads through {@link get}, so it tracks when called inside {@link computed}
+   * or {@link watch}.
+   */
   valueOf(): T;
 }
 
@@ -137,10 +187,51 @@ export interface Readable<T = any> {
  * @category Primitives
  */
 export interface Writable<T = any> extends Readable<T> {
-  /** Current value. Assigning updates the value and notifies dependents if changed. */
+  /**
+   * Current value.
+   *
+   * Reading behaves like {@link get} and tracks inside {@link computed} or
+   * {@link watch}. Assigning delegates to {@link set}, updating the value and
+   * notifying dependents if changed according to the configured equality check.
+   */
   value: T;
-  /** Bound setter function that updates the value and notifies dependents if changed. */
+  /**
+   * Bound setter that writes a new value and notifies dependents if changed
+   * according to the configured equality check (`Object.is` by default).
+   *
+   * Safe to pass around without a receiver. Must not be called after
+   * {@link Owned.dispose | dispose()} or during {@link computed} / {@link derived}
+   * evaluation.
+   *
+   * @example
+   * ```ts
+   * const name = writable("");
+   * input.addEventListener("input", () => name.set(input.value));
+   * // Or pass directly as a callback:
+   * onChange(name.set);
+   * ```
+   */
   set: Setter<T>;
-  /** Updates the value by passing the current value (untracked) to `updater` and writing the returned value. */
+  /**
+   * Computes and writes the next value from the current value without tracking
+   * this source as a dependency.
+   *
+   * Delegates the write to {@link set}. Useful inside {@link watch} to update
+   * a value based on its previous value without creating a self-dependency.
+   * Explicit reads of other sources inside `updater` are still tracked.
+   *
+   * Defined on the prototype; call as a method (`source.update(...)`).
+   *
+   * @example
+   * ```ts
+   * const count = writable(0);
+   * const step = writable(1);
+   *
+   * watch(() => {
+   *   // Tracks `step`, but does not track `count`.
+   *   count.update((n) => n + step.get());
+   * });
+   * ```
+   */
   update(updater: (value: T) => T): void;
 }

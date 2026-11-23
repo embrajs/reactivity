@@ -24,17 +24,22 @@ export default defineConfig({
   },
   exports: [
     {
-      title: "core",
-      code: "export { readable, writable, computed, watch } from './src/reactivity.ts'",
+      title: "{ readable, writable, computed, watch } (core)",
+      code: "export { readable, writable, computed, watch } from './src'",
     },
     {
-      title: "collections",
-      code: "export * from './src/collections/index.ts'",
+      title: "{ reactiveList, reactiveMap, reactiveSet } (collections)",
+      code: "export { reactiveList, reactiveMap, reactiveSet } from './src/collections'",
       externals: ["../constants", "../reactivity", "../runtime"],
     },
     {
-      title: "react",
-      code: "export * from './src/react/index.ts'",
+      title: "{ derived, batch, flush, untrack, isReadable, isWritable }",
+      code: "export { derived, batch, flush, untrack, isReadable, isWritable } from './src'",
+      externals: ["./node", "./constants", "./runtime"],
+    },
+    {
+      title: "React Hooks and Components (@embra/reactivity/react)",
+      code: "export * from './src/react'",
       externals: ["@embra/reactivity", "react"],
     },
   ],
