@@ -87,7 +87,7 @@ describe("inspect", () => {
       value: undefined,
       initialized: false,
       dirty: true,
-      deps: [w$],
+      deps: [],
     });
     expect(computeSpy).not.toHaveBeenCalled();
 
@@ -98,6 +98,12 @@ describe("inspect", () => {
       initialized: true,
       dirty: false,
       value: 10,
+    });
+    expect(d$.get()).toBe(2);
+    expect(inspect(d$)).toMatchObject({
+      initialized: true,
+      dirty: false,
+      deps: [w$],
     });
   });
 
@@ -202,6 +208,7 @@ describe("inspect", () => {
     const str$ = writable("abc");
     const nullProto$ = writable(Object.create(null));
     const root$ = derived([fnVal$, anonFn$, arr$, map$, set$, obj$, str$, nullProto$], () => 0);
+    root$.get();
     const formattedValues = formatTree(getDependencyTree(root$)!);
     expect(formattedValues).toContain("[Function: namedFn]");
     expect(formattedValues).toContain("Array(2)");

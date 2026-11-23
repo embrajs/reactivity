@@ -1,5 +1,5 @@
 import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
-import { batch, ComputedNode, createLink, flush, runEffect, type Source, untrack, ValueNode, WatchNode } from "./node";
+import { batch, ComputedNode, flush, runEffect, untrack, ValueNode, WatchNode } from "./node";
 import { NOOP_ } from "./runtime";
 
 import type {
@@ -134,22 +134,22 @@ export function derived<R>(
   compute: (...values: any[]) => R,
   options?: ReadableOptions<R>,
 ): Owned<Readable<R>> {
-  const computed = new ComputedNode(compute, options);
-  computed.flags_ |= Flags.DepsStatic;
+  let fn: () => R;
   if (isReadable(sources)) {
-    computed.depHead_ = computed.depTail_ = createLink(sources as Source, computed);
+    fn = () => {
+      const value = sources.get();
+      return untrack(() => compute(value));
+    };
   } else {
-    for (const source of sources) {
-      const link = createLink(source as Source, computed);
-      if (computed.depTail_ !== null) {
-        computed.depTail_.depNext_ = link;
-      } else {
-        computed.depHead_ = link;
-      }
-      computed.depTail_ = link;
-    }
+    const deps = [...sources];
+    fn = () => {
+      const values = deps.map((dep) => dep.get());
+      return untrack(() => compute(...values));
+    };
   }
-  return computed;
+  const node = new ComputedNode(fn, options);
+  node.flags_ |= Flags.DepsStatic;
+  return node;
 }
 
 export type { WatchEffect };

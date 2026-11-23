@@ -86,7 +86,7 @@ interface Link extends ISubItem, IDepItem {
   value_: any;
 }
 
-export function createLink(source: Source, observer: Observer): Link {
+function createLink(source: Source, observer: Observer): Link {
   return {
     flags_: Flags.None,
     subNext_: null,
@@ -462,9 +462,7 @@ function releaseUnusedSource(source: Source): Link | null {
     const node = source as ComputedNode;
     node.flags_ = (flags | Flags.Dirty) & ~Flags.Connected;
     const deps = node.depHead_;
-    if (!(flags & Flags.DepsStatic)) {
-      node.depHead_ = node.depTail_ = null;
-    }
+    node.depHead_ = node.depTail_ = null;
     return deps;
   }
   return null;
@@ -559,21 +557,19 @@ function queueSource(source: Source, mode: Flags): void {
 }
 
 function queueSubscriptions(source: Source, changed: Flags): void {
-  if (source.flags_ & Flags.HasSubscriptions) {
-    const sync = source.syncSubscriptions_;
-    if (sync !== null) {
-      if (changed & Flags.Dirty) {
-        sync.flags_ |= Flags.Dirty;
-      }
-      queueSource(source, Flags.None);
+  const sync = source.syncSubscriptions_;
+  if (sync !== null) {
+    if (changed & Flags.Dirty) {
+      sync.flags_ |= Flags.Dirty;
     }
-    const async = source.asyncSubscriptions_;
-    if (async !== null) {
-      if (changed & Flags.Dirty) {
-        async.flags_ |= Flags.Dirty;
-      }
-      queueSource(source, Flags.QueueModeAsync);
+    queueSource(source, Flags.None);
+  }
+  const async = source.asyncSubscriptions_;
+  if (async !== null) {
+    if (changed & Flags.Dirty) {
+      async.flags_ |= Flags.Dirty;
     }
+    queueSource(source, Flags.QueueModeAsync);
   }
 }
 
@@ -591,7 +587,9 @@ function enqueueWatch(observer: WatchNode, flags: Flags): void {
 
 // A write confirms direct inputs. Descendants only need upstream validation.
 function propagate(source: ValueNode): void {
-  queueSubscriptions(source, Flags.Dirty);
+  if (source.flags_ & Flags.HasSubscriptions) {
+    queueSubscriptions(source, Flags.Dirty);
+  }
   let hasSingleWrite = false;
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
@@ -628,20 +626,27 @@ function markRepeatedWatchWrites(source: ValueNode): void {
 }
 
 function propagatePending(source: ComputedNode): void {
-  queueSubscriptions(source, Flags.None);
-  for (let link = source.subHead_; link !== null; link = link.subNext_) {
-    const observer = link.observer_;
-    const flags = observer.flags_;
-    if ((flags & Flags.KindMask) === Flags.KindComputedNode) {
-      observer.flags_ = flags | Flags.Pending;
-      if (!(flags & Flags.Pending)) {
-        propagatePending(observer as ComputedNode);
-      }
-    } else {
-      if (!(flags & Flags.Disposed)) {
+  top: while (true) {
+    if (source.flags_ & Flags.HasSubscriptions) {
+      queueSubscriptions(source, Flags.None);
+    }
+    for (let link = source.subHead_; link !== null; link = link.subNext_) {
+      const observer = link.observer_;
+      const flags = observer.flags_;
+      if ((flags & Flags.KindMask) === Flags.KindComputedNode) {
+        observer.flags_ = flags | Flags.Pending;
+        if (!(flags & Flags.Pending)) {
+          if (link.subNext_ === null) {
+            source = observer as ComputedNode;
+            continue top;
+          }
+          propagatePending(observer as ComputedNode);
+        }
+      } else if (!(flags & Flags.Disposed)) {
         queueSource(source, flags);
       }
     }
+    return;
   }
 }
 
@@ -674,27 +679,16 @@ function updateComputed(node: ComputedNode): void {
   }
   connectObserver(node);
   const previousObserver = runtime.currentObserver_;
-  const dynamic = !(node.flags_ & Flags.DepsStatic);
   node.flags_ |= Flags.Running;
   if (__DEV__) {
     runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
     runtime.__dev_spy?.({ type: "compute-start", node });
   }
   try {
-    if (dynamic) {
-      node.flags_ ^= Flags.TrackPhase;
-      node.depTail_ = null;
-      runtime.currentObserver_ = node;
-    } else {
-      runtime.currentObserver_ = null;
-    }
-    const compute = node.compute_!;
-    const first = node.depHead_;
-    const value = dynamic
-      ? compute()
-      : first !== null && first.depNext_ === null
-        ? compute(readSource(first.source_))
-        : callStatic(compute, first);
+    node.flags_ ^= Flags.TrackPhase;
+    node.depTail_ = null;
+    runtime.currentObserver_ = node;
+    const value = node.compute_!();
     // different() owns tracking isolation for custom equality callbacks.
     const equal = node.equal_;
     if (
@@ -735,25 +729,11 @@ function updateComputed(node: ComputedNode): void {
   } finally {
     node.flags_ = (node.flags_ | Flags.Initialized) & ~(Flags.Dirty | Flags.Pending | Flags.Running);
     runtime.currentObserver_ = previousObserver;
-    if (dynamic) {
-      trimDependencies(node);
-    }
+    trimDependencies(node);
     if (__DEV__) {
       runtime.__dev_currentComputation!--;
     }
   }
-}
-
-function callStatic(callback: (...values: any[]) => any, first: Link | null): any {
-  const second = first === null ? null : first.depNext_;
-  if (second !== null && second.depNext_ === null) {
-    return callback(readSource(first!.source_), readSource(second.source_));
-  }
-  const values = [];
-  for (let link = first; link !== null; link = link.depNext_) {
-    values.push(readSource(link.source_));
-  }
-  return callback(...values);
 }
 
 function runEffectCleanup(effect: WatchNode): void {
