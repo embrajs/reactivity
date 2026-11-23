@@ -30,11 +30,16 @@ export default defineConfig({
     {
       title: "{ reactiveList, reactiveMap, reactiveSet } (collections)",
       code: "export { reactiveList, reactiveMap, reactiveSet } from './src/collections'",
-      externals: ["../constants", "../reactivity", "../runtime"],
+      externals: ["../node", "../constants", "../reactivity", "../runtime"],
     },
     {
-      title: "{ derived, batch, flush, untrack, isReadable, isWritable }",
-      code: "export { derived, batch, flush, untrack, isReadable, isWritable } from './src'",
+      title: "{ derived, batch, isReadable, isWritable, untrack, flush }",
+      code: "export { derived, batch, isReadable, isWritable, untrack, flush } from './src'",
+      externals: ["./node", "./constants", "./runtime"],
+    },
+    {
+      title: "{ until, watch }",
+      code: "export { until, watch } from './src'",
       externals: ["./node", "./constants", "./runtime"],
     },
     {

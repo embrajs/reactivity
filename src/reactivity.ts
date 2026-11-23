@@ -202,3 +202,68 @@ export function watch(effect: WatchEffect, options?: WatchOptions): Cleanup {
   }
   return node.dispose;
 }
+
+/**
+ * Options for {@link until}.
+ *
+ * @category Effects & Scheduling
+ */
+export interface UntilOptions extends WatchOptions {
+  /** Optional `AbortSignal` to cancel waiting and reject with `signal.reason`. */
+  signal?: AbortSignal;
+}
+
+/**
+ * Waits until `predicate()` returns a truthy value and resolves with that value.
+ * Tracks reactive reads inside `predicate` via {@link watch}.
+ *
+ * Pass a source's bound {@link Readable.get | get} method directly to wait for
+ * a single source to become truthy.
+ *
+ * @example
+ * ```ts
+ * const user = writable<User | null>(null);
+ * const loaded = await until(user.get);
+ *
+ * const controller = new AbortController();
+ * await until(() => count.value >= 3, { signal: controller.signal });
+ * ```
+ *
+ * @category Effects & Scheduling
+ */
+export function until<T>(
+  predicate: () => T,
+  options?: UntilOptions,
+): Promise<Exclude<T, false | 0 | 0n | "" | null | undefined>> {
+  return new Promise((resolve, reject) => {
+    const signal = options?.signal;
+    if (signal?.aborted) {
+      return reject(signal.reason);
+    }
+
+    let stop: Cleanup | undefined;
+    const onAbort = () => {
+      stop?.();
+      reject(signal!.reason);
+    };
+    signal?.addEventListener("abort", onAbort, { once: true });
+
+    stop = watch(function () {
+      try {
+        const value = predicate();
+        if (!value) {
+          return;
+        }
+        resolve(value as Exclude<T, false | 0 | 0n | "" | null | undefined>);
+      } catch (error) {
+        reject(error);
+      }
+      signal?.removeEventListener("abort", onAbort);
+      this.dispose();
+    }, options);
+
+    if (signal?.aborted) {
+      stop();
+    }
+  });
+}
