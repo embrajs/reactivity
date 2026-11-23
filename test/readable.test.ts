@@ -20,6 +20,7 @@ describe("readable", () => {
 
     writableView.set(1);
     writableView.value = 2;
+    writableView.update((v) => v + 1);
     expect(source.get()).toBe(0);
 
     set(3);

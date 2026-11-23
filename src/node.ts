@@ -108,6 +108,7 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   value: T;
   get: () => T;
   set: Setter<T>;
+  update(updater: (value: T) => T): void;
   dispose(): void;
   [Symbol.dispose](): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
@@ -189,6 +190,7 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   __dev_disposed_at?: Error;
   get: () => T;
   set: (value: T) => void;
+  update(updater: (value: T) => T): void;
   depHead_: Link | null;
   // The confirmed tail during collection; the actual tail outside collection.
   depTail_: Link | null;
@@ -237,6 +239,10 @@ ValueNode.prototype = ComputedNode.prototype = {
   },
 
   set: NOOP_,
+
+  update(updater: (value: any) => any): void {
+    this.set(updater(this.value_));
+  },
 
   toJSON(key?: string): unknown {
     const value = this.get() as { toJSON?: (key?: string) => unknown } | null | undefined;

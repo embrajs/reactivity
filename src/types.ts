@@ -141,4 +141,6 @@ export interface Writable<T = any> extends Readable<T> {
   value: T;
   /** Bound setter function that updates the value and notifies dependents if changed. */
   set: Setter<T>;
+  /** Updates the value by passing the current value (untracked) to `updater` and writing the returned value. */
+  update(updater: (value: T) => T): void;
 }

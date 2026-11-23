@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { writable } from "../src";
+import { batch, computed, watch, writable } from "../src";
 
 async function tick() {
   await Promise.resolve();
@@ -523,5 +523,118 @@ describe("writable.value", () => {
     source.value = 1;
     source.dispose();
     expect(source.value).toBe(1);
+  });
+});
+
+describe("writable.update", () => {
+  it("is defined on the prototype rather than each instance", () => {
+    const a = writable(0);
+    const b = writable(1);
+    expect(Object.hasOwn(a, "update")).toBe(false);
+    expect(a.update).toBe(b.update);
+    expect(a.update).toBe(Object.getPrototypeOf(a).update);
+  });
+
+  it("updates based on the current value and notifies subscribers", async () => {
+    const source = writable(1);
+    const spy = vi.fn();
+    source.subscribe(spy);
+
+    source.update((v) => v + 1);
+    expect(source.get()).toBe(2);
+
+    source.update((v) => v * 10);
+    expect(source.get()).toBe(20);
+
+    await tick();
+    expect(spy.mock.calls).toEqual([[1], [20]]);
+  });
+
+  it("coalesces multiple updates inside batch", () => {
+    const source = writable(1);
+    const spy = vi.fn();
+    source.subscribe(spy, { sync: true, immediate: false });
+
+    batch(() => {
+      source.update((v) => v + 1);
+      source.update((v) => v + 2);
+      source.update((v) => v * 3);
+    });
+
+    expect(source.get()).toBe(12);
+    expect(spy.mock.calls).toEqual([[12]]);
+  });
+
+  it("does not track the updated source itself inside watch while tracking explicit gets", async () => {
+    const count = writable(0);
+    const step = writable(1);
+    const runs = vi.fn();
+
+    const stop = watch(() => {
+      runs(step.get());
+      count.update((v) => v + step.get());
+    });
+
+    expect(count.get()).toBe(1);
+    expect(runs.mock.calls).toEqual([[1]]);
+
+    count.set(10);
+    await tick();
+    expect(runs.mock.calls).toEqual([[1]]);
+
+    step.set(2);
+    await tick();
+    expect(count.get()).toBe(12);
+    expect(runs.mock.calls).toEqual([[1], [2]]);
+
+    stop();
+  });
+
+  it("respects equality configuration", () => {
+    const defaultEqual = writable(1);
+    const defaultSpy = vi.fn();
+    defaultEqual.subscribe(defaultSpy, { sync: true, immediate: false });
+
+    defaultEqual.update((v) => v);
+    expect(defaultSpy).not.toHaveBeenCalled();
+
+    const alwaysPropagate = writable(1, { equal: false });
+    const alwaysSpy = vi.fn();
+    alwaysPropagate.subscribe(alwaysSpy, { sync: true, immediate: false });
+
+    alwaysPropagate.update((v) => v);
+    expect(alwaysSpy.mock.calls).toEqual([[1]]);
+  });
+
+  it("leaves the stored value unchanged and does not notify when updater throws", () => {
+    const source = writable(5);
+    const spy = vi.fn();
+    source.subscribe(spy, { sync: true, immediate: false });
+
+    expect(() =>
+      source.update(() => {
+        throw new Error("boom");
+      }),
+    ).toThrow("boom");
+
+    expect(source.get()).toBe(5);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it("rejects updates after disposal and writes during computation in development", () => {
+    const source = writable(0);
+    const derivedValue = computed(() => {
+      source.update((v) => v + 1);
+      return 1;
+    });
+
+    expect(() => derivedValue.get()).toThrow("write during computation");
+    expect(source.get()).toBe(0);
+
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    source.dispose();
+    expect(() => source.update((v) => v + 1)).toThrow("disposed");
+    expect(log).toHaveBeenCalledWith("ValueNode disposed at:", expect.any(Error));
+    expect(source.get()).toBe(0);
   });
 });
