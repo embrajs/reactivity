@@ -433,25 +433,6 @@ function different(equal: Equality, previous: any, next: any): boolean {
   }
 }
 
-function connectObserver(observer: Observer): void {
-  if (!(observer.flags_ & Flags.Connected)) {
-    observer.flags_ |= Flags.Connected;
-    for (let link = observer.depHead_; link !== null; link = link.depNext_) {
-      subscribeLink(link);
-    }
-  }
-}
-
-function subscribeLink(link: Link): void {
-  const source = link.source_;
-  if (!(source.flags_ & Flags.Disposed)) {
-    appendSub(source, link);
-    if ((source.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
-      connectObserver(source as ComputedNode);
-    }
-  }
-}
-
 function releaseUnusedSource(source: Source): Link | null {
   const flags = source.flags_;
   if (
@@ -519,7 +500,7 @@ function trackDependency(source: Source, observer: Observer): void {
     } else {
       observer.depHead_ = link;
     }
-    subscribeLink(link);
+    appendSub(source, link);
   }
   link.flags_ = phase;
   observer.depTail_ = link;
@@ -677,9 +658,8 @@ function updateComputed(node: ComputedNode): void {
       return;
     }
   }
-  connectObserver(node);
   const previousObserver = runtime.currentObserver_;
-  node.flags_ |= Flags.Running;
+  node.flags_ |= Flags.Running | Flags.Connected;
   if (__DEV__) {
     runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
     runtime.__dev_spy?.({ type: "compute-start", node });
