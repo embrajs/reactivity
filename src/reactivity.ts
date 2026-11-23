@@ -1,4 +1,4 @@
-import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
+import { CONTRACT_SYMBOL, CONTRACT_VERSION, NodeFlags } from "./constants";
 import { batch, ComputedNode, flush, readSource, runEffect, type Source, untrack, ValueNode, WatchNode } from "./node";
 import { NOOP_, runtime } from "./runtime";
 
@@ -165,7 +165,7 @@ export function derived<R>(
     };
   }
   const node = new ComputedNode(fn, options);
-  node.flags_ |= Flags.DepsStatic;
+  node.flags_ |= NodeFlags.DepsStatic;
   return node;
 }
 
@@ -193,7 +193,7 @@ export interface WatchOptions {
  * @category Effects & Scheduling
  */
 export function watch(effect: WatchEffect, options?: WatchOptions): Cleanup {
-  const node = new WatchNode(effect, options?.sync ? Flags.None : Flags.QueueModeAsync);
+  const node = new WatchNode(effect, options?.sync ? NodeFlags.None : NodeFlags.QueueModeAsync);
   try {
     batch(() => runEffect(node));
   } catch (error) {

@@ -1,8 +1,9 @@
-import { Flags } from "../constants";
 import { batch } from "../reactivity";
 import type { Cleanup, Owned, Readable, Writable } from "../types";
 import {
   type BatchChannel,
+  CollectionFlags,
+  CollectionSubFlags,
   cancelDisposal,
   checkCollectionWrite,
   createCollectionSource,
@@ -77,7 +78,7 @@ export interface ReactiveSet<V> extends Set<V> {
 }
 
 class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveCollection {
-  public flags_: Flags;
+  public flags_: CollectionFlags;
   public source_: Owned<Writable<any>> | null;
   public cleanup_: BatchChannel<V> | null;
   public changed_: BatchChannel<V> | null;
@@ -85,7 +86,7 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
 
   public constructor(values?: Iterable<V> | null) {
     super();
-    this.flags_ = Flags.None;
+    this.flags_ = CollectionFlags.None;
     this.source_ = null;
     this.cleanup_ = null;
     this.changed_ = null;
@@ -101,11 +102,11 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
   }
 
   public onChanged(fn: (values: readonly V[]) => void): Cleanup {
-    return subscribeCollection(this, Flags.None, fn);
+    return subscribeCollection(this, CollectionSubFlags.None, fn);
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeCollection(this, Flags.Pending, fn);
+    return subscribeCollection(this, CollectionSubFlags.Batch, fn);
   }
 
   public dispose(): void {

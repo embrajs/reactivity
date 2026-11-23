@@ -18,7 +18,8 @@
     "enabled": true,
     "rules": {
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useLiteralEnumMembers": "off"
       },
       "suspicious": {
         "noRedeclare": "off",

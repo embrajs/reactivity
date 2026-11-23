@@ -1,13 +1,23 @@
-import { Flags } from "../constants";
+import { LinkFlags, NodeFlags } from "../constants";
 import type { ValueNode, WatchNode } from "../node";
 import { writable } from "../reactivity";
-import { NOOP_, runtime, syncQueue_ } from "../runtime";
+import { NOOP_, QueueFlags, runtime, syncQueue_ } from "../runtime";
 import type { Cleanup, EffectContext, Owned, Readable, Writable } from "../types";
+
+export enum CollectionFlags {
+  None = 0,
+  Disposed = 1 << 0,
+}
+
+export enum CollectionSubFlags {
+  None = 0,
+  Batch = 1 << 0,
+}
 
 export type BatchChannel<T = any> = Owned<Writable<T[]>> & ValueNode<T[]>;
 
 export interface ReactiveCollection {
-  flags_: Flags;
+  flags_: CollectionFlags;
   source_: Owned<Writable> | null;
   $: Readable;
   cleanup_: BatchChannel | null;
@@ -17,12 +27,16 @@ export interface ReactiveCollection {
 
 const SYNC_SUB = { sync: true, immediate: false } as const;
 
-export function subscribeCollection(collection: ReactiveCollection, flags: Flags, fn: (value: any) => void): Cleanup {
-  if (collection.flags_ & Flags.Disposed) {
+export function subscribeCollection(
+  collection: ReactiveCollection,
+  flags: CollectionSubFlags,
+  fn: (value: any) => void,
+): Cleanup {
+  if (collection.flags_ & CollectionFlags.Disposed) {
     return NOOP_;
   }
   const channel =
-    flags & Flags.Pending
+    flags & CollectionSubFlags.Batch
       ? (collection.cleanup_ ??= writable<any[]>([], { equal: false }) as BatchChannel)
       : (collection.changed_ ??= writable<any[]>([], { equal: false }) as BatchChannel);
   const items = channel.value_;
@@ -31,15 +45,15 @@ export function subscribeCollection(collection: ReactiveCollection, flags: Flags
   }
   return channel.subscribe(function (this: EffectContext) {
     const watchNode = this as unknown as WatchNode;
-    if (flags & Flags.Pending) {
-      for (let i = 0; i < items.length && !(watchNode.flags_ & Flags.Disposed); i++) {
+    if (flags & CollectionSubFlags.Batch) {
+      for (let i = 0; i < items.length && !(watchNode.flags_ & NodeFlags.Disposed); i++) {
         fn.call(this, items[i]);
       }
     } else {
       fn.call(this, items);
     }
     const next = watchNode.depHead_!.subNext_;
-    if (next === null || !(next.flags_ & Flags.Dirty)) {
+    if (next === null || !(next.flags_ & LinkFlags.Published)) {
       items.length = 0;
     }
   }, SYNC_SUB);
@@ -98,20 +112,22 @@ export function cancelDisposals<T>(channel: BatchChannel<T> | null, values: Iter
 
 export function createCollectionSource<T extends ReactiveCollection>(collection: T): Owned<Writable<T>> {
   const source = writable(collection, { equal: false });
-  if (collection.flags_ & Flags.Disposed) {
+  if (collection.flags_ & CollectionFlags.Disposed) {
     source.dispose();
   }
   return source;
 }
 
 export function trackCollection(collection: ReactiveCollection): void {
-  if (runtime.currentObserver_ !== null && !(collection.flags_ & Flags.Disposed)) {
+  if (runtime.currentObserver_ !== null && !(collection.flags_ & CollectionFlags.Disposed)) {
     collection.$.get();
   }
 }
 
 function pendingChannel(channel: BatchChannel | null | undefined): BatchChannel | null {
-  return hasChannelListeners(channel) && channel.value_.length > 0 && !(channel.flags_ & Flags.Dirty) ? channel : null;
+  return hasChannelListeners(channel) && channel.value_.length > 0 && !(channel.flags_ & NodeFlags.Dirty)
+    ? channel
+    : null;
 }
 
 export function notifyCollection(collection: ReactiveCollection): void {
@@ -126,11 +142,11 @@ export function notifyCollection(collection: ReactiveCollection): void {
   }
   const cleanup = pendingChannel(collection.cleanup_);
   const changed = pendingChannel(collection.changed_);
-  const rawSource = !(collection.flags_ & Flags.Disposed) ? (collection.source_ as ValueNode | null) : null;
+  const rawSource = !(collection.flags_ & CollectionFlags.Disposed) ? (collection.source_ as ValueNode | null) : null;
   const source =
     rawSource !== null &&
     rawSource.subHead_ !== null &&
-    (!(syncQueue_.flags_ & Flags.Running) || !(rawSource.flags_ & Flags.Dirty))
+    (!(syncQueue_.flags_ & QueueFlags.Running) || !(rawSource.flags_ & NodeFlags.Dirty))
       ? rawSource
       : null;
   if (cleanup === null && changed === null) {
@@ -138,7 +154,7 @@ export function notifyCollection(collection: ReactiveCollection): void {
   } else {
     const last = (source ?? changed ?? cleanup)!;
     const prev = syncQueue_.flags_;
-    syncQueue_.flags_ = prev | Flags.Running;
+    syncQueue_.flags_ = prev | QueueFlags.Running;
     if (cleanup !== null && cleanup !== last) {
       cleanup.set(cleanup.value_);
     }
@@ -151,7 +167,7 @@ export function notifyCollection(collection: ReactiveCollection): void {
 }
 
 export function checkCollectionWrite(collection: ReactiveCollection): void {
-  if (collection.flags_ & Flags.Disposed) {
+  if (collection.flags_ & CollectionFlags.Disposed) {
     if (collection.__dev_disposed_at) {
       console.error(`${collection.constructor.name.replace(/Impl$/, "")} disposed at:`, collection.__dev_disposed_at);
     }
@@ -163,8 +179,8 @@ export function checkCollectionWrite(collection: ReactiveCollection): void {
 }
 
 export function disposeCollection<V>(collection: ReactiveCollection, values: Iterable<V>): void {
-  if (!(collection.flags_ & Flags.Disposed)) {
-    collection.flags_ |= Flags.Disposed;
+  if (!(collection.flags_ & CollectionFlags.Disposed)) {
+    collection.flags_ |= CollectionFlags.Disposed;
     if (__DEV__) {
       collection.__dev_disposed_at = new Error();
       runtime.__dev_spy?.({ type: "dispose", node: collection });

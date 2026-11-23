@@ -1,7 +1,8 @@
-import { Flags } from "../constants";
 import type { Cleanup, Owned, Readable, Writable } from "../types";
 import {
   type BatchChannel,
+  CollectionFlags,
+  CollectionSubFlags,
   cancelDisposal,
   cancelDisposals,
   checkCollectionWrite,
@@ -78,14 +79,14 @@ export interface ReactiveList<V> extends ReadonlyReactiveList<V> {
 }
 
 class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
-  public flags_: Flags;
+  public flags_: CollectionFlags;
   public source_: Owned<Writable<any>> | null;
   public cleanup_: BatchChannel<V> | null;
   public items_: V[];
   public __dev_disposed_at?: Error;
 
   public constructor(values?: Iterable<V> | null) {
-    this.flags_ = Flags.None;
+    this.flags_ = CollectionFlags.None;
     this.source_ = null;
     this.cleanup_ = null;
     this.items_ = values ? [...values] : [];
@@ -96,7 +97,7 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeCollection(this, Flags.Pending, fn);
+    return subscribeCollection(this, CollectionSubFlags.Batch, fn);
   }
 
   public dispose(): void {

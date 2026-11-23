@@ -1,4 +1,4 @@
-import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
+import { CONTRACT_SYMBOL, CONTRACT_VERSION, NodeFlags } from "./constants";
 import type { Observer, Source, WatchNode } from "./node";
 
 export type QueueItem = Source | WatchNode;
@@ -12,9 +12,14 @@ declare global {
   }
 }
 
+export enum QueueFlags {
+  None = 0,
+  Running = 1 << 0,
+}
+
 interface RuntimeQueue {
   /** Running while a batch/flush is active, or an asynchronous flush is scheduled. */
-  flags_: Flags;
+  flags_: QueueFlags;
   items_: (QueueItem | undefined)[];
   head_: number;
   tail_: number;
@@ -47,8 +52,8 @@ export interface Runtime {
 export const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {
   NOOP_() {},
   currentObserver_: null,
-  syncQueue_: { flags_: Flags.None, items_: [], head_: 0, tail_: 0 },
-  asyncQueue_: { flags_: Flags.None, items_: [], head_: 0, tail_: 0 },
+  syncQueue_: { flags_: QueueFlags.None, items_: [], head_: 0, tail_: 0 },
+  asyncQueue_: { flags_: QueueFlags.None, items_: [], head_: 0, tail_: 0 },
 });
 
 export const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
@@ -56,7 +61,7 @@ export const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
 export function clearQueue(queue: RuntimeQueue): void {
   for (let i = queue.head_; i < queue.tail_; i++) {
     const item = queue.items_[i]!;
-    item.flags_ &= ~(Flags.QueuedSyncSource | Flags.QueuedAsyncSource);
+    item.flags_ &= ~(NodeFlags.QueuedSyncSource | NodeFlags.QueuedAsyncSource);
     queue.items_[i] = undefined;
   }
   queue.head_ = queue.tail_ = 0;

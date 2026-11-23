@@ -1,7 +1,8 @@
 import type { ReadonlyReactiveList } from "../collections/reactiveList";
 import type { ReadonlyReactiveMap } from "../collections/reactiveMap";
 import type { ReadonlyReactiveSet } from "../collections/reactiveSet";
-import { Flags } from "../constants";
+import { CollectionFlags } from "../collections/utils";
+import { NodeFlags } from "../constants";
 import type { ComputedNode, Observer, Source, ValueNode, WatchNode } from "../node";
 import { isReadable } from "../reactivity";
 import { NOOP_, runtime } from "../runtime";
@@ -56,7 +57,7 @@ export interface GraphTreeNode<TValue = any> {
 }
 
 export interface ReactiveCollectionInternal {
-  flags_: Flags;
+  flags_: CollectionFlags;
   source_: ValueNode | null;
   cleanup_: unknown;
   items_?: unknown[];
@@ -83,7 +84,7 @@ export function isWatchNode(target: unknown): target is WatchNode {
     target !== null &&
     !isReadable(target) &&
     typeof (target as WatchNode).flags_ === "number" &&
-    ((target as WatchNode).flags_ & Flags.KindMask) === Flags.KindSubscriberNode &&
+    Boolean((target as WatchNode).flags_ & NodeFlags.KindSubscriberNode) &&
     "depHead_" in target &&
     "callback_" in target
   );
@@ -93,11 +94,10 @@ export function isWatchNode(target: unknown): target is WatchNode {
 export function getNodeKind(target: unknown): NodeKind | null {
   if (isReadable(target)) {
     const node = target as Source;
-    const kind = node.flags_ & Flags.KindMask;
-    if (kind === Flags.KindValueNode) {
+    if (!(node.flags_ & NodeFlags.KindComputedNode)) {
       return node.set !== NOOP_ ? "writable" : "readable";
     }
-    return node.flags_ & Flags.DepsStatic ? "derived" : "computed";
+    return node.flags_ & NodeFlags.DepsStatic ? "derived" : "computed";
   }
   if (isWatchNode(target)) {
     return "watch";
@@ -121,7 +121,7 @@ export function getNodeName(target: unknown): string {
     if (source.name) {
       return source.name;
     }
-    if ((source.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
+    if (source.flags_ & NodeFlags.KindComputedNode) {
       return (source as ComputedNode).compute_?.name || "";
     }
     return "";
@@ -186,7 +186,10 @@ export function collectSourceSubs(source: Source): Observer[] {
   const subs: Observer[] = [];
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
-    if ((observer.flags_ & (Flags.KindMask | Flags.DepsStatic)) !== (Flags.KindSubscriberNode | Flags.DepsStatic)) {
+    if (
+      (observer.flags_ & (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)) !==
+      (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)
+    ) {
       subs.push(observer);
     }
   }
@@ -198,8 +201,9 @@ function countSubscribers(source: Source, async: boolean): number {
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const flags = link.observer_.flags_;
     if (
-      (flags & (Flags.KindMask | Flags.DepsStatic)) === (Flags.KindSubscriberNode | Flags.DepsStatic) &&
-      !!(flags & Flags.QueueModeAsync) === async
+      (flags & (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)) ===
+        (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic) &&
+      !!(flags & NodeFlags.QueueModeAsync) === async
     ) {
       count++;
     }
@@ -238,7 +242,7 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       pending: false,
       running: false,
       connected: source !== null && source.subHead_ !== null,
-      disposed: !!(collection.flags_ & Flags.Disposed),
+      disposed: !!(collection.flags_ & CollectionFlags.Disposed),
       disposedAt: collection.__dev_disposed_at ?? null,
       deps: [],
       subs: source !== null ? collectSourceSubs(source) : [],
@@ -256,9 +260,9 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       initialized: true,
       dirty: false,
       pending: false,
-      running: !!(watchNode.flags_ & Flags.Running),
-      connected: !!(watchNode.flags_ & Flags.Connected),
-      disposed: !!(watchNode.flags_ & Flags.Disposed),
+      running: !!(watchNode.flags_ & NodeFlags.Running),
+      connected: !!(watchNode.flags_ & NodeFlags.Connected),
+      disposed: !!(watchNode.flags_ & NodeFlags.Disposed),
       disposedAt: null,
       deps: collectObserverDeps(watchNode),
       subs: [],
@@ -274,12 +278,12 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
     kind,
     name: getNodeName(source),
     value: source.value_,
-    initialized: isComputed ? !!(flags & Flags.Initialized) : true,
-    dirty: !!(flags & Flags.Dirty),
-    pending: !!(flags & Flags.Pending),
-    running: !!(flags & Flags.Running),
-    connected: isComputed ? !!(flags & Flags.Connected) : source.subHead_ !== null,
-    disposed: !!(flags & Flags.Disposed),
+    initialized: isComputed ? !!(flags & NodeFlags.Initialized) : true,
+    dirty: !!(flags & NodeFlags.Dirty),
+    pending: !!(flags & NodeFlags.Pending),
+    running: !!(flags & NodeFlags.Running),
+    connected: isComputed ? !!(flags & NodeFlags.Connected) : source.subHead_ !== null,
+    disposed: !!(flags & NodeFlags.Disposed),
     disposedAt: source.__dev_disposed_at ?? null,
     deps: isComputed ? collectObserverDeps(source as ComputedNode) : [],
     subs: collectSourceSubs(source),

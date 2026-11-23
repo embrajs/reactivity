@@ -1,8 +1,9 @@
-import { Flags } from "../constants";
 import { batch } from "../reactivity";
 import type { Cleanup, Owned, Readable, Writable } from "../types";
 import {
   type BatchChannel,
+  CollectionFlags,
+  CollectionSubFlags,
   cancelDisposal,
   cancelDisposals,
   checkCollectionWrite,
@@ -81,7 +82,7 @@ export interface ReactiveMap<K, V> extends Map<K, V> {
 }
 
 class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, ReactiveCollection {
-  public flags_: Flags;
+  public flags_: CollectionFlags;
   public source_: Owned<Writable<any>> | null;
   public cleanup_: BatchChannel<V> | null;
   public changed_: BatchChannel<K> | null;
@@ -89,7 +90,7 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
 
   public constructor(entries?: Iterable<readonly [K, V]> | null) {
     super();
-    this.flags_ = Flags.None;
+    this.flags_ = CollectionFlags.None;
     this.source_ = null;
     this.cleanup_ = null;
     this.changed_ = null;
@@ -105,11 +106,11 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
   }
 
   public onChanged(fn: (keys: readonly K[]) => void): Cleanup {
-    return subscribeCollection(this, Flags.None, fn);
+    return subscribeCollection(this, CollectionSubFlags.None, fn);
   }
 
   public onDisposeValue(fn: (value: V) => void): Cleanup {
-    return subscribeCollection(this, Flags.Pending, fn);
+    return subscribeCollection(this, CollectionSubFlags.Batch, fn);
   }
 
   public dispose(): void {
