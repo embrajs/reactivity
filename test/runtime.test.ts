@@ -45,8 +45,8 @@ describe("shared runtime", () => {
     const source = second.writable(1);
     const hidden = first.writable(0);
     const tracked = second.writable(0);
-    const dynamic = first.computed(() => source.get() + 1);
-    const fixed = second.derived(dynamic, (value) => {
+    using dynamic = first.computed(() => source.get() + 1);
+    using fixed = second.derived(dynamic, (value) => {
       hidden.get();
       return value * 2;
     });
@@ -67,8 +67,6 @@ describe("shared runtime", () => {
       [6, 1],
     ]);
     stop();
-    fixed.dispose();
-    dynamic.dispose();
   });
 
   it("isolates subscription and cleanup reads across copies", () => {

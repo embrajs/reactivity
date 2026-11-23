@@ -90,7 +90,7 @@ describe("batch", () => {
 
   it("compares observed values only after a Watch misses multiple publications", async () => {
     const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
-    const source = writable({ id: 0 }, { equal });
+    using source = writable({ id: 0 }, { equal });
     const observe = vi.fn();
     const cleanup = vi.fn();
     const stops = [true, false].map((sync) =>
@@ -143,7 +143,6 @@ describe("batch", () => {
     for (const stop of stops) {
       stop();
     }
-    source.dispose();
   });
 
   it("delivers repeated values once when equality is disabled", () => {

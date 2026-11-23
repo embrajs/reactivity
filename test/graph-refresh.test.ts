@@ -5,7 +5,7 @@ it("refreshes a mixed DAG against an independent evaluator across batched branch
   const raw = [0, 1, 2, 3];
   let selected = false;
   const roots = raw.map((value) => writable(value));
-  const branch = writable(selected);
+  using branch = writable(selected);
   const nodes: Owned<Readable<number>>[] = [];
   const expected = () => {
     const values = [...raw];
@@ -81,7 +81,6 @@ it("refreshes a mixed DAG against an independent evaluator across batched branch
     for (const root of roots) {
       root.dispose();
     }
-    branch.dispose();
   }
 });
 
@@ -91,13 +90,13 @@ it.each([
   [true, false],
   [true, true],
 ])("keeps a queued computed lazy after its last watch leaves, sync=%s fixed=%s", async (sync, fixed) => {
-  const input = writable(0);
+  using input = writable(0);
   let calls = 0;
   const compute = (value: number) => {
     calls++;
     return value * 2;
   };
-  const output = fixed ? derived(input, compute) : computed(() => compute(input.get()));
+  using output = fixed ? derived(input, compute) : computed(() => compute(input.get()));
   const stop = watch(
     () => {
       output.get();
@@ -115,34 +114,26 @@ it.each([
     expect(calls).toBe(2);
   } finally {
     stop();
-    output.dispose();
-    input.dispose();
   }
 });
 
 it("consumes refreshed inputs once when a dirty parent reads a dirty child", () => {
-  const input = writable(0);
+  using input = writable(0);
   let childCalls = 0;
   let parentCalls = 0;
-  const child = computed(() => {
+  using child = computed(() => {
     childCalls++;
     return input.get() * 2;
   });
-  const parent = computed(() => {
+  using parent = computed(() => {
     parentCalls++;
     return input.get() + child.get();
   });
-  try {
-    expect(parent.get()).toBe(0);
-    expect(parent.get()).toBe(0);
-    input.set(1);
-    expect(parent.get()).toBe(3);
-    expect(parent.get()).toBe(3);
-    expect(childCalls).toBe(2);
-    expect(parentCalls).toBe(2);
-  } finally {
-    parent.dispose();
-    child.dispose();
-    input.dispose();
-  }
+  expect(parent.get()).toBe(0);
+  expect(parent.get()).toBe(0);
+  input.set(1);
+  expect(parent.get()).toBe(3);
+  expect(parent.get()).toBe(3);
+  expect(childCalls).toBe(2);
+  expect(parentCalls).toBe(2);
 });

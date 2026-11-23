@@ -3,7 +3,7 @@ import { computed, derived, type Owned, type Readable, watch, writable } from ".
 
 describe("deep dependency disconnection", () => {
   it.each([false, true])("disconnects a previously evaluated chain without recursive teardown, static=%s", (fixed) => {
-    const source = writable(0);
+    using source = writable(0);
     const nodes: Owned<Readable<number>>[] = [];
     let current: Owned<Readable<number>> = source;
     for (let i = 0; i < 6000; i++) {
@@ -35,6 +35,5 @@ describe("deep dependency disconnection", () => {
     for (const node of nodes) {
       node.dispose();
     }
-    source.dispose();
   });
 });

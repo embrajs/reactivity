@@ -60,17 +60,13 @@ it("reports the original disposal location when a computation writes a disposed 
   source.dispose();
   const original = (source as typeof source & DisposalDiagnostics).__dev_disposed_at;
   const log = vi.spyOn(console, "error").mockImplementation(() => {});
-  const output = computed(() => {
+  using output = computed(() => {
     source.set(1);
     return 0;
   });
-  try {
-    expect(() => output.get()).toThrow("disposed");
-    expect(log).toHaveBeenCalledWith("ValueNode disposed at:", original);
-    expect(source.get()).toBe(0);
-  } finally {
-    output.dispose();
-  }
+  expect(() => output.get()).toThrow("disposed");
+  expect(log).toHaveBeenCalledWith("ValueNode disposed at:", original);
+  expect(source.get()).toBe(0);
 });
 
 it("resolves development and default ESM conditional exports without process.env", () => {
@@ -134,13 +130,13 @@ describe("production mode behavior", () => {
       }),
     ).toThrow("prod-batch-err");
 
-    const source = writable(1);
-    const clamped = computed(() => (source.get() > 0 ? 1 : 0));
+    using source = writable(1);
+    using clamped = computed(() => (source.get() > 0 ? 1 : 0));
     expect(clamped.get()).toBe(1);
     source.set(2);
     expect(clamped.get()).toBe(1);
 
-    const broken = computed(() => {
+    using broken = computed(() => {
       if (source.get() > 2) {
         throw new Error("prod-compute-err");
       }
@@ -156,7 +152,7 @@ describe("production mode behavior", () => {
       }),
     ).toThrow("prod-watch-err");
 
-    const asyncSource = writable(0);
+    using asyncSource = writable(0);
     const seen: number[] = [];
     const stopSub = asyncSource.subscribe((v) => seen.push(v), { immediate: false });
     asyncSource.set(10);
@@ -164,9 +160,5 @@ describe("production mode behavior", () => {
     expect(seen).toEqual([10]);
 
     stopSub();
-    broken.dispose();
-    clamped.dispose();
-    source.dispose();
-    asyncSource.dispose();
   });
 });

@@ -318,31 +318,28 @@ describe("derived", () => {
 
   it.each([2, 4])("rejects writes from a fixed computation (%i inputs)", (count) => {
     const sources = Array.from({ length: count }, () => writable(0));
-    const value = derived(sources, (...values) => {
+    using value = derived(sources, (...values) => {
       sources[0]!.set(1);
       return values.reduce((sum, input) => sum + input, 0);
     });
     expect(() => value.get()).toThrow("write during computation");
     expect(sources[0]!.get()).toBe(0);
-    value.dispose();
   });
 
   it.each([2, 4])("rejects upstream writes before preparing fixed arguments (%i inputs)", (count) => {
     const first = writable(0);
     const trigger = writable(0);
-    const later = computed(() => {
+    using later = computed(() => {
       const input = trigger.get();
       if (input === 1) first.set(10);
       return input;
     });
     const padding = Array.from({ length: count - 2 }, () => writable(0));
-    const value = derived([first, ...padding, later], (...values) => values.reduce((sum, input) => sum + input, 0));
+    using value = derived([first, ...padding, later], (...values) => values.reduce((sum, input) => sum + input, 0));
     expect(value.get()).toBe(0);
     trigger.set(1);
     expect(() => value.get()).toThrow("write during computation");
     expect(first.get()).toBe(0);
-    value.dispose();
-    later.dispose();
   });
 
   describe("equality", () => {

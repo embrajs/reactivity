@@ -116,7 +116,7 @@ describe("failure boundaries", () => {
   });
 
   it("retains a source broadcast completed before a Watch cleanup throws", () => {
-    const source = writable(0);
+    using source = writable(0);
     const callback = vi.fn();
     const stopSecond = source.subscribe(callback, { sync: true, immediate: false });
     const stopFirst = watch(
@@ -132,7 +132,6 @@ describe("failure boundaries", () => {
     expect(callback.mock.calls).toEqual([[1]]);
     stopFirst();
     stopSecond();
-    source.dispose();
   });
 });
 
@@ -153,7 +152,7 @@ describe.each(factories)("$name failures", ({ create }) => {
   it.each(["computation", "equality"])(
     "preserves the published output and supports explicit rebuilding after %s fails",
     (kind) => {
-      const source = writable(0);
+      using source = writable(0);
       const error = new Error(kind);
       let failed = false;
       const build = () =>
@@ -183,18 +182,15 @@ describe.each(factories)("$name failures", ({ create }) => {
       output.dispose();
       input.dispose();
       expect(input.get()).toBe(0);
-      const frozen = derived(input, (value) => value + 10);
+      using frozen = derived(input, (value) => value + 10);
       expect(frozen.get()).toBe(10);
       failed = false;
-      const fresh = build();
+      using fresh = build();
       const stopFresh = fresh.subscribe(callback, { sync: true });
       source.set(2);
       expect(callback.mock.calls).toEqual([[1], [2], [4]]);
       expect(frozen.get()).toBe(10);
       stopFresh();
-      fresh.dispose();
-      frozen.dispose();
-      source.dispose();
     },
   );
 
@@ -205,8 +201,7 @@ describe.each(factories)("$name failures", ({ create }) => {
     expect(() => node.get()).toThrow("loop detected");
     node.dispose();
     expect(() => source.set(1)).not.toThrow();
-    const fresh = create(source, (value) => value + 1);
+    using fresh = create(source, (value) => value + 1);
     expect(fresh.get()).toBe(2);
-    fresh.dispose();
   });
 });

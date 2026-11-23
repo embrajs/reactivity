@@ -200,8 +200,8 @@ describe("source-owned subscriptions", () => {
     (fixed) => {
       const source = writable(0);
       const compute = vi.fn((value: number) => value + 1);
-      const first = fixed ? derived(source, compute) : computed(() => compute(source.get()));
-      const second = fixed ? derived(first, (value) => value + 1) : computed(() => first.get() + 1);
+      using first = fixed ? derived(source, compute) : computed(() => compute(source.get()));
+      using second = fixed ? derived(first, (value) => value + 1) : computed(() => first.get() + 1);
       const callback = vi.fn();
       const stopSub = second.subscribe(callback, { sync: true });
       const stopWatch = watch(
@@ -218,14 +218,12 @@ describe("source-owned subscriptions", () => {
       expect(compute).toHaveBeenCalledTimes(2);
       expect(second.get()).toBe(4);
       expect(compute).toHaveBeenCalledTimes(3);
-      second.dispose();
-      first.dispose();
     },
   );
 
   it("keeps pending async subscriptions after the last Watch is removed", async () => {
     const source = writable(0);
-    const output = computed(() => source.get() * 2);
+    using output = computed(() => source.get() * 2);
     const callback = vi.fn();
     const stopWatch = watch(
       () => {
@@ -239,16 +237,15 @@ describe("source-owned subscriptions", () => {
     await Promise.resolve();
     expect(callback.mock.calls).toEqual([[0], [2]]);
     stopSub();
-    output.dispose();
   });
 
   it("matches an independent evaluator over a mixed static/dynamic DAG", async () => {
     const a = writable(0),
       b = writable(0),
       toggle = writable(false);
-    const left = derived([a, b], (a, b) => (a + b) % 7);
-    const right = computed(() => (toggle.get() ? b.get() * 3 : a.get() * 2));
-    const out = derived([left, right], (left, right) => left + right);
+    using left = derived([a, b], (a, b) => (a + b) % 7);
+    using right = computed(() => (toggle.get() ? b.get() * 3 : a.get() * 2));
+    using out = derived([left, right], (left, right) => left + right);
     const seen: number[] = [];
     const stop = out.subscribe((value) => seen.push(value));
     let seed = 7;
@@ -270,9 +267,6 @@ describe("source-owned subscriptions", () => {
       expect(seen.at(-1)).toBe(out.get());
     }
     stop();
-    out.dispose();
-    right.dispose();
-    left.dispose();
   });
 
   it("does not retain callbacks registered on a frozen disposed source", async () => {

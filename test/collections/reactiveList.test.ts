@@ -28,11 +28,11 @@ describe("ReactiveList", () => {
 
   it("tracks length, get, array, and iteration", () => {
     const list = reactiveList([10, 20]);
-    const len = computed(() => list.length);
-    const first = computed(() => list.get(0));
-    const sum = computed(() => list.array.reduce((a, b) => a + b, 0));
-    const joined = computed(() => [...list].join("-"));
-    const fixed = derived(list.$, (a) => a.length);
+    using len = computed(() => list.length);
+    using first = computed(() => list.get(0));
+    using sum = computed(() => list.array.reduce((a, b) => a + b, 0));
+    using joined = computed(() => [...list].join("-"));
+    using fixed = derived(list.$, (a) => a.length);
     const watched: number[] = [];
     const stop = watch(() => void watched.push(list.length), { sync: true });
 
@@ -46,9 +46,6 @@ describe("ReactiveList", () => {
     expect([first.get(), sum.get()]).toEqual([5, 55]);
 
     stop();
-    for (const node of [len, first, sum, joined, fixed]) {
-      node.dispose();
-    }
   });
 
   it("set overwrites existing indices only", () => {

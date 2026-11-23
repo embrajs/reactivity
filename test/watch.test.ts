@@ -810,8 +810,8 @@ describe("watch", () => {
     });
 
     it("skips non-dirty sibling links during repeated watch writes in a batch", () => {
-      const source = writable(0);
-      const comp = computed(() => source.get() * 2);
+      using source = writable(0);
+      using comp = computed(() => source.get() * 2);
       const stopSub = comp.subscribe(() => {}, { sync: true, immediate: false });
       const seen: number[] = [];
       const stopWatch = watch(
@@ -830,13 +830,11 @@ describe("watch", () => {
       expect(comp.get()).toBe(4);
       stopWatch();
       stopSub();
-      comp.dispose();
-      source.dispose();
     });
 
     it("ignores a watch disposed mid-run when upstream pending propagates through a computed", () => {
-      const source = writable(0);
-      const comp = computed(() => source.get() * 2);
+      using source = writable(0);
+      using comp = computed(() => source.get() * 2);
       const seen: number[] = [];
       let stopWatch!: () => void;
       stopWatch = watch(
@@ -854,8 +852,6 @@ describe("watch", () => {
       source.set(1);
       expect(seen).toEqual([0, 2]);
       expect(comp.get()).toBe(4);
-      comp.dispose();
-      source.dispose();
     });
   });
 });

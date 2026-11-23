@@ -22,21 +22,21 @@ describe("ReactiveSet", () => {
 
   describe("automatic reactive tracking", () => {
     it("tracks has, size, and iterators in computed and watch", () => {
-      const set = reactiveSet<number>([1]);
-      const hasComputed = computed(() => set.has(2));
-      const sizeComputed = computed(() => set.size);
-      const keysComputed = computed(() => [...set.keys()].join(","));
-      const valuesComputed = computed(() => [...set.values()].reduce((s, n) => s + n, 0));
-      const entriesComputed = computed(() => [...set.entries()].map(([a, b]) => `${a}:${b}`).join(","));
-      const iterComputed = computed(() => [...set].join(","));
-      const forEachComputed = computed(() => {
+      using set = reactiveSet<number>([1]);
+      using hasComputed = computed(() => set.has(2));
+      using sizeComputed = computed(() => set.size);
+      using keysComputed = computed(() => [...set.keys()].join(","));
+      using valuesComputed = computed(() => [...set.values()].reduce((s, n) => s + n, 0));
+      using entriesComputed = computed(() => [...set.entries()].map(([a, b]) => `${a}:${b}`).join(","));
+      using iterComputed = computed(() => [...set].join(","));
+      using forEachComputed = computed(() => {
         let sum = 0;
         set.forEach((v) => {
           sum += v;
         });
         return sum;
       });
-      const staticDerived = derived(set.$, (s) => s.size);
+      using staticDerived = derived(set.$, (s) => s.size);
 
       expect(hasComputed.get()).toBe(false);
       expect(sizeComputed.get()).toBe(1);
@@ -68,15 +68,6 @@ describe("ReactiveSet", () => {
       expect(watched).toEqual([1, 2]);
 
       stopWatch();
-      hasComputed.dispose();
-      sizeComputed.dispose();
-      keysComputed.dispose();
-      valuesComputed.dispose();
-      entriesComputed.dispose();
-      iterComputed.dispose();
-      forEachComputed.dispose();
-      staticDerived.dispose();
-      set.dispose();
     });
   });
 

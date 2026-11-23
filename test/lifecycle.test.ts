@@ -33,11 +33,10 @@ describe.each([
 
   it("reads an input disposed before its first evaluation", () => {
     const source = writable(0);
-    const value = create(source, (input) => input + 1);
+    using value = create(source, (input) => input + 1);
     source.set(1);
     source.dispose();
     expect(value.get()).toBe(2);
-    value.dispose();
   });
 
   it("keeps an evaluated observer connected until it is disposed", async () => {
@@ -278,8 +277,8 @@ describe.each([
   it("rejects writes from a computed equality callback", () => {
     const source = writable(0);
     const other = writable(0);
-    const value = create(source, (input) => input);
-    const guarded = computed(() => value.get(), {
+    using value = create(source, (input) => input);
+    using guarded = computed(() => value.get(), {
       equal: (a, b) => {
         other.set(b);
         return a === b;
@@ -289,13 +288,11 @@ describe.each([
     source.set(1);
     expect(() => guarded.get()).toThrow("write during computation");
     expect(other.get()).toBe(0);
-    guarded.dispose();
-    value.dispose();
   });
 
   it("allows effect writes after a pure computation", () => {
     const source = writable(0);
-    const value = create(source, (input) => input * 2);
+    using value = create(source, (input) => input * 2);
     const seen: number[] = [];
     const stop = value.subscribe(
       (input) => {
@@ -307,7 +304,6 @@ describe.each([
     source.set(1);
     expect(seen).toEqual([0, 2, 4]);
     stop();
-    value.dispose();
   });
 });
 
