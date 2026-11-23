@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../../theme.js"></script>
     <style type='text/css'>
         .coverage-summary .sorter {
             background-image: url(../../sort-arrow-sprite.png);
@@ -19,6 +20,16 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
+        
+        <label class="theme-select quiet">
+            Theme
+            <select id="themeSelect" autocomplete="off">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="legacy">Legacy</option>
+            </select>
+        </label>
+
         <h1><a href="../../index.html">All files</a> / <a href="index.html">src/debug</a> inspect.ts</h1>
         <div class='clearfix'>
             
@@ -468,7 +479,19 @@
 <a name='L403'></a><a href='#L403'>403</a>
 <a name='L404'></a><a href='#L404'>404</a>
 <a name='L405'></a><a href='#L405'>405</a>
-<a name='L406'></a><a href='#L406'>406</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L406'></a><a href='#L406'>406</a>
+<a name='L407'></a><a href='#L407'>407</a>
+<a name='L408'></a><a href='#L408'>408</a>
+<a name='L409'></a><a href='#L409'>409</a>
+<a name='L410'></a><a href='#L410'>410</a>
+<a name='L411'></a><a href='#L411'>411</a>
+<a name='L412'></a><a href='#L412'>412</a>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -682,6 +705,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">110x</span>
 <span class="cline-any cline-yes">110x</span>
 <span class="cline-any cline-yes">110x</span>
@@ -873,10 +900,14 @@
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Flags } from "../constants";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { ReadonlyReactiveList } from "../collections/reactiveList";
+import type { ReadonlyReactiveMap } from "../collections/reactiveMap";
+import type { ReadonlyReactiveSet } from "../collections/reactiveSet";
+import { Flags } from "../constants";
 import type { ComputedNode, Observer, Source, ValueNode, WatchNode } from "../node";
 import { isReadable } from "../reactivity";
 import { NOOP_, runtime } from "../runtime";
+import type { Readable } from "../types";
 &nbsp;
 /**
  * Kind of reactive node or collection inspected by debug utilities.
@@ -890,10 +921,10 @@ export type NodeKind = "writable" | "readable" | "computed" | "derived" | "watch
  *
  * @category Debug
  */
-export interface NodeSnapshot {
+export interface NodeSnapshot&lt;TValue = any&gt; {
   kind: NodeKind;
   name: string;
-  value: unknown;
+  value: TValue;
   initialized: boolean;
   dirty: boolean;
   pending: boolean;
@@ -901,8 +932,8 @@ export interface NodeSnapshot {
   connected: boolean;
   disposed: boolean;
   disposedAt: Error | null;
-  deps: unknown[];
-  subs: unknown[];
+  deps: any[];
+  subs: any[];
   syncSubscriberCount: number;
   asyncSubscriberCount: number;
 }
@@ -912,11 +943,11 @@ export interface NodeSnapshot {
  *
  * @category Debug
  */
-export interface GraphTreeNode {
-  node: unknown;
+export interface GraphTreeNode&lt;TValue = any&gt; {
+  node: any;
   kind: NodeKind;
   name: string;
-  value: unknown;
+  value: TValue;
   dirty: boolean;
   pending: boolean;
   running: boolean;
@@ -1084,8 +1115,12 @@ function countSubscribers(source: Source, async: boolean): number {
  *
  * @category Debug
  */
-export function inspect(): NodeSnapshot | null;
-export function inspect(target: unknown): NodeSnapshot | null;
+export function inspect&lt;TValue = any&gt;(): NodeSnapshot&lt;TValue&gt; | null;
+export function inspect&lt;TValue&gt;(target: Readable&lt;TValue&gt;): NodeSnapshot&lt;TValue&gt; | null;
+export function inspect&lt;TValue&gt;(target: ReadonlyReactiveList&lt;TValue&gt;): NodeSnapshot&lt;TValue[]&gt; | null;
+export function inspect&lt;K, V&gt;(target: ReadonlyReactiveMap&lt;K, V&gt;): NodeSnapshot&lt;Map&lt;K, V&gt;&gt; | null;
+export function inspect&lt;TValue&gt;(target: ReadonlyReactiveSet&lt;TValue&gt;): NodeSnapshot&lt;Set&lt;TValue&gt;&gt; | null;
+export function inspect&lt;TValue = any&gt;(target: unknown): NodeSnapshot&lt;TValue&gt; | null;
 export function inspect(...args: unknown[]): NodeSnapshot | null {
   const node = args.length === 0 ? runtime.currentObserver_ : args[0];
   const kind = getNodeKind(node);
@@ -1285,7 +1320,7 @@ export function formatTree(targetOrTree: unknown, direction: "deps" | "subs" = "
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-23T11:23:56.842Z
+                at 2026-11-23T11:41:46.841Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

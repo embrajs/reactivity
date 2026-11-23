@@ -150,6 +150,7 @@
   color: var(--hl-13);
 }
 pre,
-code {
+code,
+math[display="block"] {
   background: var(--code-background);
 }
