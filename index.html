@@ -121,6 +121,7 @@
               agent diagnostics, with zero production overhead via package export conditions.
             </li>
           </ul>
+          <p><img src="https://embrajs.github.io/reactivity/assets/export-size.svg" alt="export size"></p>
           <h2 id="install" class="tsd-anchor-link">
             Install<a href="#install" aria-label="Permalink" class="tsd-anchor-icon"
               ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
@@ -142,7 +143,8 @@
                 <td><code>@embra/reactivity</code></td>
                 <td>
                   Core primitives (<code>writable</code>, <code>readable</code>, <code>computed</code>,
-                  <code>derived</code>, <code>watch</code>, <code>batch</code>) and reactive collections
+                  <code>derived</code>, <code>watch</code>, <code>batch</code>, <code>flush</code>,
+                  <code>untrack</code>) and reactive collections
                 </td>
               </tr>
               <tr>
@@ -227,7 +229,10 @@
               defaults to <code>true</code>).
             </li>
             <li>
-              Both run asynchronously in a microtask by default (<code>sync: false</code>). Inside either callback,
+              Both run asynchronously in a microtask by default (<code>sync: false</code>). Use <code>flush()</code> to
+              drain pending asynchronous (and synchronous) notifications immediately, or <code>untrack(fn)</code> (e.g.
+              <code>untrack(source$.get)</code>) to read values inside <code>computed()</code> or
+              <code>watch()</code> without subscribing to them. Inside either callback,
               <code>this.dispose()</code> disposes the current effect or subscription.
             </li>
           </ul>
@@ -245,9 +250,10 @@
           </h3>
           <p>
             Every <code>writable</code>, <code>readable</code>, <code>computed</code>, <code>derived</code>, and
-            reactive collection returns an <code>Owned&lt;T&gt;</code> with a <code>dispose()</code> method for explicit
-            lifecycle control when needed. <code>Owned&lt;T&gt;</code> is a zero-cost type-level boundary—passing a node
-            as <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> across module boundaries hides
+            reactive collection returns an <code>Owned&lt;T&gt;</code> with a <code>dispose()</code> method (and
+            <code>[Symbol.dispose]</code> for <code>using</code> declarations) for explicit lifecycle control when
+            needed. <code>Owned&lt;T&gt;</code> is a zero-cost type-level boundary—passing a node as
+            <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> across module boundaries hides
             <code>dispose()</code> without creating any runtime wrapper:
           </p>
           <pre
