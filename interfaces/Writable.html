@@ -124,7 +124,18 @@
           ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
           <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">;</span><br>    <a
             class="tsd-kind-call-signature"
-            href="#valueof-1"
+            href="#update-1"
+            >update</a
+          ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">updater</span
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span
+          ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span class="tsd-signature-symbol"
+            >)</span
+          > <span class="tsd-signature-symbol">=&gt;</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span class="tsd-signature-symbol"
+            >)</span
+          ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+          ><span class="tsd-signature-symbol">;</span><br>    <a class="tsd-kind-call-signature" href="#valueof-1"
             >valueOf</a
           ><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span class="tsd-signature-symbol"
@@ -160,8 +171,8 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L139"
-                >src/types.ts:139</a
+                href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L189"
+                >src/types.ts:189</a
               >
             </li>
           </ul>
@@ -231,6 +242,11 @@
                         <use href="../assets/icons.svg#icon-2048"></use>
                       </svg><span>to<wbr>String</span></a
                     >
+                    <a href="#update" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                        <use href="../assets/icons.svg#icon-2048"></use>
+                      </svg><span>update</span></a
+                    >
                     <a href="#valueof" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use>
@@ -277,7 +293,7 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L113"
+                      href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L113"
                       >src/types.ts:113</a
                     >
                   </li>
@@ -302,15 +318,39 @@
                 ><span class="tsd-signature-symbol">&gt;</span>
               </div>
               <div class="tsd-comment tsd-typography">
-                <p>Bound setter function that updates the value and notifies dependents if changed.</p>
+                <p>
+                  Bound setter that writes a new value and notifies dependents if changed according to the configured
+                  equality check (<code>Object.is</code> by default).
+                </p>
+                <p>
+                  Safe to pass around without a receiver. Must not be called after
+                  <a href="../types/Owned.html" class="tsd-kind-method">dispose()</a> or during
+                  <a href="../functions/computed.html" class="tsd-kind-function">computed</a> /
+                  <a href="../functions/derived.html" class="tsd-kind-function">derived</a>
+                  evaluation.
+                </p>
+              </div>
+              <div class="tsd-comment tsd-typography">
+                <div class="tsd-tag-example">
+                  <h4 class="tsd-anchor-link" id="example">
+                    Example<a href="#example" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use>
+                      </svg></a
+                    >
+                  </h4>
+                  <pre
+                  ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">name</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-2">&quot;&quot;</span><span class="hl-1">);</span><br/><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-0">addEventListener</span><span class="hl-1">(</span><span class="hl-2">&quot;input&quot;</span><span class="hl-1">, () </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">name</span><span class="hl-1">.</span><span class="hl-0">set</span><span class="hl-1">(</span><span class="hl-4">input</span><span class="hl-1">.</span><span class="hl-4">value</span><span class="hl-1">));</span><br/><span class="hl-7">// Or pass directly as a callback:</span><br/><span class="hl-0">onChange</span><span class="hl-1">(</span><span class="hl-4">name</span><span class="hl-1">.</span><span class="hl-4">set</span><span class="hl-1">);</span>
+</code><button type="button">Copy</button></pre>
+                </div>
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L143"
-                      >src/types.ts:143</a
+                      href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L214"
+                      >src/types.ts:214</a
                     >
                   </li>
                 </ul>
@@ -330,7 +370,14 @@
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
               </div>
               <div class="tsd-comment tsd-typography">
-                <p>Current value. Assigning updates the value and notifies dependents if changed.</p>
+                <p>Current value.</p>
+                <p>
+                  Reading behaves like <a href="#get" class="tsd-kind-method">get</a> and tracks inside
+                  <a href="../functions/computed.html" class="tsd-kind-function">computed</a> or
+                  <a href="../functions/watch.html" class="tsd-kind-function">watch</a>. Assigning delegates to
+                  <a href="#set" class="tsd-kind-property">set</a>, updating the value and notifying dependents if
+                  changed according to the configured equality check.
+                </p>
               </div>
               <aside class="tsd-sources">
                 <p>Overrides <a href="Readable.html">Readable</a>.<a href="Readable.html#value">value</a></p>
@@ -338,8 +385,8 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L141"
-                      >src/types.ts:141</a
+                      href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L197"
+                      >src/types.ts:197</a
                     >
                   </li>
                 </ul>
@@ -384,23 +431,39 @@
                   </div>
                   <div class="tsd-description">
                     <div class="tsd-comment tsd-typography">
+                      <p>Bound getter that returns the current value.</p>
                       <p>
-                        Returns the current value. Tracks this source as a dependency when called inside
+                        Tracks this source as a dependency when called inside
                         <a href="../functions/computed.html" class="tsd-kind-function">computed</a> or
-                        <a href="../functions/watch.html" class="tsd-kind-function">watch</a>.
+                        <a href="../functions/watch.html" class="tsd-kind-function">watch</a>. Safe to pass around
+                        without a receiver.
                       </p>
                     </div>
                     <h4 class="tsd-returns-title">
                       Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
                     </h4>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-1">
+                          Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use>
+                            </svg></a
+                          >
+                        </h4>
+                        <pre
+                        ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">getCount</span><span class="hl-1"> = </span><span class="hl-4">count</span><span class="hl-1">.</span><span class="hl-4">get</span><span class="hl-1">;</span><br/><span class="hl-0">getCount</span><span class="hl-1">(); </span><span class="hl-7">// 0</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
+                    </div>
                     <aside class="tsd-sources">
                       <p>Inherited from <a href="Readable.html">Readable</a>.<a href="Readable.html#get">get</a></p>
                       <ul>
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L117"
-                            >src/types.ts:117</a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L134"
+                            >src/types.ts:134</a
                           >
                         </li>
                       </ul>
@@ -443,11 +506,16 @@
                   </div>
                   <div class="tsd-description">
                     <div class="tsd-comment tsd-typography">
-                      <p>Subscribes to value changes on this source.</p>
                       <p>
-                        Shares a consumed-value baseline and broadcast value with subscriptions to this source in the
-                        same scheduling mode. Joining pending work can cause an additional callback for existing
-                        subscribers.
+                        Subscribes to value changes on this source and returns a
+                        <a href="../types/Cleanup.html" class="tsd-kind-type-alias">Cleanup</a>
+                        function to unsubscribe.
+                      </p>
+                      <p>
+                        By default, delivers the current value immediately (<code>immediate: true</code>) and batches
+                        subsequent updates into a microtask (<code>sync: false</code>). Each subscription tracks its own
+                        consumed-value baseline and reads the latest value when its turn runs. Call
+                        <code>this.dispose()</code> inside <code>fn</code> to unsubscribe from within the callback.
                       </p>
                     </div>
                     <div class="tsd-parameters">
@@ -476,6 +544,20 @@
                     <h4 class="tsd-returns-title">
                       Returns <a href="../types/Cleanup.html" class="tsd-signature-type tsd-kind-type-alias">Cleanup</a>
                     </h4>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-2">
+                          Example<a href="#example-2" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use>
+                            </svg></a
+                          >
+                        </h4>
+                        <pre
+                        ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">stop</span><span class="hl-1"> = </span><span class="hl-4">count</span><span class="hl-1">.</span><span class="hl-0">subscribe</span><span class="hl-1">(</span><br/><span class="hl-1">  (</span><span class="hl-4">value</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">value</span><span class="hl-1">),</span><br/><span class="hl-1">  { </span><span class="hl-4">immediate:</span><span class="hl-1"> </span><span class="hl-5">false</span><span class="hl-1"> },</span><br/><span class="hl-1">);</span><br/><span class="hl-4">count</span><span class="hl-1">.</span><span class="hl-0">set</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">); </span><span class="hl-7">// logs 1 in a microtask</span><br/><span class="hl-0">stop</span><span class="hl-1">();</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
+                    </div>
                     <aside class="tsd-sources">
                       <p>
                         Inherited from <a href="Readable.html">Readable</a>.<a href="Readable.html#subscribe"
@@ -486,8 +568,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L125"
-                            >src/types.ts:125</a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L156"
+                            >src/types.ts:156</a
                           >
                         </li>
                       </ul>
@@ -520,7 +602,16 @@
                   </div>
                   <div class="tsd-description">
                     <div class="tsd-comment tsd-typography">
-                      <p>Returns the JSON representation of the current value.</p>
+                      <p>
+                        Returns the JSON representation of the current value (delegating to the value's own
+                        <code>toJSON(key)</code> if present), allowing <code>JSON.stringify(source)</code>
+                        to serialize the underlying value directly.
+                      </p>
+                      <p>
+                        Reads through <a href="Readable.html#get" class="tsd-kind-method">get</a>, so it tracks when
+                        called inside <a href="../functions/computed.html" class="tsd-kind-function">computed</a>
+                        or <a href="../functions/watch.html" class="tsd-kind-function">watch</a>.
+                      </p>
                     </div>
                     <div class="tsd-parameters">
                       <h4 class="tsd-parameters-title">Parameters</h4>
@@ -542,8 +633,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L127"
-                            >src/types.ts:127</a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L165"
+                            >src/types.ts:165</a
                           >
                         </li>
                       </ul>
@@ -574,7 +665,15 @@
                   </div>
                   <div class="tsd-description">
                     <div class="tsd-comment tsd-typography">
-                      <p>Returns the string representation of the current value.</p>
+                      <p>
+                        Returns <code>String(this.get())</code>, allowing implicit string coercion such as template
+                        literals (<code>`${source}`</code>).
+                      </p>
+                      <p>
+                        Reads through <a href="Readable.html#get" class="tsd-kind-method">get</a>, so it tracks when
+                        called inside <a href="../functions/computed.html" class="tsd-kind-function">computed</a>
+                        or <a href="../functions/watch.html" class="tsd-kind-function">watch</a>.
+                      </p>
                     </div>
                     <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
                     <aside class="tsd-sources">
@@ -587,8 +686,98 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L129"
-                            >src/types.ts:129</a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L173"
+                            >src/types.ts:173</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="update">
+                <span>update</span
+                ><a href="#update" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use>
+                  </svg></a
+                >
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="update-1">
+                    <span class="tsd-kind-call-signature">update</span><span class="tsd-signature-symbol">(</span
+                    ><span class="tsd-kind-parameter">updater</span><span class="tsd-signature-symbol">:</span>
+                    <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span
+                      class="tsd-signature-symbol"
+                      >)</span
+                    > <span class="tsd-signature-symbol">=&gt;</span>
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span
+                      class="tsd-signature-symbol"
+                      >)</span
+                    ><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">void</span
+                    ><a href="#update-1" aria-label="Permalink" class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use>
+                      </svg></a
+                    >
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Computes and writes the next value from the current value without tracking this source as a
+                        dependency.
+                      </p>
+                      <p>
+                        Delegates the write to <a href="#set" class="tsd-kind-property">set</a>. Useful inside
+                        <a href="../functions/watch.html" class="tsd-kind-function">watch</a> to update a value based on
+                        its previous value without creating a self-dependency. Explicit reads of other sources inside
+                        <code>updater</code> are still tracked.
+                      </p>
+                      <p>Defined on the prototype; call as a method (<code>source.update(...)</code>).</p>
+                    </div>
+                    <div class="tsd-parameters">
+                      <h4 class="tsd-parameters-title">Parameters</h4>
+                      <ul class="tsd-parameter-list">
+                        <li>
+                          <span
+                            ><span class="tsd-kind-parameter">updater</span>: <span class="tsd-signature-symbol">(</span
+                            ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
+                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span
+                              class="tsd-signature-symbol"
+                              >)</span
+                            > <span class="tsd-signature-symbol">=&gt;</span>
+                            <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a></span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-3">
+                          Example<a href="#example-3" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use>
+                            </svg></a
+                          >
+                        </h4>
+                        <pre
+                        ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">step</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">1</span><span class="hl-1">);</span><br/><br/><span class="hl-0">watch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-7">// Tracks `step`, but does not track `count`.</span><br/><span class="hl-1">  </span><span class="hl-4">count</span><span class="hl-1">.</span><span class="hl-0">update</span><span class="hl-1">((</span><span class="hl-4">n</span><span class="hl-1">) </span><span class="hl-5">=&gt;</span><span class="hl-1"> </span><span class="hl-4">n</span><span class="hl-1"> + </span><span class="hl-4">step</span><span class="hl-1">.</span><span class="hl-0">get</span><span class="hl-1">());</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
+                    </div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L236"
+                            >src/types.ts:236</a
                           >
                         </li>
                       </ul>
@@ -621,7 +810,17 @@
                     >
                   </div>
                   <div class="tsd-description">
-                    <div class="tsd-comment tsd-typography"><p>Returns the current primitive value.</p></div>
+                    <div class="tsd-comment tsd-typography">
+                      <p>
+                        Returns the current value via <a href="Readable.html#get" class="tsd-kind-method">get</a>,
+                        enabling primitive coercion in expressions.
+                      </p>
+                      <p>
+                        Reads through <a href="Readable.html#get" class="tsd-kind-method">get</a>, so it tracks when
+                        called inside <a href="../functions/computed.html" class="tsd-kind-function">computed</a>
+                        or <a href="../functions/watch.html" class="tsd-kind-function">watch</a>.
+                      </p>
+                    </div>
                     <h4 class="tsd-returns-title">
                       Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
                     </h4>
@@ -633,8 +832,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/9c0d8841b3fa3d92ed2a4be75a9aa6d36918d3a8/src/types.ts#L131"
-                            >src/types.ts:131</a
+                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L181"
+                            >src/types.ts:181</a
                           >
                         </li>
                       </ul>
@@ -723,6 +922,10 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use>
                     </svg><span>to<wbr>String</span></a
+                  ><a href="#update"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                      <use href="../assets/icons.svg#icon-2048"></use>
+                    </svg><span>update</span></a
                   ><a href="#valueof"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use>
