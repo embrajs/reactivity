@@ -83,6 +83,10 @@
           ><span class="tsd-signature-symbol">:</span>
           <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span class="tsd-signature-symbol"
             >;</span
+          ><br>    <a class="tsd-kind-call-signature" href="#peek-1">peek</a><span class="tsd-signature-symbol">()</span
+          ><span class="tsd-signature-symbol">:</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><span class="tsd-signature-symbol"
+            >;</span
           ><br>    <a class="tsd-kind-call-signature" href="#subscribe-1">subscribe</a
           ><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">fn</span
           ><span class="tsd-signature-symbol">:</span>
@@ -145,7 +149,7 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L112"
+                href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L112"
                 >src/types.ts:112</a
               >
             </li>
@@ -195,6 +199,11 @@
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                         <use href="../assets/icons.svg#icon-2048"></use>
                       </svg><span>get</span></a
+                    >
+                    <a href="#peek" class="tsd-index-link"
+                      ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                        <use href="../assets/icons.svg#icon-2048"></use>
+                      </svg><span>peek</span></a
                     >
                     <a href="#subscribe" class="tsd-index-link"
                       ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
@@ -252,7 +261,7 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L113"
+                      href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L113"
                       >src/types.ts:113</a
                     >
                   </li>
@@ -286,7 +295,7 @@
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L120"
+                      href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L120"
                       >src/types.ts:120</a
                     >
                   </li>
@@ -362,8 +371,75 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L134"
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L134"
                             >src/types.ts:134</a
+                          >
+                        </li>
+                      </ul>
+                    </aside>
+                  </div>
+                </li>
+              </ul>
+            </section>
+            <section class="tsd-panel tsd-member">
+              <h3 class="tsd-anchor-link" id="peek">
+                <span>peek</span
+                ><a href="#peek" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use>
+                  </svg></a
+                >
+              </h3>
+              <ul class="tsd-signatures">
+                <li class="">
+                  <div class="tsd-signature tsd-anchor-link" id="peek-1">
+                    <span class="tsd-kind-call-signature">peek</span><span class="tsd-signature-symbol">()</span
+                    ><span class="tsd-signature-symbol">:</span>
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a><a
+                      href="#peek-1"
+                      aria-label="Permalink"
+                      class="tsd-anchor-icon"
+                      ><svg viewBox="0 0 24 24" aria-hidden="true">
+                        <use href="../assets/icons.svg#icon-anchor"></use>
+                      </svg></a
+                    >
+                  </div>
+                  <div class="tsd-description">
+                    <div class="tsd-comment tsd-typography">
+                      <p>Returns the current value without tracking this source as a dependency.</p>
+                      <p>
+                        Still evaluates lazy or dirty
+                        <a href="../functions/computed.html" class="tsd-kind-function">computed</a> /
+                        <a href="../functions/derived.html" class="tsd-kind-function">derived</a> nodes to ensure the
+                        returned value is up to date. Defined on the prototype; call as a method (<code
+                          >source.peek()</code
+                        >).
+                      </p>
+                    </div>
+                    <h4 class="tsd-returns-title">
+                      Returns <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
+                    </h4>
+                    <div class="tsd-comment tsd-typography">
+                      <div class="tsd-tag-example">
+                        <h4 class="tsd-anchor-link" id="example-1">
+                          Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                            ><svg viewBox="0 0 24 24" aria-hidden="true">
+                              <use href="../assets/icons.svg#icon-anchor"></use>
+                            </svg></a
+                          >
+                        </h4>
+                        <pre
+                        ><code class="ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">count</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">trigger</span><span class="hl-1"> = </span><span class="hl-0">writable</span><span class="hl-1">(</span><span class="hl-9">0</span><span class="hl-1">);</span><br/><br/><span class="hl-0">watch</span><span class="hl-1">(() </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-4">trigger</span><span class="hl-1">.</span><span class="hl-0">get</span><span class="hl-1">(); </span><span class="hl-7">// tracked</span><br/><span class="hl-1">  </span><span class="hl-4">console</span><span class="hl-1">.</span><span class="hl-0">log</span><span class="hl-1">(</span><span class="hl-4">count</span><span class="hl-1">.</span><span class="hl-0">peek</span><span class="hl-1">()); </span><span class="hl-7">// untracked</span><br/><span class="hl-1">});</span>
+</code><button type="button">Copy</button></pre>
+                      </div>
+                    </div>
+                    <aside class="tsd-sources">
+                      <ul>
+                        <li>
+                          Defined in
+                          <a
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L153"
+                            >src/types.ts:153</a
                           >
                         </li>
                       </ul>
@@ -446,8 +522,8 @@
                     </h4>
                     <div class="tsd-comment tsd-typography">
                       <div class="tsd-tag-example">
-                        <h4 class="tsd-anchor-link" id="example-1">
-                          Example<a href="#example-1" aria-label="Permalink" class="tsd-anchor-icon"
+                        <h4 class="tsd-anchor-link" id="example-2">
+                          Example<a href="#example-2" aria-label="Permalink" class="tsd-anchor-icon"
                             ><svg viewBox="0 0 24 24" aria-hidden="true">
                               <use href="../assets/icons.svg#icon-anchor"></use>
                             </svg></a
@@ -463,8 +539,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L156"
-                            >src/types.ts:156</a
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L175"
+                            >src/types.ts:175</a
                           >
                         </li>
                       </ul>
@@ -525,8 +601,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L165"
-                            >src/types.ts:165</a
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L184"
+                            >src/types.ts:184</a
                           >
                         </li>
                       </ul>
@@ -573,8 +649,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L173"
-                            >src/types.ts:173</a
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L192"
+                            >src/types.ts:192</a
                           >
                         </li>
                       </ul>
@@ -626,8 +702,8 @@
                         <li>
                           Defined in
                           <a
-                            href="https://github.com/embrajs/reactivity/blob/f20f59b4ebe5a5b7793cbe3ea70bd4d34697d5d1/src/types.ts#L181"
-                            >src/types.ts:181</a
+                            href="https://github.com/embrajs/reactivity/blob/19495ab839c9ac5cc26f4a23bf84e306c8e7ba97/src/types.ts#L200"
+                            >src/types.ts:200</a
                           >
                         </li>
                       </ul>
@@ -700,6 +776,10 @@
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use>
                     </svg><span>get</span></a
+                  ><a href="#peek"
+                    ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
+                      <use href="../assets/icons.svg#icon-2048"></use>
+                    </svg><span>peek</span></a
                   ><a href="#subscribe"
                     ><svg class="tsd-kind-icon" viewBox="0 0 24 24" aria-label="Method">
                       <use href="../assets/icons.svg#icon-2048"></use>

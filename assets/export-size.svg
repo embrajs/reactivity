@@ -89,7 +89,7 @@
       <g transform="translate(0, 0)">
   <g class="stagger" style="animation-delay: 100ms">
     <text x="2" y="15" class="text">{ readable, writable, computed, watch } (core)</text>
-    <text x="315" y="34" class="text">2.24 kB</text>
+    <text x="315" y="34" class="text">2.26 kB</text>
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
@@ -107,7 +107,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="74.68805704099822%">
+      <svg width="74.2249778565102%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 550ms" />
       </svg>
     </svg>
@@ -121,7 +121,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="19.83065953654189%">
+      <svg width="19.70770593445527%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
       </svg>
     </svg>
@@ -135,7 +135,7 @@
 
     <svg width="300" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="300" height="8" fill="#fb4c1b37"></rect>
-      <svg width="39.66131907308378%">
+      <svg width="39.41541186891054%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 850ms" />
       </svg>
     </svg>
