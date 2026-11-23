@@ -27,11 +27,11 @@ Fine-grained reactivity with explicit ownership, built for AI agents.
 npm add @embra/reactivity
 ```
 
-| Entry Point               | Purpose                                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Entry Point               | Purpose                                                                                                                                 |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `@embra/reactivity`       | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `until`, `batch`, `flush`, `untrack`) and reactive collections |
-| `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>`                                       |
-| `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter                                             |
+| `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>`                                                |
+| `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter                                                      |
 
 ## Quick Start
 
