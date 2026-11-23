@@ -28,6 +28,14 @@ describe("derived", () => {
     expect(compute).toHaveBeenCalledTimes(2);
   });
 
+  it("supports single-element source array and re-evaluates on updates", () => {
+    const source = writable(1);
+    const value = derived([source], (next) => next * 10);
+    expect(value.get()).toBe(10);
+    source.set(2);
+    expect(value.get()).toBe(20);
+  });
+
   it("infers values from readables, tuples and arrays", () => {
     const first = writable(1);
     const [second] = readable("a");

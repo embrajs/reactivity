@@ -1,6 +1,6 @@
 import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
-import { batch, ComputedNode, flush, runEffect, untrack, ValueNode, WatchNode } from "./node";
-import { NOOP_ } from "./runtime";
+import { batch, ComputedNode, flush, readSource, runEffect, type Source, untrack, ValueNode, WatchNode } from "./node";
+import { NOOP_, runtime } from "./runtime";
 
 import type {
   Cleanup,
@@ -135,16 +135,33 @@ export function derived<R>(
   options?: ReadableOptions<R>,
 ): Owned<Readable<R>> {
   let fn: () => R;
-  if (isReadable(sources)) {
+  if (isReadable(sources) || sources.length === 1) {
+    const s0 = (isReadable(sources) ? sources : sources[0]!) as Source;
     fn = () => {
-      const value = sources.get();
-      return untrack(() => compute(value));
+      const v0 = runtime.currentObserver_ !== null ? s0.get() : readSource(s0);
+      runtime.currentObserver_ = null;
+      return compute(v0);
+    };
+  } else if (sources.length === 2) {
+    const s0 = sources[0]! as Source;
+    const s1 = sources[1]! as Source;
+    fn = () => {
+      const track = runtime.currentObserver_ !== null;
+      const v0 = track ? s0.get() : readSource(s0);
+      const v1 = track ? s1.get() : readSource(s1);
+      runtime.currentObserver_ = null;
+      return compute(v0, v1);
     };
   } else {
-    const deps = [...sources];
+    const deps = [...sources] as Source[];
     fn = () => {
-      const values = deps.map((dep) => dep.get());
-      return untrack(() => compute(...values));
+      const track = runtime.currentObserver_ !== null;
+      const values = [];
+      for (let i = 0; i < deps.length; i++) {
+        values.push(track ? deps[i]!.get() : readSource(deps[i]!));
+      }
+      runtime.currentObserver_ = null;
+      return compute(...values);
     };
   }
   const node = new ComputedNode(fn, options);

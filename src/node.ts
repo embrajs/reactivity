@@ -631,7 +631,7 @@ function propagatePending(source: ComputedNode): void {
   }
 }
 
-function readSource(source: Source): any {
+export function readSource(source: Source): any {
   if (source.flags_ & (Flags.Dirty | Flags.Pending | Flags.Running)) {
     if ((source.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
       updateComputed(source as ComputedNode);
@@ -659,15 +659,20 @@ function updateComputed(node: ComputedNode): void {
     }
   }
   const previousObserver = runtime.currentObserver_;
+  const track = !(node.flags_ & Flags.DepsStatic) || node.depHead_ === null;
   node.flags_ |= Flags.Running | Flags.Connected;
   if (__DEV__) {
     runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
     runtime.__dev_spy?.({ type: "compute-start", node });
   }
   try {
-    node.flags_ ^= Flags.TrackPhase;
-    node.depTail_ = null;
-    runtime.currentObserver_ = node;
+    if (track) {
+      node.flags_ ^= Flags.TrackPhase;
+      node.depTail_ = null;
+      runtime.currentObserver_ = node;
+    } else {
+      runtime.currentObserver_ = null;
+    }
     const value = node.compute_!();
     // different() owns tracking isolation for custom equality callbacks.
     const equal = node.equal_;
@@ -709,7 +714,9 @@ function updateComputed(node: ComputedNode): void {
   } finally {
     node.flags_ = (node.flags_ | Flags.Initialized) & ~(Flags.Dirty | Flags.Pending | Flags.Running);
     runtime.currentObserver_ = previousObserver;
-    trimDependencies(node);
+    if (track) {
+      trimDependencies(node);
+    }
     if (__DEV__) {
       runtime.__dev_currentComputation!--;
     }
