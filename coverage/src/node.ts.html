@@ -900,7 +900,10 @@
 <a name='L824'></a><a href='#L824'>824</a>
 <a name='L825'></a><a href='#L825'>825</a>
 <a name='L826'></a><a href='#L826'>826</a>
-<a name='L827'></a><a href='#L827'>827</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L827'></a><a href='#L827'>827</a>
+<a name='L828'></a><a href='#L828'>828</a>
+<a name='L829'></a><a href='#L829'>829</a>
+<a name='L830'></a><a href='#L830'>830</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1285,6 +1288,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17802x</span>
 <span class="cline-any cline-yes">17802x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12961x</span>
 <span class="cline-any cline-yes">12961x</span>
 <span class="cline-any cline-yes">12961x</span>
@@ -1735,8 +1741,8 @@
   type ISubList,
   removeSub,
 } from "./broadcast";
-import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
-import { asyncQueue_, clearQueue, NOOP_, type Runtime, runtime, syncQueue_ } from "./runtime";
+import { CONTRACT_SYMBOL, CONTRACT_VERSION, LinkFlags, NodeFlags } from "./constants";
+import { asyncQueue_, clearQueue, NOOP_, QueueFlags, type Runtime, runtime, syncQueue_ } from "./runtime";
 import type {
   Cleanup,
   EffectContext,
@@ -1762,9 +1768,9 @@ export type Observer = ComputedNode | WatchNode;
  * @category Effects &amp; Scheduling
  */
 export function batch&lt;T&gt;(fn: () =&gt; T): T {
-  const outer = !(syncQueue_.flags_ &amp; Flags.Running);
+  const outer = !(syncQueue_.flags_ &amp; QueueFlags.Running);
   if (outer) {
-    syncQueue_.flags_ |= Flags.Running;
+    syncQueue_.flags_ |= QueueFlags.Running;
     if (__DEV__) {
       runtime.__dev_spy?.({ type: "batch-start" });
     }
@@ -1772,7 +1778,7 @@ export function batch&lt;T&gt;(fn: () =&gt; T): T {
   try {
     const result = fn();
     if (outer &amp;&amp; syncQueue_.head_ &lt; syncQueue_.tail_) {
-      flushEffects(Flags.None);
+      flushEffects(NodeFlags.None);
     }
     if (__DEV__) {
       if (outer) {
@@ -1793,14 +1799,14 @@ export function batch&lt;T&gt;(fn: () =&gt; T): T {
     throw error;
   } finally {
     if (outer) {
-      syncQueue_.flags_ &amp;= ~Flags.Running;
+      syncQueue_.flags_ &amp;= ~QueueFlags.Running;
     }
   }
 }
 &nbsp;
 interface Link extends ISubItem, IDepItem {
-  // Watch links use Dirty for a publication and Pending for two or more.
-  flags_: Flags;
+  // Watch links use Published for a publication and PublishedMulti for two or more.
+  flags_: LinkFlags;
   subNext_: Link | null;
   subPrev_: Link | null;
   depNext_: Link | null;
@@ -1812,7 +1818,7 @@ interface Link extends ISubItem, IDepItem {
 &nbsp;
 function createLink(source: Source, observer: Observer): Link {
   return {
-    flags_: Flags.None,
+    flags_: LinkFlags.None,
     subNext_: null,
     subPrev_: null,
     depNext_: null,
@@ -1825,7 +1831,7 @@ function createLink(source: Source, observer: Observer): Link {
 declare class ValueNode&lt;T = any&gt; implements ISubList, Writable&lt;T&gt; {
   runtime_: Runtime;
   // Keep the shared Source fields in the same construction order as ComputedNode.
-  flags_: Flags;
+  flags_: NodeFlags;
   subHead_: Link | null;
   subTail_: Link | null;
   [CONTRACT_SYMBOL]: CONTRACT_VERSION;
@@ -1848,7 +1854,7 @@ declare class ValueNode&lt;T = any&gt; implements ISubList, Writable&lt;T&gt; {
 }
 &nbsp;
 function ValueNode&lt;T&gt;(this: ValueNode&lt;T&gt;, value: T, options?: ReadableOptions&lt;T&gt;) {
-  this.flags_ = Flags.KindValueNode;
+  this.flags_ = NodeFlags.None;
   this.subHead_ = null;
   this.subTail_ = null;
   this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
@@ -1858,8 +1864,8 @@ function ValueNode&lt;T&gt;(this: ValueNode&lt;T&gt;, value: T, options?: Readab
 &nbsp;
   this.get = () =&gt; {
     const observer = this.runtime_.currentObserver_;
-    if (observer !== null &amp;&amp; !(this.flags_ &amp; Flags.Disposed)) {
-      this.flags_ &amp;= ~(Flags.Dirty | Flags.WatchSingleWrite);
+    if (observer !== null &amp;&amp; !(this.flags_ &amp; NodeFlags.Disposed)) {
+      this.flags_ &amp;= ~(NodeFlags.Dirty | NodeFlags.WatchSingleWrite);
       trackDependency(this, observer);
     }
     return this.value_;
@@ -1867,7 +1873,7 @@ function ValueNode&lt;T&gt;(this: ValueNode&lt;T&gt;, value: T, options?: Readab
 &nbsp;
   this.set = (value) =&gt; {
     if (__DEV__) {
-      if (this.flags_ &amp; Flags.Disposed) {
+      if (this.flags_ &amp; NodeFlags.Disposed) {
         if (this.__dev_disposed_at) {
           console.error("ValueNode disposed at:", this.__dev_disposed_at);
         }
@@ -1887,14 +1893,14 @@ function ValueNode&lt;T&gt;(this: ValueNode&lt;T&gt;, value: T, options?: Readab
         this.value_ = value;
       }
       if (this.subHead_ !== null) {
-        if (!(this.flags_ &amp; Flags.Dirty)) {
-          this.flags_ |= Flags.Dirty;
+        if (!(this.flags_ &amp; NodeFlags.Dirty)) {
+          this.flags_ |= NodeFlags.Dirty;
           propagate(this);
-        } else if (this.flags_ &amp; Flags.WatchSingleWrite) {
+        } else if (this.flags_ &amp; NodeFlags.WatchSingleWrite) {
           markRepeatedWatchWrites(this);
         }
-        if (!(this.runtime_.syncQueue_.flags_ &amp; Flags.Running)) {
-          flushEffects(Flags.None);
+        if (!(this.runtime_.syncQueue_.flags_ &amp; QueueFlags.Running)) {
+          flushEffects(NodeFlags.None);
         }
       }
     } else {
@@ -1908,7 +1914,7 @@ function ValueNode&lt;T&gt;(this: ValueNode&lt;T&gt;, value: T, options?: Readab
 declare class ComputedNode&lt;T = any&gt; implements ISubList, IDepList, Readable&lt;T&gt; {
   runtime_: Runtime;
   // Keep the shared Source fields in the same construction order as ValueNode.
-  flags_: Flags;
+  flags_: NodeFlags;
   subHead_: Link | null;
   subTail_: Link | null;
   [CONTRACT_SYMBOL]: CONTRACT_VERSION;
@@ -1935,7 +1941,7 @@ declare class ComputedNode&lt;T = any&gt; implements ISubList, IDepList, Readabl
 }
 &nbsp;
 function ComputedNode&lt;T&gt;(this: ComputedNode&lt;T&gt;, compute: (...values: any[]) =&gt; T, options?: ReadableOptions&lt;T&gt;) {
-  this.flags_ = Flags.KindComputedNode | Flags.Dirty;
+  this.flags_ = NodeFlags.KindComputedNode | NodeFlags.Dirty;
   this.subHead_ = null;
   this.subTail_ = null;
   this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
@@ -1943,11 +1949,11 @@ function ComputedNode&lt;T&gt;(this: ComputedNode&lt;T&gt;, compute: (...values:
   this.value_ = undefined;
   this.equal_ = options?.equal ?? null;
   this.get = () =&gt; {
-    if (this.flags_ &amp; (Flags.Dirty | Flags.Pending | Flags.Running)) {
+    if (this.flags_ &amp; (NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running)) {
       updateComputed(this);
     }
     const observer = this.runtime_.currentObserver_;
-    if (observer !== null &amp;&amp; !(this.flags_ &amp; Flags.Disposed)) {
+    if (observer !== null &amp;&amp; !(this.flags_ &amp; NodeFlags.Disposed)) {
       trackDependency(this, observer);
     }
     return this.value_ as T;
@@ -1972,8 +1978,8 @@ ValueNode.prototype = ComputedNode.prototype = {
 &nbsp;
   peek(): any {
     if (
-      (this.flags_ &amp; Flags.KindMask) === Flags.KindComputedNode &amp;&amp;
-      this.flags_ &amp; (Flags.Dirty | Flags.Pending | Flags.Running)
+      this.flags_ &amp; NodeFlags.KindComputedNode &amp;&amp;
+      this.flags_ &amp; (NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running)
     ) {
       updateComputed(this as ComputedNode);
     }
@@ -2000,30 +2006,30 @@ ValueNode.prototype = ComputedNode.prototype = {
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup {
     const node = new WatchNode(
       callback as unknown as WatchEffect,
-      (options?.sync ? Flags.None : Flags.QueueModeAsync) | Flags.DepsStatic,
+      (options?.sync ? NodeFlags.None : NodeFlags.QueueModeAsync) | NodeFlags.DepsStatic,
     );
     try {
       untrack(() =&gt;
         batch(() =&gt; {
           const value = readSource(this);
-          if (!(this.flags_ &amp; Flags.Disposed)) {
+          if (!(this.flags_ &amp; NodeFlags.Disposed)) {
             const link = createLink(this, node);
             link.value_ = value;
             node.depHead_ = node.depTail_ = link;
             appendSub(this, link);
           }
           if (options?.immediate !== false) {
-            node.flags_ |= Flags.Running;
+            node.flags_ |= NodeFlags.Running;
             try {
               node.callback_(value);
             } finally {
-              node.flags_ &amp;= ~Flags.Running;
-              if (node.flags_ &amp; Flags.Disposed) {
+              node.flags_ &amp;= ~NodeFlags.Running;
+              if (node.flags_ &amp; NodeFlags.Disposed) {
                 finalizeEffectDisposal(node);
               }
             }
           }
-          if (this.flags_ &amp; Flags.Disposed) {
+          if (this.flags_ &amp; NodeFlags.Disposed) {
             node.dispose();
           }
         }),
@@ -2036,16 +2042,16 @@ ValueNode.prototype = ComputedNode.prototype = {
   },
 &nbsp;
   dispose(): void {
-    if (!(this.flags_ &amp; Flags.Disposed)) {
-      const kind = this.flags_ &amp; Flags.KindMask;
-      this.flags_ = kind | Flags.Disposed;
+    if (!(this.flags_ &amp; NodeFlags.Disposed)) {
+      const isComputed = this.flags_ &amp; NodeFlags.KindComputedNode;
+      this.flags_ = isComputed | NodeFlags.Disposed;
 &nbsp;
       if (__DEV__) {
         this.__dev_disposed_at = new Error();
         runtime.__dev_spy?.({ type: "dispose", node: this });
       }
 &nbsp;
-      if (kind === Flags.KindComputedNode) {
+      if (isComputed) {
         (this as ComputedNode).depTail_ = null;
         trimDependencies(this as ComputedNode);
         (this as ComputedNode).compute_ = null;
@@ -2061,31 +2067,31 @@ ValueNode.prototype = ComputedNode.prototype = {
 } satisfies ThisType&lt;ValueNode | ComputedNode&gt; as any;
 &nbsp;
 declare class WatchNode implements IDepList, EffectContext {
-  flags_: Flags;
+  flags_: NodeFlags;
   depHead_: Link | null;
   depTail_: Link | null;
   cleanup_: Cleanup | null;
   callback_: (this: EffectContext, value?: any) =&gt; void | Cleanup;
   dispose: Cleanup;
-  constructor(callback: WatchEffect, flags: Flags);
+  constructor(callback: WatchEffect, flags: NodeFlags);
 }
 &nbsp;
-function WatchNode(this: WatchNode, callback: WatchEffect, flags: Flags) {
-  this.flags_ = Flags.KindSubscriberNode | Flags.Connected | flags;
+function WatchNode(this: WatchNode, callback: WatchEffect, flags: NodeFlags) {
+  this.flags_ = NodeFlags.KindSubscriberNode | NodeFlags.Connected | flags;
   this.depHead_ = null;
   this.depTail_ = null;
   this.cleanup_ = null;
   this.callback_ = callback;
 &nbsp;
   this.dispose = (): void =&gt; {
-    if (!(this.flags_ &amp; Flags.Disposed)) {
-      this.flags_ |= Flags.Disposed;
+    if (!(this.flags_ &amp; NodeFlags.Disposed)) {
+      this.flags_ |= NodeFlags.Disposed;
       if (__DEV__) {
-        if (!(this.flags_ &amp; Flags.DepsStatic)) {
+        if (!(this.flags_ &amp; NodeFlags.DepsStatic)) {
           runtime.__dev_spy?.({ type: "dispose", node: this });
         }
       }
-      if (!(this.flags_ &amp; Flags.Running)) {
+      if (!(this.flags_ &amp; NodeFlags.Running)) {
         finalizeEffectDisposal(this);
       }
     }
@@ -2110,9 +2116,12 @@ function different(equal: Equality, previous: any, next: any): boolean {
 &nbsp;
 function releaseUnusedSource(source: Source): Link | null {
   const flags = source.flags_;
-  if ((flags &amp; (Flags.KindMask | Flags.Disposed)) === Flags.KindComputedNode &amp;&amp; source.subHead_ === null) {
+  if (
+    (flags &amp; (NodeFlags.KindComputedNode | NodeFlags.Disposed)) === NodeFlags.KindComputedNode &amp;&amp;
+    source.subHead_ === null
+  ) {
     const node = source as ComputedNode;
-    node.flags_ = (flags | Flags.Dirty) &amp; ~Flags.Connected;
+    node.flags_ = (flags | NodeFlags.Dirty) &amp; ~NodeFlags.Connected;
     const deps = node.depHead_;
     node.depHead_ = node.depTail_ = null;
     return deps;
@@ -2156,11 +2165,11 @@ function trackDependency(source: Source, observer: Observer): void {
   if (tail !== null &amp;&amp; tail.source_ === source) {
     return;
   }
-  const phase = observer.flags_ &amp; Flags.TrackPhase;
+  const phase = observer.flags_ &amp; NodeFlags.TrackPhase;
   let link = tail !== null ? tail.depNext_ : observer.depHead_;
   if (link === null || link.source_ !== source) {
     const last = source.subTail_;
-    if (last !== null &amp;&amp; last.observer_ === observer &amp;&amp; (last.flags_ &amp; Flags.TrackPhase) === phase) {
+    if (last !== null &amp;&amp; last.observer_ === observer &amp;&amp; (last.flags_ &amp; LinkFlags.TrackPhase) === phase) {
       return;
     }
     const next = link;
@@ -2175,7 +2184,7 @@ function trackDependency(source: Source, observer: Observer): void {
   }
   link.flags_ = phase;
   observer.depTail_ = link;
-  if ((observer.flags_ &amp; Flags.KindMask) === Flags.KindSubscriberNode) {
+  if (observer.flags_ &amp; NodeFlags.KindSubscriberNode) {
     link.value_ = source.value_;
   }
 }
@@ -2194,28 +2203,28 @@ function trimDependencies(observer: Observer): void {
   unlinkDependencies(link);
 }
 &nbsp;
-function pushQueue(item: Source | WatchNode, flags: Flags): void {
-  const isAsync = !!(flags &amp; Flags.QueueModeAsync);
+function pushQueue(item: Source | WatchNode, flags: NodeFlags): void {
+  const isAsync = !!(flags &amp; NodeFlags.QueueModeAsync);
   const queue = isAsync ? asyncQueue_ : syncQueue_;
   queue.items_[queue.tail_++] = item;
-  if (isAsync &amp;&amp; !(queue.flags_ &amp; Flags.Running)) {
-    queue.flags_ |= Flags.Running;
+  if (isAsync &amp;&amp; !(queue.flags_ &amp; QueueFlags.Running)) {
+    queue.flags_ |= QueueFlags.Running;
     queueMicrotask(flushAsyncQueue);
   }
 }
 &nbsp;
 // A publication dirties direct consumers; descendants only need validation.
-function queueSource(source: Source, mode: Flags): void {
-  const queued = mode &amp; Flags.QueueModeAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource;
+function queueSource(source: Source, mode: NodeFlags): void {
+  const queued = mode &amp; NodeFlags.QueueModeAsync ? NodeFlags.QueuedAsyncSource : NodeFlags.QueuedSyncSource;
   if (!(source.flags_ &amp; queued)) {
     source.flags_ |= queued;
     pushQueue(source, mode);
   }
 }
 &nbsp;
-function enqueueWatch(observer: WatchNode, flags: Flags): void {
-  if (!(flags &amp; (Flags.Disposed | Flags.QueuedSyncSource))) {
-    observer.flags_ = flags | Flags.QueuedSyncSource;
+function enqueueWatch(observer: WatchNode, flags: NodeFlags): void {
+  if (!(flags &amp; (NodeFlags.Disposed | NodeFlags.QueuedSyncSource))) {
+    observer.flags_ = flags | NodeFlags.QueuedSyncSource;
     pushQueue(observer, flags);
   }
 }
@@ -2226,33 +2235,33 @@ function propagate(source: ValueNode): void {
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
     const flags = observer.flags_;
-    if ((flags &amp; Flags.KindMask) === Flags.KindComputedNode) {
-      observer.flags_ = flags | Flags.Pending | Flags.Dirty;
-      if (!(flags &amp; Flags.Pending)) {
+    if (flags &amp; NodeFlags.KindComputedNode) {
+      observer.flags_ = flags | NodeFlags.Pending | NodeFlags.Dirty;
+      if (!(flags &amp; NodeFlags.Pending)) {
         propagatePending(observer as ComputedNode);
       }
     } else {
-      if (link.flags_ &amp; Flags.Dirty) {
-        link.flags_ |= Flags.Pending;
+      if (link.flags_ &amp; LinkFlags.Published) {
+        link.flags_ |= LinkFlags.PublishedMulti;
       } else {
-        link.flags_ |= Flags.Dirty;
+        link.flags_ |= LinkFlags.Published;
         hasSingleWrite = true;
       }
       enqueueWatch(observer as WatchNode, flags);
     }
   }
   if (hasSingleWrite) {
-    source.flags_ |= Flags.WatchSingleWrite;
+    source.flags_ |= NodeFlags.WatchSingleWrite;
   }
 }
 &nbsp;
 function markRepeatedWatchWrites(source: ValueNode): void {
   // The first write already queued these Watches. A tracked read clears the
   // Value latch before adding or resetting a Watch link.
-  source.flags_ &amp;= ~Flags.WatchSingleWrite;
+  source.flags_ &amp;= ~NodeFlags.WatchSingleWrite;
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
-    if (link.flags_ &amp; Flags.Dirty) {
-      link.flags_ |= Flags.Pending;
+    if (link.flags_ &amp; LinkFlags.Published) {
+      link.flags_ |= LinkFlags.PublishedMulti;
     }
   }
 }
@@ -2262,16 +2271,16 @@ function propagatePending(source: ComputedNode): void {
     for (let link = source.subHead_; link !== null; link = link.subNext_) {
       const observer = link.observer_;
       const flags = observer.flags_;
-      if ((flags &amp; Flags.KindMask) === Flags.KindComputedNode) {
-        observer.flags_ = flags | Flags.Pending;
-        if (!(flags &amp; Flags.Pending)) {
+      if (flags &amp; NodeFlags.KindComputedNode) {
+        observer.flags_ = flags | NodeFlags.Pending;
+        if (!(flags &amp; NodeFlags.Pending)) {
           if (link.subNext_ === null) {
             source = observer as ComputedNode;
             continue top;
           }
           propagatePending(observer as ComputedNode);
         }
-      } else if (!(flags &amp; Flags.Disposed)) {
+      } else if (!(flags &amp; NodeFlags.Disposed)) {
         queueSource(source, flags);
       }
     }
@@ -2280,42 +2289,42 @@ function propagatePending(source: ComputedNode): void {
 }
 &nbsp;
 export function readSource(source: Source): any {
-  if (source.flags_ &amp; (Flags.Dirty | Flags.Pending | Flags.Running)) {
-    if ((source.flags_ &amp; Flags.KindMask) === Flags.KindComputedNode) {
+  if (source.flags_ &amp; (NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running)) {
+    if (source.flags_ &amp; NodeFlags.KindComputedNode) {
       updateComputed(source as ComputedNode);
     } else {
-      source.flags_ &amp;= ~(Flags.Dirty | Flags.WatchSingleWrite);
+      source.flags_ &amp;= ~(NodeFlags.Dirty | NodeFlags.WatchSingleWrite);
     }
   }
   return source.value_;
 }
 &nbsp;
 function updateComputed(node: ComputedNode): void {
-  if (node.flags_ &amp; Flags.Running) {
+  if (node.flags_ &amp; NodeFlags.Running) {
     throw new Error("loop detected");
   }
-  if (!(node.flags_ &amp; Flags.Dirty)) {
+  if (!(node.flags_ &amp; NodeFlags.Dirty)) {
     for (let link = node.depHead_; link !== null; link = link.depNext_) {
       readSource(link.source_);
-      if (node.flags_ &amp; Flags.Dirty) {
+      if (node.flags_ &amp; NodeFlags.Dirty) {
         break;
       }
     }
-    if (!(node.flags_ &amp; Flags.Dirty)) {
-      node.flags_ &amp;= ~Flags.Pending;
+    if (!(node.flags_ &amp; NodeFlags.Dirty)) {
+      node.flags_ &amp;= ~NodeFlags.Pending;
       return;
     }
   }
   const previousObserver = runtime.currentObserver_;
-  const track = !(node.flags_ &amp; Flags.DepsStatic) || node.depHead_ === null;
-  node.flags_ |= Flags.Running | Flags.Connected;
+  const track = !(node.flags_ &amp; NodeFlags.DepsStatic) || node.depHead_ === null;
+  node.flags_ |= NodeFlags.Running | NodeFlags.Connected;
   if (__DEV__) {
     runtime.__dev_currentComputation = (runtime.__dev_currentComputation! | 0) + 1;
     runtime.__dev_spy?.({ type: "compute-start", node });
   }
   try {
     if (track) {
-      node.flags_ ^= Flags.TrackPhase;
+      node.flags_ ^= NodeFlags.TrackPhase;
       node.depTail_ = null;
       runtime.currentObserver_ = node;
     } else {
@@ -2327,17 +2336,17 @@ function updateComputed(node: ComputedNode): void {
     if (
       equal === null
         ? node.value_ !== value
-        : equal === false || !(node.flags_ &amp; Flags.Initialized) || different(equal, node.value_, value)
+        : equal === false || !(node.flags_ &amp; NodeFlags.Initialized) || different(equal, node.value_, value)
     ) {
       node.value_ = value;
       if (__DEV__) {
         runtime.__dev_spy?.({ type: "compute-end", node, nextValue: value, changed: true });
       }
       for (let link = node.subHead_; link !== null; link = link.subNext_) {
-        if ((link.observer_.flags_ &amp; Flags.KindMask) === Flags.KindComputedNode) {
-          link.observer_.flags_ |= Flags.Dirty;
+        if (link.observer_.flags_ &amp; NodeFlags.KindComputedNode) {
+          link.observer_.flags_ |= NodeFlags.Dirty;
         } else {
-          link.flags_ |= link.flags_ &amp; Flags.Dirty ? Flags.Pending : Flags.Dirty;
+          link.flags_ |= link.flags_ &amp; LinkFlags.Published ? LinkFlags.PublishedMulti : LinkFlags.Published;
           enqueueWatch(link.observer_ as WatchNode, link.observer_.flags_);
         }
       }
@@ -2352,7 +2361,7 @@ function updateComputed(node: ComputedNode): void {
     }
     throw error;
   } finally {
-    node.flags_ = (node.flags_ | Flags.Initialized) &amp; ~(Flags.Dirty | Flags.Pending | Flags.Running);
+    node.flags_ = (node.flags_ | NodeFlags.Initialized) &amp; ~(NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running);
     runtime.currentObserver_ = previousObserver;
     if (track) {
       trimDependencies(node);
@@ -2372,7 +2381,7 @@ function runEffectCleanup(effect: WatchNode): void {
 }
 &nbsp;
 function finalizeEffectDisposal(effect: WatchNode): void {
-  effect.flags_ &amp;= ~Flags.Connected;
+  effect.flags_ &amp;= ~NodeFlags.Connected;
   effect.depTail_ = null;
   trimDependencies(effect);
   effect.callback_ = NOOP_;
@@ -2382,8 +2391,8 @@ function finalizeEffectDisposal(effect: WatchNode): void {
 export function runEffect(effect: WatchNode): void {
   const previousObserver = runtime.currentObserver_;
   runtime.currentObserver_ = null;
-  effect.flags_ |= Flags.Running;
-  const isSub = !!(effect.flags_ &amp; Flags.DepsStatic);
+  effect.flags_ |= NodeFlags.Running;
+  const isSub = !!(effect.flags_ &amp; NodeFlags.DepsStatic);
   if (__DEV__) {
     if (!isSub) {
       runtime.__dev_spy?.({ type: "effect-start", node: effect });
@@ -2392,7 +2401,7 @@ export function runEffect(effect: WatchNode): void {
   try {
     if (isSub) {
       const link = effect.depHead_!;
-      link.flags_ = Flags.None;
+      link.flags_ = LinkFlags.None;
       const source = link.source_;
       const value = source.value_;
       link.value_ = value;
@@ -2401,15 +2410,15 @@ export function runEffect(effect: WatchNode): void {
           type: "subscribe",
           node: source,
           value,
-          sync: !(effect.flags_ &amp; Flags.QueueModeAsync),
+          sync: !(effect.flags_ &amp; NodeFlags.QueueModeAsync),
           count: 1,
         });
       }
       effect.callback_(value);
     } else {
       runEffectCleanup(effect);
-      if (!(effect.flags_ &amp; Flags.Disposed)) {
-        effect.flags_ ^= Flags.TrackPhase;
+      if (!(effect.flags_ &amp; NodeFlags.Disposed)) {
+        effect.flags_ ^= NodeFlags.TrackPhase;
         effect.depTail_ = null;
         runtime.currentObserver_ = effect;
         effect.cleanup_ = effect.callback_() || null;
@@ -2427,8 +2436,8 @@ export function runEffect(effect: WatchNode): void {
     throw error;
   } finally {
     runtime.currentObserver_ = previousObserver;
-    effect.flags_ &amp;= ~Flags.Running;
-    if (effect.flags_ &amp; Flags.Disposed) {
+    effect.flags_ &amp;= ~NodeFlags.Running;
+    if (effect.flags_ &amp; NodeFlags.Disposed) {
       finalizeEffectDisposal(effect);
     } else if (!isSub) {
       trimDependencies(effect);
@@ -2439,10 +2448,10 @@ export function runEffect(effect: WatchNode): void {
 function hasEffectChange(effect: WatchNode): boolean {
   for (let link = effect.depHead_; link !== null; link = link.depNext_) {
     const source = link.source_;
-    if (!(source.flags_ &amp; Flags.Disposed)) {
+    if (!(source.flags_ &amp; NodeFlags.Disposed)) {
       readSource(source);
-      if (link.flags_ &amp; Flags.Dirty) {
-        if (!(link.flags_ &amp; Flags.Pending)) {
+      if (link.flags_ &amp; LinkFlags.Published) {
+        if (!(link.flags_ &amp; LinkFlags.PublishedMulti)) {
           return true;
         }
         const equal = source.equal_;
@@ -2453,7 +2462,7 @@ function hasEffectChange(effect: WatchNode): boolean {
         ) {
           return true;
         }
-        link.flags_ &amp;= ~(Flags.Dirty | Flags.Pending);
+        link.flags_ &amp;= ~(LinkFlags.Published | LinkFlags.PublishedMulti);
         link.value_ = source.value_;
       }
     }
@@ -2461,15 +2470,15 @@ function hasEffectChange(effect: WatchNode): boolean {
   return false;
 }
 &nbsp;
-function flushEffects(mode: Flags): void {
+function flushEffects(mode: NodeFlags): void {
   const previousObserver = runtime.currentObserver_;
-  const wasSyncRunning = syncQueue_.flags_ &amp; Flags.Running;
+  const wasSyncRunning = syncQueue_.flags_ &amp; QueueFlags.Running;
   runtime.currentObserver_ = null;
-  syncQueue_.flags_ |= Flags.Running;
+  syncQueue_.flags_ |= QueueFlags.Running;
   try {
     while (
       syncQueue_.head_ &lt; syncQueue_.tail_ ||
-      (mode &amp; Flags.QueueModeAsync &amp;&amp; asyncQueue_.head_ &lt; asyncQueue_.tail_)
+      (mode &amp; NodeFlags.QueueModeAsync &amp;&amp; asyncQueue_.head_ &lt; asyncQueue_.tail_)
     ) {
       const queue = syncQueue_.head_ &lt; syncQueue_.tail_ ? syncQueue_ : asyncQueue_;
       const isAsync = queue === asyncQueue_;
@@ -2479,14 +2488,14 @@ function flushEffects(mode: Flags): void {
         const i = queue.head_++;
         const item = queue.items_[i]!;
         queue.items_[i] = undefined;
-        if ((item.flags_ &amp; Flags.KindMask) === Flags.KindSubscriberNode) {
-          item.flags_ &amp;= ~Flags.QueuedSyncSource;
-          if (!(item.flags_ &amp; Flags.Disposed) &amp;&amp; hasEffectChange(item as WatchNode)) {
+        if (item.flags_ &amp; NodeFlags.KindSubscriberNode) {
+          item.flags_ &amp;= ~NodeFlags.QueuedSyncSource;
+          if (!(item.flags_ &amp; NodeFlags.Disposed) &amp;&amp; hasEffectChange(item as WatchNode)) {
             runEffect(item as WatchNode);
           }
         } else {
-          item.flags_ &amp;= ~(isAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource);
-          if (!(item.flags_ &amp; Flags.Disposed)) {
+          item.flags_ &amp;= ~(isAsync ? NodeFlags.QueuedAsyncSource : NodeFlags.QueuedSyncSource);
+          if (!(item.flags_ &amp; NodeFlags.Disposed)) {
             const source = item as Source;
             if (source.subHead_ !== null) {
               readSource(source);
@@ -2505,30 +2514,30 @@ function flushEffects(mode: Flags): void {
   } finally {
     runtime.currentObserver_ = previousObserver;
     if (!wasSyncRunning) {
-      syncQueue_.flags_ &amp;= ~Flags.Running;
+      syncQueue_.flags_ &amp;= ~QueueFlags.Running;
     }
-    if (mode &amp; Flags.QueueModeAsync &amp;&amp; asyncQueue_.head_ === asyncQueue_.tail_) {
-      asyncQueue_.flags_ &amp;= ~Flags.Running;
+    if (mode &amp; NodeFlags.QueueModeAsync &amp;&amp; asyncQueue_.head_ === asyncQueue_.tail_) {
+      asyncQueue_.flags_ &amp;= ~QueueFlags.Running;
     }
   }
 }
 &nbsp;
 function flushAsyncQueue(): void {
   if (syncQueue_.head_ === syncQueue_.tail_ &amp;&amp; asyncQueue_.head_ === asyncQueue_.tail_) {
-    asyncQueue_.flags_ &amp;= ~Flags.Running;
+    asyncQueue_.flags_ &amp;= ~QueueFlags.Running;
     return;
   }
   if (__DEV__) {
     runtime.__dev_spy?.({ type: "flush-start", async: true });
     try {
-      flushEffects(Flags.QueueModeAsync);
+      flushEffects(NodeFlags.QueueModeAsync);
       runtime.__dev_spy?.({ type: "flush-end", async: true });
     } catch (error) {
       runtime.__dev_spy?.({ type: "flush-end", async: true, error });
       throw error;
     }
   } else {
-    flushEffects(Flags.QueueModeAsync);
+    flushEffects(NodeFlags.QueueModeAsync);
   }
 }
 &nbsp;
@@ -2559,7 +2568,7 @@ export { ComputedNode, ValueNode, WatchNode };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-23T14:22:28.762Z
+                at 2026-11-23T14:44:52.514Z
             </div>
         <script src="../prettify.js"></script>
         <script>

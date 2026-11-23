@@ -36,7 +36,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>135/135</span>
+                <span class='fraction'>134/134</span>
             </div>
         
             
@@ -57,7 +57,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>131/131</span>
+                <span class='fraction'>130/130</span>
             </div>
         
             
@@ -487,7 +487,12 @@
 <a name='L411'></a><a href='#L411'>411</a>
 <a name='L412'></a><a href='#L412'>412</a>
 <a name='L413'></a><a href='#L413'>413</a>
-<a name='L414'></a><a href='#L414'>414</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -583,7 +588,6 @@
 <span class="cline-any cline-yes">319x</span>
 <span class="cline-any cline-yes">238x</span>
 <span class="cline-any cline-yes">238x</span>
-<span class="cline-any cline-yes">238x</span>
 <span class="cline-any cline-yes">147x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">91x</span>
@@ -676,6 +680,9 @@
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">44x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -687,6 +694,7 @@
 <span class="cline-any cline-yes">156x</span>
 <span class="cline-any cline-yes">150x</span>
 <span class="cline-any cline-yes">150x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -903,7 +911,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { ReadonlyReactiveList } from "../collections/reactiveList";
 import type { ReadonlyReactiveMap } from "../collections/reactiveMap";
 import type { ReadonlyReactiveSet } from "../collections/reactiveSet";
-import { Flags } from "../constants";
+import { CollectionFlags } from "../collections/utils";
+import { NodeFlags } from "../constants";
 import type { ComputedNode, Observer, Source, ValueNode, WatchNode } from "../node";
 import { isReadable } from "../reactivity";
 import { NOOP_, runtime } from "../runtime";
@@ -958,7 +967,7 @@ export interface GraphTreeNode&lt;TValue = any&gt; {
 }
 &nbsp;
 export interface ReactiveCollectionInternal {
-  flags_: Flags;
+  flags_: CollectionFlags;
   source_: ValueNode | null;
   cleanup_: unknown;
   items_?: unknown[];
@@ -985,7 +994,7 @@ export function isWatchNode(target: unknown): target is WatchNode {
     target !== null &amp;&amp;
     !isReadable(target) &amp;&amp;
     typeof (target as WatchNode).flags_ === "number" &amp;&amp;
-    ((target as WatchNode).flags_ &amp; Flags.KindMask) === Flags.KindSubscriberNode &amp;&amp;
+    Boolean((target as WatchNode).flags_ &amp; NodeFlags.KindSubscriberNode) &amp;&amp;
     "depHead_" in target &amp;&amp;
     "callback_" in target
   );
@@ -995,11 +1004,10 @@ export function isWatchNode(target: unknown): target is WatchNode {
 export function getNodeKind(target: unknown): NodeKind | null {
   if (isReadable(target)) {
     const node = target as Source;
-    const kind = node.flags_ &amp; Flags.KindMask;
-    if (kind === Flags.KindValueNode) {
+    if (!(node.flags_ &amp; NodeFlags.KindComputedNode)) {
       return node.set !== NOOP_ ? "writable" : "readable";
     }
-    return node.flags_ &amp; Flags.DepsStatic ? "derived" : "computed";
+    return node.flags_ &amp; NodeFlags.DepsStatic ? "derived" : "computed";
   }
   if (isWatchNode(target)) {
     return "watch";
@@ -1023,7 +1031,7 @@ export function getNodeName(target: unknown): string {
     if (source.name) {
       return source.name;
     }
-    if ((source.flags_ &amp; Flags.KindMask) === Flags.KindComputedNode) {
+    if (source.flags_ &amp; NodeFlags.KindComputedNode) {
       return (source as ComputedNode).compute_?.name || "";
     }
     return "";
@@ -1088,7 +1096,10 @@ export function collectSourceSubs(source: Source): Observer[] {
   const subs: Observer[] = [];
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
-    if ((observer.flags_ &amp; (Flags.KindMask | Flags.DepsStatic)) !== (Flags.KindSubscriberNode | Flags.DepsStatic)) {
+    if (
+      (observer.flags_ &amp; (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)) !==
+      (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)
+    ) {
       subs.push(observer);
     }
   }
@@ -1100,8 +1111,9 @@ function countSubscribers(source: Source, async: boolean): number {
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const flags = link.observer_.flags_;
     if (
-      (flags &amp; (Flags.KindMask | Flags.DepsStatic)) === (Flags.KindSubscriberNode | Flags.DepsStatic) &amp;&amp;
-      !!(flags &amp; Flags.QueueModeAsync) === async
+      (flags &amp; (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic)) ===
+        (NodeFlags.KindSubscriberNode | NodeFlags.DepsStatic) &amp;&amp;
+      !!(flags &amp; NodeFlags.QueueModeAsync) === async
     ) {
       count++;
     }
@@ -1140,7 +1152,7 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       pending: false,
       running: false,
       connected: source !== null &amp;&amp; source.subHead_ !== null,
-      disposed: !!(collection.flags_ &amp; Flags.Disposed),
+      disposed: !!(collection.flags_ &amp; CollectionFlags.Disposed),
       disposedAt: collection.__dev_disposed_at ?? null,
       deps: [],
       subs: source !== null ? collectSourceSubs(source) : [],
@@ -1158,9 +1170,9 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       initialized: true,
       dirty: false,
       pending: false,
-      running: !!(watchNode.flags_ &amp; Flags.Running),
-      connected: !!(watchNode.flags_ &amp; Flags.Connected),
-      disposed: !!(watchNode.flags_ &amp; Flags.Disposed),
+      running: !!(watchNode.flags_ &amp; NodeFlags.Running),
+      connected: !!(watchNode.flags_ &amp; NodeFlags.Connected),
+      disposed: !!(watchNode.flags_ &amp; NodeFlags.Disposed),
       disposedAt: null,
       deps: collectObserverDeps(watchNode),
       subs: [],
@@ -1176,12 +1188,12 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
     kind,
     name: getNodeName(source),
     value: source.value_,
-    initialized: isComputed ? !!(flags &amp; Flags.Initialized) : true,
-    dirty: !!(flags &amp; Flags.Dirty),
-    pending: !!(flags &amp; Flags.Pending),
-    running: !!(flags &amp; Flags.Running),
-    connected: isComputed ? !!(flags &amp; Flags.Connected) : source.subHead_ !== null,
-    disposed: !!(flags &amp; Flags.Disposed),
+    initialized: isComputed ? !!(flags &amp; NodeFlags.Initialized) : true,
+    dirty: !!(flags &amp; NodeFlags.Dirty),
+    pending: !!(flags &amp; NodeFlags.Pending),
+    running: !!(flags &amp; NodeFlags.Running),
+    connected: isComputed ? !!(flags &amp; NodeFlags.Connected) : source.subHead_ !== null,
+    disposed: !!(flags &amp; NodeFlags.Disposed),
     disposedAt: source.__dev_disposed_at ?? null,
     deps: isComputed ? collectObserverDeps(source as ComputedNode) : [],
     subs: collectSourceSubs(source),
@@ -1320,7 +1332,7 @@ export function formatTree(targetOrTree: unknown, direction: "deps" | "subs" = "
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-23T14:22:28.762Z
+                at 2026-11-23T14:44:52.514Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
