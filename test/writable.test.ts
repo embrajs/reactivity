@@ -199,7 +199,7 @@ describe("writable", () => {
       source.subscribe(second);
       source.set(0);
       await tick();
-      expect(first.mock.calls).toEqual([[0], [0]]);
+      expect(first.mock.calls).toEqual([[0]]);
       expect(second.mock.calls).toEqual([[1], [0]]);
     });
   });
@@ -357,7 +357,7 @@ describe("writable", () => {
       source.subscribe((value) => calls.push(`second:${value}`), { sync: true, immediate: false });
 
       source.set(1);
-      expect(calls).toEqual(["first:1", "second:1", "first:2", "second:2"]);
+      expect(calls).toEqual(["first:1", "second:2", "first:2"]);
     });
 
     it("drains asynchronous writes made by a running callback", async () => {

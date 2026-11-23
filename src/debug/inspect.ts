@@ -181,15 +181,24 @@ export function collectObserverDeps(observer: Observer, upToTail = false): Sourc
 export function collectSourceSubs(source: Source): Observer[] {
   const subs: Observer[] = [];
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
-    subs.push(link.observer_);
+    const observer = link.observer_;
+    if ((observer.flags_ & (Flags.KindMask | Flags.DepsStatic)) !== (Flags.KindSubscriberNode | Flags.DepsStatic)) {
+      subs.push(observer);
+    }
   }
   return subs;
 }
 
-function countCallbackList(list: { subHead_: { subNext_: any } | null } | null): number {
+function countSubscribers(source: Source, async: boolean): number {
   let count = 0;
-  for (let item = list !== null ? list.subHead_ : null; item !== null; item = item.subNext_) {
-    count++;
+  for (let link = source.subHead_; link !== null; link = link.subNext_) {
+    const flags = link.observer_.flags_;
+    if (
+      (flags & (Flags.KindMask | Flags.DepsStatic)) === (Flags.KindSubscriberNode | Flags.DepsStatic) &&
+      !!(flags & Flags.QueueModeAsync) === async
+    ) {
+      count++;
+    }
   }
   return count;
 }
@@ -220,13 +229,13 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       dirty: false,
       pending: false,
       running: false,
-      connected: source !== null && (source.subHead_ !== null || !!(source.flags_ & Flags.HasSubscriptions)),
+      connected: source !== null && source.subHead_ !== null,
       disposed: !!(collection.flags_ & Flags.Disposed),
       disposedAt: collection.__dev_disposed_at ?? null,
       deps: [],
       subs: source !== null ? collectSourceSubs(source) : [],
-      syncSubscriberCount: source !== null ? countCallbackList(source.syncSubscriptions_) : 0,
-      asyncSubscriberCount: source !== null ? countCallbackList(source.asyncSubscriptions_) : 0,
+      syncSubscriberCount: source !== null ? countSubscribers(source, false) : 0,
+      asyncSubscriberCount: source !== null ? countSubscribers(source, true) : 0,
     };
   }
 
@@ -261,15 +270,13 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
     dirty: !!(flags & Flags.Dirty),
     pending: !!(flags & Flags.Pending),
     running: !!(flags & Flags.Running),
-    connected: isComputed
-      ? !!(flags & Flags.Connected)
-      : source.subHead_ !== null || !!(flags & Flags.HasSubscriptions),
+    connected: isComputed ? !!(flags & Flags.Connected) : source.subHead_ !== null,
     disposed: !!(flags & Flags.Disposed),
     disposedAt: source.__dev_disposed_at ?? null,
     deps: isComputed ? collectObserverDeps(source as ComputedNode) : [],
     subs: collectSourceSubs(source),
-    syncSubscriberCount: countCallbackList(source.syncSubscriptions_),
-    asyncSubscriberCount: countCallbackList(source.asyncSubscriptions_),
+    syncSubscriberCount: countSubscribers(source, false),
+    asyncSubscriberCount: countSubscribers(source, true),
   };
 }
 

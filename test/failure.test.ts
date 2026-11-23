@@ -118,6 +118,7 @@ describe("failure boundaries", () => {
   it("retains a source broadcast completed before a Watch cleanup throws", () => {
     const source = writable(0);
     const callback = vi.fn();
+    const stopSecond = source.subscribe(callback, { sync: true, immediate: false });
     const stopFirst = watch(
       () => {
         source.get();
@@ -127,7 +128,6 @@ describe("failure boundaries", () => {
       },
       { sync: true },
     );
-    const stopSecond = source.subscribe(callback, { sync: true, immediate: false });
     expect(() => source.set(1)).toThrow("cleanup");
     expect(callback.mock.calls).toEqual([[1]]);
     stopFirst();

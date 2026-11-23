@@ -36,7 +36,7 @@ describe("effect scheduling", () => {
     stopWriter();
   });
 
-  it("finishes the current source broadcast before delivering a reverted value", () => {
+  it("skips a subscriber whose input was reverted before its turn", () => {
     const source = writable(0);
     const calls: string[] = [];
     const stopFirst = source.subscribe(
@@ -48,7 +48,7 @@ describe("effect scheduling", () => {
     );
     const stopSecond = source.subscribe((value) => calls.push(`second:${value}`), { sync: true, immediate: false });
     source.set(1);
-    expect(calls).toEqual(["first:1", "second:1", "first:0", "second:0"]);
+    expect(calls).toEqual(["first:1", "first:0"]);
     stopFirst();
     stopSecond();
   });
@@ -105,7 +105,7 @@ describe("effect scheduling", () => {
     input.dispose();
   });
 
-  it("broadcasts to the whole asynchronous group when a subscriber joins pending work", async () => {
+  it("delivers only to the joining async subscriber when an existing subscriber reverted to its baseline", async () => {
     const source = writable(0);
     const first = vi.fn();
     const second = vi.fn();
@@ -117,7 +117,7 @@ describe("effect scheduling", () => {
       return stop;
     });
     await Promise.resolve();
-    expect(first.mock.calls).toEqual([[0], [0]]);
+    expect(first.mock.calls).toEqual([[0]]);
     expect(second.mock.calls).toEqual([[1], [0]]);
     stopFirst();
     stopSecond();

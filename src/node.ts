@@ -1,14 +1,10 @@
 import {
   appendSub,
   clearSubs,
-  detachCallback,
-  type ICallbackItem,
-  type ICallbackList,
   type IDepItem,
   type IDepList,
   type ISubItem,
   type ISubList,
-  invokeCallbacks,
   removeSub,
 } from "./broadcast";
 import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
@@ -108,8 +104,6 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   name: string;
   value_: T;
   equal_: NormalizedEquality<T>;
-  syncSubscriptions_: SubscriptionList | null;
-  asyncSubscriptions_: SubscriptionList | null;
   __dev_disposed_at?: Error;
   value: T;
   get: () => T;
@@ -131,8 +125,6 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
   this.name = options?.name ?? "";
   this.value_ = value;
   this.equal_ = options?.equal ?? null;
-  this.syncSubscriptions_ = null;
-  this.asyncSubscriptions_ = null;
 
   this.get = () => {
     const observer = this.runtime_.currentObserver_;
@@ -164,7 +156,7 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
       } else {
         this.value_ = value;
       }
-      if (this.subHead_ !== null || this.flags_ & Flags.HasSubscriptions) {
+      if (this.subHead_ !== null) {
         if (!(this.flags_ & Flags.Dirty)) {
           this.flags_ |= Flags.Dirty;
           propagate(this);
@@ -194,8 +186,6 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   value_: T | undefined;
   value: T;
   equal_: NormalizedEquality<T>;
-  syncSubscriptions_: SubscriptionList | null;
-  asyncSubscriptions_: SubscriptionList | null;
   __dev_disposed_at?: Error;
   get: () => T;
   set: (value: T) => void;
@@ -220,8 +210,6 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
   this.name = options?.name ?? "";
   this.value_ = undefined;
   this.equal_ = options?.equal ?? null;
-  this.syncSubscriptions_ = null;
-  this.asyncSubscriptions_ = null;
   this.get = () => {
     if (this.flags_ & (Flags.Dirty | Flags.Pending | Flags.Running)) {
       updateComputed(this);
@@ -264,50 +252,41 @@ ValueNode.prototype = ComputedNode.prototype = {
   },
 
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup {
-    const previousObserver = this.runtime_.currentObserver_;
-    this.runtime_.currentObserver_ = null;
-    let subscription: Subscription | undefined;
+    const node = new WatchNode(
+      callback as unknown as WatchEffect,
+      (options?.sync ? Flags.None : Flags.QueueModeAsync) | Flags.DepsStatic,
+    );
     try {
-      batch(() => {
-        const value = readSource(this);
-        const mode = options?.sync ? Flags.None : Flags.QueueModeAsync;
-        let list = mode & Flags.QueueModeAsync ? this.asyncSubscriptions_ : this.syncSubscriptions_;
-        if (list === null) {
-          list = {
-            flags_: mode,
-            subHead_: null,
-            subTail_: null,
-            value_: value,
-            source_: this,
-            next_: null,
-            end_: null,
-          };
+      untrack(() =>
+        batch(() => {
+          const value = readSource(this);
           if (!(this.flags_ & Flags.Disposed)) {
-            this.flags_ |= Flags.HasSubscriptions;
-            if (!(mode & Flags.QueueModeAsync)) {
-              this.syncSubscriptions_ = list;
-            } else {
-              this.asyncSubscriptions_ = list;
+            const link = createLink(this, node);
+            link.value_ = value;
+            node.depHead_ = node.depTail_ = link;
+            appendSub(this, link);
+          }
+          if (options?.immediate !== false) {
+            node.flags_ |= Flags.Running;
+            try {
+              (node.callback_ as unknown as Subscriber).call(node, value);
+            } finally {
+              node.flags_ &= ~Flags.Running;
+              if (node.flags_ & Flags.Disposed) {
+                finalizeEffectDisposal(node);
+              }
             }
           }
-        } else if (this.flags_ & (mode & Flags.QueueModeAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource)) {
-          // A joining subscriber may have consumed a different value. The next
-          // source broadcast includes everyone, rather than retaining per-listener history.
-          list.flags_ |= Flags.ForceNotify;
-        }
-        subscription = new Subscription(list, callback);
-        appendSub(list, subscription);
-        if (options?.immediate !== false) {
-          callback.call(subscription, value);
-        }
-      });
+          if (this.flags_ & Flags.Disposed) {
+            node.dispose();
+          }
+        }),
+      );
     } catch (error) {
-      subscription?.dispose();
+      node.dispose();
       throw error;
-    } finally {
-      this.runtime_.currentObserver_ = previousObserver;
     }
-    return subscription!.dispose;
+    return node.dispose;
   },
 
   dispose(): void {
@@ -327,13 +306,6 @@ ValueNode.prototype = ComputedNode.prototype = {
       }
 
       clearSubs(this);
-
-      while (this.syncSubscriptions_ !== null) {
-        this.syncSubscriptions_.subHead_!.dispose();
-      }
-      while (this.asyncSubscriptions_ !== null) {
-        this.asyncSubscriptions_.subHead_!.dispose();
-      }
     }
   },
 
@@ -341,51 +313,6 @@ ValueNode.prototype = ComputedNode.prototype = {
     this.dispose();
   },
 } satisfies ThisType<ValueNode | ComputedNode> as any;
-
-// Subscriptions are source-owned records, not graph observers or queue entries.
-interface SubscriptionList extends ICallbackList<Subscription> {
-  flags_: Flags;
-  subHead_: Subscription | null;
-  subTail_: Subscription | null;
-  value_: any;
-  source_: Source;
-  next_: Subscription | null;
-  end_: Subscription | null;
-}
-
-declare class Subscription implements ICallbackItem<SubscriptionList>, EffectContext {
-  list_: SubscriptionList | null;
-  callback_: Subscriber;
-  subNext_: Subscription | null;
-  subPrev_: Subscription | null;
-  dispose: Cleanup;
-  constructor(list: SubscriptionList | null, callback: Subscriber);
-}
-
-function Subscription(this: Subscription, list: SubscriptionList | null, callback: Subscriber) {
-  this.list_ = list;
-  this.callback_ = callback;
-  this.subNext_ = null;
-  this.subPrev_ = null;
-
-  this.dispose = (): void => {
-    const list = detachCallback(this);
-    if (list !== null) {
-      const source = list.source_;
-      if (!(list.flags_ & Flags.QueueModeAsync)) {
-        if (source.syncSubscriptions_ === list) {
-          source.syncSubscriptions_ = null;
-        }
-      } else if (source.asyncSubscriptions_ === list) {
-        source.asyncSubscriptions_ = null;
-      }
-      if (source.syncSubscriptions_ === null && source.asyncSubscriptions_ === null) {
-        source.flags_ &= ~Flags.HasSubscriptions;
-      }
-      unlinkDependencies(releaseUnusedSource(source));
-    }
-  };
-}
 
 declare class WatchNode implements IDepList, EffectContext {
   flags_: Flags;
@@ -408,7 +335,9 @@ function WatchNode(this: WatchNode, callback: WatchEffect, flags: Flags) {
     if (!(this.flags_ & Flags.Disposed)) {
       this.flags_ |= Flags.Disposed;
       if (__DEV__) {
-        runtime.__dev_spy?.({ type: "dispose", node: this });
+        if (!(this.flags_ & Flags.DepsStatic)) {
+          runtime.__dev_spy?.({ type: "dispose", node: this });
+        }
       }
       if (!(this.flags_ & Flags.Running)) {
         finalizeEffectDisposal(this);
@@ -435,11 +364,7 @@ function different(equal: Equality, previous: any, next: any): boolean {
 
 function releaseUnusedSource(source: Source): Link | null {
   const flags = source.flags_;
-  if (
-    (flags & (Flags.KindMask | Flags.Disposed)) === Flags.KindComputedNode &&
-    source.subHead_ === null &&
-    !(flags & Flags.HasSubscriptions)
-  ) {
+  if ((flags & (Flags.KindMask | Flags.Disposed)) === Flags.KindComputedNode && source.subHead_ === null) {
     const node = source as ComputedNode;
     node.flags_ = (flags | Flags.Dirty) & ~Flags.Connected;
     const deps = node.depHead_;
@@ -537,23 +462,6 @@ function queueSource(source: Source, mode: Flags): void {
   }
 }
 
-function queueSubscriptions(source: Source, changed: Flags): void {
-  const sync = source.syncSubscriptions_;
-  if (sync !== null) {
-    if (changed & Flags.Dirty) {
-      sync.flags_ |= Flags.Dirty;
-    }
-    queueSource(source, Flags.None);
-  }
-  const async = source.asyncSubscriptions_;
-  if (async !== null) {
-    if (changed & Flags.Dirty) {
-      async.flags_ |= Flags.Dirty;
-    }
-    queueSource(source, Flags.QueueModeAsync);
-  }
-}
-
 function enqueueWatch(observer: WatchNode, flags: Flags): void {
   if (!(flags & (Flags.Disposed | Flags.QueuedSyncSource))) {
     observer.flags_ = flags | Flags.QueuedSyncSource;
@@ -568,9 +476,6 @@ function enqueueWatch(observer: WatchNode, flags: Flags): void {
 
 // A write confirms direct inputs. Descendants only need upstream validation.
 function propagate(source: ValueNode): void {
-  if (source.flags_ & Flags.HasSubscriptions) {
-    queueSubscriptions(source, Flags.Dirty);
-  }
   let hasSingleWrite = false;
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
     const observer = link.observer_;
@@ -608,9 +513,6 @@ function markRepeatedWatchWrites(source: ValueNode): void {
 
 function propagatePending(source: ComputedNode): void {
   top: while (true) {
-    if (source.flags_ & Flags.HasSubscriptions) {
-      queueSubscriptions(source, Flags.None);
-    }
     for (let link = source.subHead_; link !== null; link = link.subNext_) {
       const observer = link.observer_;
       const flags = observer.flags_;
@@ -685,14 +587,6 @@ function updateComputed(node: ComputedNode): void {
       if (__DEV__) {
         runtime.__dev_spy?.({ type: "compute-end", node, nextValue: value, changed: true });
       }
-      if (node.flags_ & Flags.HasSubscriptions) {
-        if (node.syncSubscriptions_ !== null) {
-          node.syncSubscriptions_.flags_ |= Flags.Dirty;
-        }
-        if (node.asyncSubscriptions_ !== null) {
-          node.asyncSubscriptions_.flags_ |= Flags.Dirty;
-        }
-      }
       for (let link = node.subHead_; link !== null; link = link.subNext_) {
         if ((link.observer_.flags_ & Flags.KindMask) === Flags.KindComputedNode) {
           link.observer_.flags_ |= Flags.Dirty;
@@ -743,23 +637,46 @@ export function runEffect(effect: WatchNode): void {
   const previousObserver = runtime.currentObserver_;
   runtime.currentObserver_ = null;
   effect.flags_ |= Flags.Running;
+  const isSub = !!(effect.flags_ & Flags.DepsStatic);
   if (__DEV__) {
-    runtime.__dev_spy?.({ type: "effect-start", node: effect });
+    if (!isSub) {
+      runtime.__dev_spy?.({ type: "effect-start", node: effect });
+    }
   }
   try {
-    runEffectCleanup(effect);
-    if (!(effect.flags_ & Flags.Disposed)) {
-      effect.flags_ ^= Flags.TrackPhase;
-      effect.depTail_ = null;
-      runtime.currentObserver_ = effect;
-      effect.cleanup_ = effect.callback_() || null;
-    }
-    if (__DEV__) {
-      runtime.__dev_spy?.({ type: "effect-end", node: effect });
+    if (isSub) {
+      const link = effect.depHead_!;
+      link.flags_ = Flags.None;
+      const source = link.source_;
+      const value = source.value_;
+      link.value_ = value;
+      if (__DEV__) {
+        runtime.__dev_spy?.({
+          type: "subscribe",
+          node: source,
+          value,
+          sync: !(effect.flags_ & Flags.QueueModeAsync),
+          count: 1,
+        });
+      }
+      (effect.callback_ as unknown as Subscriber).call(effect, value);
+    } else {
+      runEffectCleanup(effect);
+      if (!(effect.flags_ & Flags.Disposed)) {
+        effect.flags_ ^= Flags.TrackPhase;
+        effect.depTail_ = null;
+        runtime.currentObserver_ = effect;
+        effect.cleanup_ = effect.callback_() || null;
+      }
+      if (__DEV__) {
+        runtime.__dev_spy?.({ type: "effect-end", node: effect });
+      }
     }
   } catch (error) {
     if (__DEV__) {
-      runtime.__dev_spy?.({ type: "effect-end", node: effect, error });
+      if (!isSub) {
+        runtime.__dev_spy?.({ type: "effect-end", node: effect, error });
+      }
     }
     throw error;
   } finally {
@@ -767,7 +684,7 @@ export function runEffect(effect: WatchNode): void {
     effect.flags_ &= ~Flags.Running;
     if (effect.flags_ & Flags.Disposed) {
       finalizeEffectDisposal(effect);
-    } else {
+    } else if (!isSub) {
       trimDependencies(effect);
     }
   }
@@ -825,10 +742,7 @@ function flushEffects(mode: Flags): void {
           item.flags_ &= ~(isAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource);
           if (!(item.flags_ & Flags.Disposed)) {
             const source = item as Source;
-            const list = isAsync ? source.asyncSubscriptions_ : source.syncSubscriptions_;
-            if (list !== null) {
-              broadcastSource(source, list);
-            } else if (source.subHead_ !== null) {
+            if (source.subHead_ !== null) {
               readSource(source);
             }
           }
@@ -888,36 +802,6 @@ export function untrack<T>(fn: () => T): T {
     return fn();
   } finally {
     runtime.currentObserver_ = previousObserver;
-  }
-}
-
-function broadcastSource(source: Source, list: SubscriptionList): void {
-  const value = readSource(source);
-  const flags = list.flags_;
-  list.flags_ = flags & ~(Flags.Dirty | Flags.ForceNotify);
-  const equal = source.equal_;
-  const changed =
-    flags & Flags.ForceNotify ||
-    (flags & Flags.Dirty &&
-      (equal === null ? list.value_ !== value : equal === false || different(equal, list.value_, value)));
-  list.value_ = value;
-  if (changed) {
-    if (__DEV__) {
-      if (runtime.__dev_spy) {
-        let count = 0;
-        for (let item = list.subHead_; item !== null; item = item.subNext_) {
-          count++;
-        }
-        runtime.__dev_spy({
-          type: "subscribe",
-          node: source,
-          value,
-          sync: !(flags & Flags.QueueModeAsync),
-          count,
-        });
-      }
-    }
-    invokeCallbacks(list, value);
   }
 }
 

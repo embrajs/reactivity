@@ -1,6 +1,5 @@
-import type { ICallbackItem } from "../broadcast";
 import { Flags } from "../constants";
-import type { ValueNode } from "../node";
+import type { ValueNode, WatchNode } from "../node";
 import { writable } from "../reactivity";
 import { NOOP_, runtime, syncQueue_ } from "../runtime";
 import type { Cleanup, EffectContext, Owned, Readable, Writable } from "../types";
@@ -27,27 +26,27 @@ export function subscribeCollection(collection: ReactiveCollection, flags: Flags
       ? (collection.cleanup_ ??= writable<any[]>([], { equal: false }) as BatchChannel)
       : (collection.changed_ ??= writable<any[]>([], { equal: false }) as BatchChannel);
   const items = channel.value_;
-  if (!(channel.flags_ & Flags.HasSubscriptions)) {
+  if (channel.subHead_ === null) {
     items.length = 0;
   }
   return channel.subscribe(function (this: EffectContext) {
-    const item = this as unknown as ICallbackItem;
-    const list = item.list_!;
+    const watchNode = this as unknown as WatchNode;
     if (flags & Flags.Pending) {
-      for (let i = 0; i < items.length && item.list_ !== null; i++) {
+      for (let i = 0; i < items.length && !(watchNode.flags_ & Flags.Disposed); i++) {
         fn.call(this, items[i]);
       }
     } else {
       fn.call(this, items);
     }
-    if (list.next_ === null) {
+    const next = watchNode.depHead_!.subNext_;
+    if (next === null || !(next.flags_ & Flags.Dirty)) {
       items.length = 0;
     }
   }, SYNC_SUB);
 }
 
 export function hasChannelListeners(channel: BatchChannel | null | undefined): channel is BatchChannel {
-  return channel != null && !!(channel.flags_ & Flags.HasSubscriptions);
+  return channel != null && channel.subHead_ !== null;
 }
 
 export function queueChannel<T>(channel: BatchChannel<T> | null, value: T): void {
@@ -130,7 +129,7 @@ export function notifyCollection(collection: ReactiveCollection): void {
   const rawSource = !(collection.flags_ & Flags.Disposed) ? (collection.source_ as ValueNode | null) : null;
   const source =
     rawSource !== null &&
-    (rawSource.subHead_ !== null || rawSource.flags_ & Flags.HasSubscriptions) &&
+    rawSource.subHead_ !== null &&
     (!(syncQueue_.flags_ & Flags.Running) || !(rawSource.flags_ & Flags.Dirty))
       ? rawSource
       : null;

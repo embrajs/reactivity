@@ -71,11 +71,11 @@ describe("spy", () => {
       "set",
       "compute-start",
       "compute-end",
-      "subscribe",
       "compute-start",
       "compute-end",
       "effect-start",
       "effect-end",
+      "subscribe",
       "batch-end",
     ]);
 

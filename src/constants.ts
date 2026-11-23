@@ -16,7 +16,6 @@ export enum Flags {
   QueueModeAsync = 1 << 5,
   Pending = 1 << 6, // A Computed needs validation, or a Watch input has multiple unconsumed changes.
   QueuedSyncSource = 1 << 7,
-  HasSubscriptions = 1 << 8, // At least one synchronous or asynchronous subscription group exists.
 
   // Unvisited links are removed after each collection, so one alternating bit is sufficient.
   TrackPhase = 1 << 9,
@@ -25,7 +24,4 @@ export enum Flags {
   Connected = 1 << 12, // An observer's upstream links are attached.
   Initialized = 1 << 13,
   WatchSingleWrite = 1 << 14, // A Value has Watch links to mark on its next coalesced write.
-
-  // SubscriptionList-only; its flags never contain the node's Disposed bit.
-  ForceNotify = 1 << 0,
 }

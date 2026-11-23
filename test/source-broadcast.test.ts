@@ -7,7 +7,7 @@ describe("source-owned subscriptions", () => {
     expect("subscribe" in api).toBe(false);
   });
 
-  it.each([true, false])("compares a published input once for all subscribers, sync=%s", async (sync) => {
+  it.each([true, false])("reuses the source equality check for single-write subscribers, sync=%s", async (sync) => {
     const equal = vi.fn((a: number, b: number) => a === b);
     const source = writable<number>(0, { equal });
     const seen = Array.from({ length: 32 }, () => vi.fn());
@@ -15,7 +15,7 @@ describe("source-owned subscriptions", () => {
     equal.mockClear();
     source.set(1);
     await Promise.resolve();
-    expect(equal).toHaveBeenCalledTimes(2); // Source setter + one source broadcast.
+    expect(equal).toHaveBeenCalledTimes(1); // Source setter only; single write skips per-subscriber equal.
     for (const callback of seen) {
       expect(callback.mock.calls).toEqual([[0], [1]]);
     }
@@ -39,7 +39,7 @@ describe("source-owned subscriptions", () => {
     stopAsync();
   });
 
-  it("broadcasts the final value to a subscriber joining pending work", async () => {
+  it("delivers only to the joining subscriber when an existing subscriber reverted to its baseline", async () => {
     const source = writable(0);
     const first = vi.fn();
     const second = vi.fn();
@@ -48,13 +48,13 @@ describe("source-owned subscriptions", () => {
     const stopSecond = source.subscribe(second);
     source.set(0);
     await Promise.resolve();
-    expect(first.mock.calls).toEqual([[0], [0]]);
+    expect(first.mock.calls).toEqual([[0]]);
     expect(second.mock.calls).toEqual([[1], [0]]);
     stopFirst();
     stopSecond();
   });
 
-  it("uses one captured argument per broadcast while get remains live", () => {
+  it("delivers the live source value at each subscriber's turn", () => {
     const source = writable(0);
     const seen: unknown[] = [];
     const stopFirst = source.subscribe(
@@ -73,9 +73,8 @@ describe("source-owned subscriptions", () => {
     source.set(1);
     expect(seen).toEqual([
       ["a", 1],
-      ["b", 1, 2],
-      ["a", 2],
       ["b", 2, 2],
+      ["a", 2],
     ]);
     stopFirst();
     stopSecond();
