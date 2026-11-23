@@ -21,9 +21,9 @@ export function warnDevOnly(): void {
  * @category Debug
  */
 export interface SpyCause {
-  source: unknown;
-  prevValue: unknown;
-  nextValue: unknown;
+  source: any;
+  prevValue: any;
+  nextValue: any;
 }
 
 /**
@@ -36,29 +36,29 @@ export type SpyEvent =
   | { type: "batch-end"; error?: unknown }
   | { type: "flush-start"; async: boolean }
   | { type: "flush-end"; async: boolean; error?: unknown }
-  | { type: "set"; node: unknown; prevValue: unknown; nextValue: unknown; changed: boolean }
-  | { type: "compute-start"; node: unknown }
+  | { type: "set"; node: any; prevValue: any; nextValue: any; changed: boolean }
+  | { type: "compute-start"; node: any }
   | {
       type: "compute-end";
-      node: unknown;
-      prevValue: unknown;
-      nextValue: unknown;
+      node: any;
+      prevValue: any;
+      nextValue: any;
       changed: boolean;
       duration: number;
       cause?: SpyCause;
       error?: unknown;
     }
-  | { type: "effect-start"; node: unknown }
-  | { type: "effect-end"; node: unknown; duration: number; cause?: SpyCause; error?: unknown }
-  | { type: "subscribe"; node: unknown; value: unknown; sync: boolean; count: number; cause?: SpyCause }
-  | { type: "dispose"; node: unknown };
+  | { type: "effect-start"; node: any }
+  | { type: "effect-end"; node: any; duration: number; cause?: SpyCause; error?: unknown }
+  | { type: "subscribe"; node: any; value: any; sync: boolean; count: number; cause?: SpyCause }
+  | { type: "dispose"; node: any };
 
 /**
  * Filter predicate or node name pattern for {@link spy}.
  *
  * @category Debug
  */
-export type SpyFilter = string | RegExp | ((target: unknown) => boolean);
+export type SpyFilter = string | RegExp | ((target: any) => boolean);
 
 /**
  * Options for {@link spy} with a custom listener.

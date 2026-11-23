@@ -41,12 +41,12 @@ export interface TraceConfig {
  * @category Debug
  */
 export interface TraceDepDiff {
-  dep: unknown;
+  dep: any;
   kind: NodeKind | null;
   name: string;
   status: "added" | "updated" | "unchanged" | "removed";
-  value: unknown;
-  prevValue?: unknown;
+  value: any;
+  prevValue?: any;
 }
 
 /**
@@ -55,11 +55,11 @@ export interface TraceDepDiff {
  * @category Debug
  */
 export interface TraceEvent {
-  target: unknown;
+  target: any;
   kind: NodeKind;
   name: string;
-  value?: unknown;
-  prevValue?: unknown;
+  value?: any;
+  prevValue?: any;
   duration?: number;
   cause?: SpyCause;
   deps: TraceDepDiff[];

@@ -27,11 +27,11 @@ Fine-grained reactivity with explicit ownership, built for AI agents.
 npm add @embra/reactivity
 ```
 
-| Entry Point | Purpose |
-| --- | --- |
-| `@embra/reactivity` | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `batch`, `flush`, `untrack`) and reactive collections |
-| `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>` |
-| `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter |
+| Entry Point               | Purpose                                                                                                                        |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `@embra/reactivity`       | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `batch`, `flush`, `untrack`) and reactive collections |
+| `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>`                                       |
+| `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter                                             |
 
 ## Quick Start
 
@@ -211,15 +211,7 @@ Additional hooks exported by `@embra/reactivity/react`: `useWritable`, `useReada
 
 ```ts
 import { computed, writable } from "@embra/reactivity";
-import {
-  customFormatter,
-  formatTree,
-  getDependencyTree,
-  inspect,
-  record,
-  spy,
-  trace,
-} from "@embra/reactivity/debug";
+import { customFormatter, formatTree, getDependencyTree, inspect, record, spy, trace } from "@embra/reactivity/debug";
 
 // Enable Chrome DevTools custom object formatter
 customFormatter();

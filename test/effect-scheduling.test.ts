@@ -2,39 +2,39 @@ import { describe, expect, it, vi } from "vitest";
 import { batch, computed, derived, watch, writable } from "../src";
 
 describe("effect scheduling", () => {
-  it.each([
-    false,
-    true,
-  ])("requeues an earlier skipped effect when a later callback writes its input, sync=%s", async (sync) => {
-    const trigger = writable(0);
-    const source = writable(0);
-    const callback = vi.fn();
-    const cleanup = vi.fn();
-    const stopWriter = trigger.subscribe(
-      (value) => {
-        if (value === 1) source.set(2);
-      },
-      { sync, immediate: false },
-    );
-    const stopReader = watch(
-      () => {
-        callback(source.get());
-        return cleanup;
-      },
-      { sync },
-    );
+  it.each([false, true])(
+    "requeues an earlier skipped effect when a later callback writes its input, sync=%s",
+    async (sync) => {
+      const trigger = writable(0);
+      const source = writable(0);
+      const callback = vi.fn();
+      const cleanup = vi.fn();
+      const stopWriter = trigger.subscribe(
+        (value) => {
+          if (value === 1) source.set(2);
+        },
+        { sync, immediate: false },
+      );
+      const stopReader = watch(
+        () => {
+          callback(source.get());
+          return cleanup;
+        },
+        { sync },
+      );
 
-    batch(() => {
-      source.set(1);
-      source.set(0);
-      trigger.set(1);
-    });
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0], [2]]);
-    expect(cleanup).toHaveBeenCalledOnce();
-    stopReader();
-    stopWriter();
-  });
+      batch(() => {
+        source.set(1);
+        source.set(0);
+        trigger.set(1);
+      });
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0], [2]]);
+      expect(cleanup).toHaveBeenCalledOnce();
+      stopReader();
+      stopWriter();
+    },
+  );
 
   it("skips a subscriber whose input was reverted before its turn", () => {
     const source = writable(0);
@@ -72,38 +72,38 @@ describe("effect scheduling", () => {
     stopSecond();
   });
 
-  it.each([
-    false,
-    true,
-  ])("preserves an asynchronous resource after the intermediate computed value is reverted, fixed=%s", async (fixed) => {
-    const source = writable(0);
-    const cleanup = vi.fn();
-    const callback = vi.fn();
-    const stopSync = watch(
-      () => {
-        source.get();
-      },
-      { sync: true },
-    );
-    const input = fixed ? derived(source, (value) => value) : computed(() => source.get());
-    const stopAsync = watch(() => {
-      callback(input.get());
-      return cleanup;
-    });
-    source.set(1);
-    expect(input.get()).toBe(1);
-    source.set(0);
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0]]);
-    expect(cleanup).not.toHaveBeenCalled();
-    source.set(2);
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0], [2]]);
-    expect(cleanup).toHaveBeenCalledOnce();
-    stopAsync();
-    stopSync();
-    input.dispose();
-  });
+  it.each([false, true])(
+    "preserves an asynchronous resource after the intermediate computed value is reverted, fixed=%s",
+    async (fixed) => {
+      const source = writable(0);
+      const cleanup = vi.fn();
+      const callback = vi.fn();
+      const stopSync = watch(
+        () => {
+          source.get();
+        },
+        { sync: true },
+      );
+      const input = fixed ? derived(source, (value) => value) : computed(() => source.get());
+      const stopAsync = watch(() => {
+        callback(input.get());
+        return cleanup;
+      });
+      source.set(1);
+      expect(input.get()).toBe(1);
+      source.set(0);
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0]]);
+      expect(cleanup).not.toHaveBeenCalled();
+      source.set(2);
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0], [2]]);
+      expect(cleanup).toHaveBeenCalledOnce();
+      stopAsync();
+      stopSync();
+      input.dispose();
+    },
+  );
 
   it("delivers only to the joining async subscriber when an existing subscriber reverted to its baseline", async () => {
     const source = writable(0);
@@ -123,56 +123,56 @@ describe("effect scheduling", () => {
     stopSecond();
   });
 
-  it.each([
-    false,
-    true,
-  ])("reuses output equality for one Computed publication and compares after multiple publications, fixed=%s", async (fixed) => {
-    const source = writable(0);
-    const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
-    const input = fixed
-      ? derived(source, (value) => ({ id: value % 10 }), { equal })
-      : computed(() => ({ id: source.get() % 10 }), { equal });
-    const callback = vi.fn();
-    const cleanup = vi.fn();
-    const stopSync = watch(
-      () => {
-        input.get();
-      },
-      { sync: true },
-    );
-    const stopAsync = watch(() => {
-      callback(input.get().id);
-      return cleanup;
-    });
+  it.each([false, true])(
+    "reuses output equality for one Computed publication and compares after multiple publications, fixed=%s",
+    async (fixed) => {
+      const source = writable(0);
+      const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
+      const input = fixed
+        ? derived(source, (value) => ({ id: value % 10 }), { equal })
+        : computed(() => ({ id: source.get() % 10 }), { equal });
+      const callback = vi.fn();
+      const cleanup = vi.fn();
+      const stopSync = watch(
+        () => {
+          input.get();
+        },
+        { sync: true },
+      );
+      const stopAsync = watch(() => {
+        callback(input.get().id);
+        return cleanup;
+      });
 
-    source.set(1);
-    source.set(10);
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0]]);
-    expect(cleanup).not.toHaveBeenCalled();
-    expect(equal.mock.calls.map(([a, b]) => [a.id, b.id])).toEqual([
-      [0, 1],
-      [1, 0],
-      [0, 0],
-    ]);
+      source.set(1);
+      source.set(10);
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0]]);
+      expect(cleanup).not.toHaveBeenCalled();
+      expect(equal.mock.calls.map(([a, b]) => [a.id, b.id])).toEqual([
+        [0, 1],
+        [1, 0],
+        [0, 0],
+      ]);
 
-    equal.mockClear();
-    source.set(11);
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0], [1]]);
-    expect(cleanup).toHaveBeenCalledOnce();
-    expect(equal).toHaveBeenCalledOnce();
+      equal.mockClear();
+      source.set(11);
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0], [1]]);
+      expect(cleanup).toHaveBeenCalledOnce();
+      expect(equal).toHaveBeenCalledOnce();
 
-    equal.mockClear();
-    source.set(21);
-    await Promise.resolve();
-    expect(callback.mock.calls).toEqual([[0], [1]]);
-    expect(cleanup).toHaveBeenCalledOnce();
-    expect(equal).toHaveBeenCalledOnce();
-    stopAsync();
-    stopSync();
-    input.dispose();
-  });
+      equal.mockClear();
+      source.set(21);
+      await Promise.resolve();
+      expect(callback.mock.calls).toEqual([[0], [1]]);
+      expect(cleanup).toHaveBeenCalledOnce();
+      expect(equal).toHaveBeenCalledOnce();
+      stopAsync();
+      stopSync();
+      input.dispose();
+    },
+  );
 
   it("defers synchronous work until the current asynchronous pass finishes", async () => {
     const trigger = writable(0);

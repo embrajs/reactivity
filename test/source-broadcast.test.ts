@@ -195,33 +195,33 @@ describe("source-owned subscriptions", () => {
     stopFresh();
   });
 
-  it.each([
-    true,
-    false,
-  ])("counts subscriptions and watches together for recursive disconnection, static=%s", (fixed) => {
-    const source = writable(0);
-    const compute = vi.fn((value: number) => value + 1);
-    const first = fixed ? derived(source, compute) : computed(() => compute(source.get()));
-    const second = fixed ? derived(first, (value) => value + 1) : computed(() => first.get() + 1);
-    const callback = vi.fn();
-    const stopSub = second.subscribe(callback, { sync: true });
-    const stopWatch = watch(
-      () => {
-        second.get();
-      },
-      { sync: true },
-    );
-    stopWatch();
-    source.set(1);
-    expect(callback.mock.calls).toEqual([[2], [3]]);
-    stopSub();
-    source.set(2);
-    expect(compute).toHaveBeenCalledTimes(2);
-    expect(second.get()).toBe(4);
-    expect(compute).toHaveBeenCalledTimes(3);
-    second.dispose();
-    first.dispose();
-  });
+  it.each([true, false])(
+    "counts subscriptions and watches together for recursive disconnection, static=%s",
+    (fixed) => {
+      const source = writable(0);
+      const compute = vi.fn((value: number) => value + 1);
+      const first = fixed ? derived(source, compute) : computed(() => compute(source.get()));
+      const second = fixed ? derived(first, (value) => value + 1) : computed(() => first.get() + 1);
+      const callback = vi.fn();
+      const stopSub = second.subscribe(callback, { sync: true });
+      const stopWatch = watch(
+        () => {
+          second.get();
+        },
+        { sync: true },
+      );
+      stopWatch();
+      source.set(1);
+      expect(callback.mock.calls).toEqual([[2], [3]]);
+      stopSub();
+      source.set(2);
+      expect(compute).toHaveBeenCalledTimes(2);
+      expect(second.get()).toBe(4);
+      expect(compute).toHaveBeenCalledTimes(3);
+      second.dispose();
+      first.dispose();
+    },
+  );
 
   it("keeps pending async subscriptions after the last Watch is removed", async () => {
     const source = writable(0);

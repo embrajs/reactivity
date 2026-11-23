@@ -37,7 +37,6 @@ export function useWatch(
     setDepsState({ deps, version: depsVersion });
   }
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: depsVersion tracks shallow changes in deps
   useEffect(() => {
     return watch(
       function (this: EffectContext) {

@@ -67,23 +67,13 @@ describe("readable predicates", () => {
     expect(isWritable(fixed)).toBe(false);
   });
 
-  it.each([
-    null,
-    undefined,
-    0,
-    "",
-    true,
-    0n,
-    Symbol(),
-    () => {},
-    [],
-    {},
-    { value: 1 },
-    { $: 1 },
-  ])("rejects non-readables: %s", (value) => {
-    expect(isReadable(value)).toBe(false);
-    expect(isWritable(value)).toBe(false);
-  });
+  it.each([null, undefined, 0, "", true, 0n, Symbol(), () => {}, [], {}, { value: 1 }, { $: 1 }])(
+    "rejects non-readables: %s",
+    (value) => {
+      expect(isReadable(value)).toBe(false);
+      expect(isWritable(value)).toBe(false);
+    },
+  );
 
   it("rejects method-shaped objects and incompatible contract versions", () => {
     const get = vi.fn(() => 1);

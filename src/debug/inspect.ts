@@ -1,7 +1,11 @@
+import type { ReadonlyReactiveList } from "../collections/reactiveList";
+import type { ReadonlyReactiveMap } from "../collections/reactiveMap";
+import type { ReadonlyReactiveSet } from "../collections/reactiveSet";
 import { Flags } from "../constants";
 import type { ComputedNode, Observer, Source, ValueNode, WatchNode } from "../node";
 import { isReadable } from "../reactivity";
 import { NOOP_, runtime } from "../runtime";
+import type { Readable } from "../types";
 
 /**
  * Kind of reactive node or collection inspected by debug utilities.
@@ -15,10 +19,10 @@ export type NodeKind = "writable" | "readable" | "computed" | "derived" | "watch
  *
  * @category Debug
  */
-export interface NodeSnapshot {
+export interface NodeSnapshot<TValue = any> {
   kind: NodeKind;
   name: string;
-  value: unknown;
+  value: TValue;
   initialized: boolean;
   dirty: boolean;
   pending: boolean;
@@ -26,8 +30,8 @@ export interface NodeSnapshot {
   connected: boolean;
   disposed: boolean;
   disposedAt: Error | null;
-  deps: unknown[];
-  subs: unknown[];
+  deps: any[];
+  subs: any[];
   syncSubscriberCount: number;
   asyncSubscriberCount: number;
 }
@@ -37,11 +41,11 @@ export interface NodeSnapshot {
  *
  * @category Debug
  */
-export interface GraphTreeNode {
-  node: unknown;
+export interface GraphTreeNode<TValue = any> {
+  node: any;
   kind: NodeKind;
   name: string;
-  value: unknown;
+  value: TValue;
   dirty: boolean;
   pending: boolean;
   running: boolean;
@@ -209,8 +213,12 @@ function countSubscribers(source: Source, async: boolean): number {
  *
  * @category Debug
  */
-export function inspect(): NodeSnapshot | null;
-export function inspect(target: unknown): NodeSnapshot | null;
+export function inspect<TValue = any>(): NodeSnapshot<TValue> | null;
+export function inspect<TValue>(target: Readable<TValue>): NodeSnapshot<TValue> | null;
+export function inspect<TValue>(target: ReadonlyReactiveList<TValue>): NodeSnapshot<TValue[]> | null;
+export function inspect<K, V>(target: ReadonlyReactiveMap<K, V>): NodeSnapshot<Map<K, V>> | null;
+export function inspect<TValue>(target: ReadonlyReactiveSet<TValue>): NodeSnapshot<Set<TValue>> | null;
+export function inspect<TValue = any>(target: unknown): NodeSnapshot<TValue> | null;
 export function inspect(...args: unknown[]): NodeSnapshot | null {
   const node = args.length === 0 ? runtime.currentObserver_ : args[0];
   const kind = getNodeKind(node);

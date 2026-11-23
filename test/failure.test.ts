@@ -150,53 +150,53 @@ const factories = [
 ];
 
 describe.each(factories)("$name failures", ({ create }) => {
-  it.each([
-    "computation",
-    "equality",
-  ])("preserves the published output and supports explicit rebuilding after %s fails", (kind) => {
-    const source = writable(0);
-    const error = new Error(kind);
-    let failed = false;
-    const build = () =>
-      create(
-        source,
-        (value) => {
-          if (failed && kind === "computation") {
-            throw error;
-          }
-          return value * 2;
-        },
-        (a, b) => {
-          if (failed && kind === "equality") {
-            throw error;
-          }
-          return a === b;
-        },
-      );
-    const input = build();
-    const output = computed(() => input.get() + 1);
-    const callback = vi.fn();
-    const stop = output.subscribe(callback, { sync: true });
-    failed = true;
-    expect(() => source.set(1)).toThrow(error);
-    expect(callback.mock.calls).toEqual([[1]]);
-    stop();
-    output.dispose();
-    input.dispose();
-    expect(input.get()).toBe(0);
-    const frozen = derived(input, (value) => value + 10);
-    expect(frozen.get()).toBe(10);
-    failed = false;
-    const fresh = build();
-    const stopFresh = fresh.subscribe(callback, { sync: true });
-    source.set(2);
-    expect(callback.mock.calls).toEqual([[1], [2], [4]]);
-    expect(frozen.get()).toBe(10);
-    stopFresh();
-    fresh.dispose();
-    frozen.dispose();
-    source.dispose();
-  });
+  it.each(["computation", "equality"])(
+    "preserves the published output and supports explicit rebuilding after %s fails",
+    (kind) => {
+      const source = writable(0);
+      const error = new Error(kind);
+      let failed = false;
+      const build = () =>
+        create(
+          source,
+          (value) => {
+            if (failed && kind === "computation") {
+              throw error;
+            }
+            return value * 2;
+          },
+          (a, b) => {
+            if (failed && kind === "equality") {
+              throw error;
+            }
+            return a === b;
+          },
+        );
+      const input = build();
+      const output = computed(() => input.get() + 1);
+      const callback = vi.fn();
+      const stop = output.subscribe(callback, { sync: true });
+      failed = true;
+      expect(() => source.set(1)).toThrow(error);
+      expect(callback.mock.calls).toEqual([[1]]);
+      stop();
+      output.dispose();
+      input.dispose();
+      expect(input.get()).toBe(0);
+      const frozen = derived(input, (value) => value + 10);
+      expect(frozen.get()).toBe(10);
+      failed = false;
+      const fresh = build();
+      const stopFresh = fresh.subscribe(callback, { sync: true });
+      source.set(2);
+      expect(callback.mock.calls).toEqual([[1], [2], [4]]);
+      expect(frozen.get()).toBe(10);
+      stopFresh();
+      fresh.dispose();
+      frozen.dispose();
+      source.dispose();
+    },
+  );
 
   it("detects a cycle and permits explicit disposal", () => {
     const source = writable(0);

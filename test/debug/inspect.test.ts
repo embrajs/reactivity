@@ -114,8 +114,8 @@ describe("inspect", () => {
 
     expect(inspect(list)).toMatchObject({ kind: "list", value: [1, 2], connected: false, disposed: false });
     expect(inspect(map)).toMatchObject({ kind: "map", connected: false, disposed: false });
-    expect((inspect(map)?.value as Map<string, number>).get("a")).toBe(1);
-    expect((inspect(set)?.value as Set<string>).has("x")).toBe(true);
+    expect(inspect(map)?.value.get("a")).toBe(1);
+    expect(inspect(set)?.value.has("x")).toBe(true);
 
     // Inspecting inside a computed must not track the collection
     let runs = 0;
