@@ -252,7 +252,7 @@ ValueNode.prototype = ComputedNode.prototype = {
 
   toJSON(key?: string): unknown {
     const value = this.get() as { toJSON?: (key?: string) => unknown } | null | undefined;
-    return typeof value?.toJSON === "function" ? value.toJSON(key) : value;
+    return value?.toJSON ? value.toJSON(key) : value;
   },
 
   toString(): string {

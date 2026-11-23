@@ -19,6 +19,8 @@ Fine-grained reactivity with explicit ownership, built for AI agents.
 - **Predictable scheduling**: `watch()` and `source.subscribe()` batch notifications in a microtask by default, with `{ sync: true }` and `batch()` when synchronous execution is needed.
 - **Text-native observability**: `@embra/reactivity/debug` provides non-intrusive snapshots (`inspect`), plain-text dependency and observer trees (`formatTree`), causal attribution (`spy` / `trace`), and deterministic text timelines (`record`)—designed for tests and AI agent diagnostics, with zero production overhead via package export conditions.
 
+![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)
+
 ## Install
 
 ```sh
