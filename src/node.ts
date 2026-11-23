@@ -269,7 +269,7 @@ ValueNode.prototype = ComputedNode.prototype = {
           if (options?.immediate !== false) {
             node.flags_ |= Flags.Running;
             try {
-              (node.callback_ as unknown as Subscriber).call(node, value);
+              node.callback_(value);
             } finally {
               node.flags_ &= ~Flags.Running;
               if (node.flags_ & Flags.Disposed) {
@@ -319,7 +319,7 @@ declare class WatchNode implements IDepList, EffectContext {
   depHead_: Link | null;
   depTail_: Link | null;
   cleanup_: Cleanup | null;
-  callback_: (this: EffectContext) => void | Cleanup;
+  callback_: (this: EffectContext, value?: any) => void | Cleanup;
   dispose: Cleanup;
   constructor(callback: WatchEffect, flags: Flags);
 }
@@ -448,29 +448,29 @@ function trimDependencies(observer: Observer): void {
   unlinkDependencies(link);
 }
 
+function pushQueue(item: Source | WatchNode, flags: Flags): void {
+  const isAsync = !!(flags & Flags.QueueModeAsync);
+  const queue = isAsync ? asyncQueue_ : syncQueue_;
+  queue.items_[queue.tail_++] = item;
+  if (isAsync && !(queue.flags_ & Flags.Running)) {
+    queue.flags_ |= Flags.Running;
+    queueMicrotask(flushAsyncQueue);
+  }
+}
+
 // A publication dirties direct consumers; descendants only need validation.
 function queueSource(source: Source, mode: Flags): void {
   const queued = mode & Flags.QueueModeAsync ? Flags.QueuedAsyncSource : Flags.QueuedSyncSource;
   if (!(source.flags_ & queued)) {
     source.flags_ |= queued;
-    const queue = mode & Flags.QueueModeAsync ? asyncQueue_ : syncQueue_;
-    queue.items_[queue.tail_++] = source;
-    if (mode & Flags.QueueModeAsync && !(queue.flags_ & Flags.Running)) {
-      queue.flags_ |= Flags.Running;
-      queueMicrotask(flushAsyncQueue);
-    }
+    pushQueue(source, mode);
   }
 }
 
 function enqueueWatch(observer: WatchNode, flags: Flags): void {
   if (!(flags & (Flags.Disposed | Flags.QueuedSyncSource))) {
     observer.flags_ = flags | Flags.QueuedSyncSource;
-    const queue = flags & Flags.QueueModeAsync ? asyncQueue_ : syncQueue_;
-    queue.items_[queue.tail_++] = observer;
-    if (queue === asyncQueue_ && !(queue.flags_ & Flags.Running)) {
-      queue.flags_ |= Flags.Running;
-      queueMicrotask(flushAsyncQueue);
-    }
+    pushQueue(observer, flags);
   }
 }
 
@@ -659,7 +659,7 @@ export function runEffect(effect: WatchNode): void {
           count: 1,
         });
       }
-      (effect.callback_ as unknown as Subscriber).call(effect, value);
+      effect.callback_(value);
     } else {
       runEffectCleanup(effect);
       if (!(effect.flags_ & Flags.Disposed)) {
