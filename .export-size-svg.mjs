@@ -24,28 +24,39 @@ export default defineConfig({
   },
   exports: [
     {
-      title: "{ readable, writable, computed, watch } (core)",
-      code: "export { readable, writable, computed, watch } from './src'",
+      title: "import { ... } from '@embra/reactivity'",
+      exports: [
+        {
+          title: "{ readable, writable, computed, watch } (core)",
+          code: "export { readable, writable, computed, watch } from './src'",
+        },
+        {
+          title: "{ reactiveList, reactiveMap, reactiveSet } (collections)",
+          code: "export { reactiveList, reactiveMap, reactiveSet } from './src/collections'",
+          externals: ["../node", "../constants", "../reactivity", "../runtime"],
+        },
+        {
+          title: "{ derived, batch, isReadable, isWritable, untrack, flush }",
+          code: "export { derived, batch, isReadable, isWritable, untrack, flush } from './src'",
+          externals: ["./node", "./constants", "./runtime"],
+        },
+        {
+          title: "{ until }",
+          code: "export { until } from './src'",
+          externals: ["./node", "./constants", "./runtime"],
+          externalSymbols: ["watch"],
+        },
+      ],
     },
     {
-      title: "{ reactiveList, reactiveMap, reactiveSet } (collections)",
-      code: "export { reactiveList, reactiveMap, reactiveSet } from './src/collections'",
-      externals: ["../node", "../constants", "../reactivity", "../runtime"],
-    },
-    {
-      title: "{ derived, batch, isReadable, isWritable, untrack, flush }",
-      code: "export { derived, batch, isReadable, isWritable, untrack, flush } from './src'",
-      externals: ["./node", "./constants", "./runtime"],
-    },
-    {
-      title: "{ until, watch }",
-      code: "export { until, watch } from './src'",
-      externals: ["./node", "./constants", "./runtime"],
-    },
-    {
-      title: "React Hooks and Components (@embra/reactivity/react)",
-      code: "export * from './src/react'",
-      externals: ["@embra/reactivity", "react"],
+      title: "import { ... } from '@embra/reactivity/react'",
+      exports: [
+        {
+          title: "React Hooks and Components",
+          code: "export * from './src/react'",
+          externals: ["@embra/reactivity", "react"],
+        },
+      ],
     },
   ],
 });
