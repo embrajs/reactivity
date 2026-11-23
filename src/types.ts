@@ -133,6 +133,25 @@ export interface Readable<T = any> {
    */
   get(): T;
   /**
+   * Returns the current value without tracking this source as a dependency.
+   *
+   * Still evaluates lazy or dirty {@link computed} / {@link derived} nodes to
+   * ensure the returned value is up to date. Defined on the prototype; call as
+   * a method (`source.peek()`).
+   *
+   * @example
+   * ```ts
+   * const count = writable(0);
+   * const trigger = writable(0);
+   *
+   * watch(() => {
+   *   trigger.get(); // tracked
+   *   console.log(count.peek()); // untracked
+   * });
+   * ```
+   */
+  peek(): T;
+  /**
    * Subscribes to value changes on this source and returns a {@link Cleanup}
    * function to unsubscribe.
    *

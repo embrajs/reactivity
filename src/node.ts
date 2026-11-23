@@ -107,6 +107,7 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   __dev_disposed_at?: Error;
   value: T;
   get: () => T;
+  peek(): T;
   set: Setter<T>;
   update(updater: (value: T) => T): void;
   dispose(): void;
@@ -189,6 +190,7 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   equal_: NormalizedEquality<T>;
   __dev_disposed_at?: Error;
   get: () => T;
+  peek(): T;
   set: (value: T) => void;
   update(updater: (value: T) => T): void;
   depHead_: Link | null;
@@ -239,6 +241,16 @@ ValueNode.prototype = ComputedNode.prototype = {
   },
 
   set: NOOP_,
+
+  peek(): any {
+    if (
+      (this.flags_ & Flags.KindMask) === Flags.KindComputedNode &&
+      this.flags_ & (Flags.Dirty | Flags.Pending | Flags.Running)
+    ) {
+      updateComputed(this as ComputedNode);
+    }
+    return this.value_;
+  },
 
   update(updater: (value: any) => any): void {
     this.set(updater(this.value_));
