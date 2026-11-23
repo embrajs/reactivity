@@ -112,6 +112,10 @@ class ReactiveSetImpl<V> extends Set<V> implements ReactiveSet<V>, ReactiveColle
     disposeCollection(this, super.values());
   }
 
+  public [Symbol.dispose](): void {
+    this.dispose();
+  }
+
   public override get size(): number {
     trackCollection(this);
     return super.size;

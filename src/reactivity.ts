@@ -1,5 +1,5 @@
 import { CONTRACT_SYMBOL, CONTRACT_VERSION, Flags } from "./constants";
-import { batch, ComputedNode, createLink, runEffect, type Source, ValueNode, WatchNode } from "./node";
+import { batch, ComputedNode, createLink, flush, runEffect, type Source, untrack, ValueNode, WatchNode } from "./node";
 import { NOOP_ } from "./runtime";
 
 import type {
@@ -14,7 +14,18 @@ import type {
 } from "./types";
 
 export type { ReadableOptions, WritableOptions };
-export { batch };
+/**
+ * Synchronously flushes all pending synchronous and asynchronous notifications.
+ *
+ * @category Effects & Scheduling
+ */
+/**
+ * Runs `fn` without tracking any {@link Readable} or reactive collection reads
+ * as dependencies of the current {@link computed} or {@link watch}.
+ *
+ * @category Utilities
+ */
+export { batch, flush, untrack };
 
 /**
  * Extracts the value type from a {@link Readable}.

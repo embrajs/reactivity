@@ -1,6 +1,6 @@
 export const CONTRACT_VERSION = "v1";
 export type CONTRACT_VERSION = typeof CONTRACT_VERSION;
-export const CONTRACT_SYMBOL = Symbol.for("@embra/reactivity") as EmbraReactivityTypeSymbols["CONTRACT"];
+export const CONTRACT_SYMBOL: unique symbol = Symbol.for("@embra/reactivity");
 
 export enum Flags {
   None = 0,

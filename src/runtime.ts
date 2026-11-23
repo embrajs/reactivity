@@ -4,9 +4,6 @@ import type { Observer, Source, WatchNode } from "./node";
 export type QueueItem = Source | WatchNode;
 
 declare global {
-  interface EmbraReactivityTypeSymbols {
-    readonly CONTRACT: unique symbol;
-  }
   interface EmbraReactivityGlobals {
     [CONTRACT_SYMBOL]?: EmbraReactivityRuntimes;
   }
@@ -58,11 +55,9 @@ export const { NOOP_, syncQueue_, asyncQueue_ } = runtime;
 
 export function clearQueue(queue: RuntimeQueue): void {
   for (let i = queue.head_; i < queue.tail_; i++) {
-    const item = queue.items_[i];
-    if (item !== undefined) {
-      item.flags_ &= ~(Flags.QueuedSyncSource | Flags.QueuedAsyncSource);
-      queue.items_[i] = undefined;
-    }
+    const item = queue.items_[i]!;
+    item.flags_ &= ~(Flags.QueuedSyncSource | Flags.QueuedAsyncSource);
+    queue.items_[i] = undefined;
   }
   queue.head_ = queue.tail_ = 0;
 }

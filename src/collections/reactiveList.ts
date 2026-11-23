@@ -103,6 +103,10 @@ class ReactiveListImpl<V> implements ReactiveList<V>, ReactiveCollection {
     disposeCollection(this, this.items_);
   }
 
+  public [Symbol.dispose](): void {
+    this.dispose();
+  }
+
   public get length(): number {
     trackCollection(this);
     return this.items_.length;

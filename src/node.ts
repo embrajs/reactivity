@@ -115,6 +115,7 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   get: () => T;
   set: Setter<T>;
   dispose(): void;
+  [Symbol.dispose](): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
   toJSON(key?: string): unknown;
   toString(): string;
@@ -203,6 +204,7 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   depTail_: Link | null;
   compute_: ((...values: any[]) => T) | null;
   dispose(): void;
+  [Symbol.dispose](): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
   toJSON(key?: string): unknown;
   toString(): string;
@@ -333,6 +335,10 @@ ValueNode.prototype = ComputedNode.prototype = {
         this.asyncSubscriptions_.subHead_!.dispose();
       }
     }
+  },
+
+  [Symbol.dispose](): void {
+    this.dispose();
   },
 } satisfies ThisType<ValueNode | ComputedNode> as any;
 
@@ -752,15 +758,9 @@ function callStatic(callback: (...values: any[]) => any, first: Link | null): an
 
 function runEffectCleanup(effect: WatchNode): void {
   const cleanup = effect.cleanup_;
-  effect.cleanup_ = null;
   if (cleanup !== null) {
-    const previousObserver = runtime.currentObserver_;
-    runtime.currentObserver_ = null;
-    try {
-      cleanup();
-    } finally {
-      runtime.currentObserver_ = previousObserver;
-    }
+    effect.cleanup_ = null;
+    untrack(cleanup);
   }
 }
 
@@ -833,6 +833,7 @@ function hasEffectChange(effect: WatchNode): boolean {
 
 function flushEffects(mode: Flags): void {
   const previousObserver = runtime.currentObserver_;
+  const wasSyncRunning = syncQueue_.flags_ & Flags.Running;
   runtime.currentObserver_ = null;
   syncQueue_.flags_ |= Flags.Running;
   try {
@@ -844,8 +845,8 @@ function flushEffects(mode: Flags): void {
       const isAsync = queue === asyncQueue_;
       // Finish the current async wave, then drain sync writes before the next wave.
       const limit = isAsync ? queue.tail_ : 0;
-      let i = queue.head_;
-      for (; i < (isAsync ? limit : queue.tail_); i++) {
+      while (queue.head_ < (isAsync ? limit : queue.tail_) && queue.head_ < queue.tail_) {
+        const i = queue.head_++;
         const item = queue.items_[i]!;
         queue.items_[i] = undefined;
         if ((item.flags_ & Flags.KindMask) === Flags.KindSubscriberNode) {
@@ -866,8 +867,7 @@ function flushEffects(mode: Flags): void {
           }
         }
       }
-      queue.head_ = i;
-      if (i === queue.tail_) {
+      if (queue.head_ === queue.tail_) {
         queue.head_ = queue.tail_ = 0;
       }
     }
@@ -877,14 +877,20 @@ function flushEffects(mode: Flags): void {
     throw error;
   } finally {
     runtime.currentObserver_ = previousObserver;
-    syncQueue_.flags_ &= ~Flags.Running;
-    if (mode & Flags.QueueModeAsync) {
+    if (!wasSyncRunning) {
+      syncQueue_.flags_ &= ~Flags.Running;
+    }
+    if (mode & Flags.QueueModeAsync && asyncQueue_.head_ === asyncQueue_.tail_) {
       asyncQueue_.flags_ &= ~Flags.Running;
     }
   }
 }
 
 function flushAsyncQueue(): void {
+  if (syncQueue_.head_ === syncQueue_.tail_ && asyncQueue_.head_ === asyncQueue_.tail_) {
+    asyncQueue_.flags_ &= ~Flags.Running;
+    return;
+  }
   if (__DEV__) {
     runtime.__dev_spy?.({ type: "flush-start", async: true });
     try {
@@ -896,6 +902,25 @@ function flushAsyncQueue(): void {
     }
   } else {
     flushEffects(Flags.QueueModeAsync);
+  }
+}
+
+export function flush(): void {
+  if (__DEV__) {
+    if (runtime.__dev_currentComputation) {
+      throw new Error("flush during computation");
+    }
+  }
+  flushAsyncQueue();
+}
+
+export function untrack<T>(fn: () => T): T {
+  const previousObserver = runtime.currentObserver_;
+  runtime.currentObserver_ = null;
+  try {
+    return fn();
+  } finally {
+    runtime.currentObserver_ = previousObserver;
   }
 }
 

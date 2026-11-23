@@ -27,7 +27,7 @@ npm add @embra/reactivity
 
 | Entry Point | Purpose |
 | --- | --- |
-| `@embra/reactivity` | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `batch`) and reactive collections |
+| `@embra/reactivity` | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `batch`, `flush`, `untrack`) and reactive collections |
 | `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>` |
 | `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter |
 
@@ -107,7 +107,7 @@ Both `computed()` and `derived()` are lazy: they only compute when read or obser
 
 - `watch(effect, { sync })` runs immediately, tracks all `Readable`s read during execution, and supports returning a cleanup function.
 - `source.subscribe(fn, { sync, immediate })` observes a single `Readable` directly (`immediate` defaults to `true`).
-- Both run asynchronously in a microtask by default (`sync: false`). Inside either callback, `this.dispose()` disposes the current effect or subscription.
+- Both run asynchronously in a microtask by default (`sync: false`). Use `flush()` to drain pending asynchronous (and synchronous) notifications immediately, or `untrack(fn)` (e.g. `untrack(source$.get)`) to read values inside `computed()` or `watch()` without subscribing to them. Inside either callback, `this.dispose()` disposes the current effect or subscription.
 
 ```ts
 import { batch, watch, writable } from "@embra/reactivity";
@@ -138,7 +138,7 @@ batch(() => {
 
 ### Ownership & Lifecycle (`Owned<T>`)
 
-Every `writable`, `readable`, `computed`, `derived`, and reactive collection returns an `Owned<T>` with a `dispose()` method for explicit lifecycle control when needed. `Owned<T>` is a zero-cost type-level boundary—passing a node as `Readable<T>` or `Writable<T>` across module boundaries hides `dispose()` without creating any runtime wrapper:
+Every `writable`, `readable`, `computed`, `derived`, and reactive collection returns an `Owned<T>` with a `dispose()` method (and `[Symbol.dispose]` for `using` declarations) for explicit lifecycle control when needed. `Owned<T>` is a zero-cost type-level boundary—passing a node as `Readable<T>` or `Writable<T>` across module boundaries hides `dispose()` without creating any runtime wrapper:
 
 ```ts
 const source$ = writable(42);
