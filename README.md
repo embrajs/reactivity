@@ -29,7 +29,7 @@ npm add @embra/reactivity
 
 | Entry Point               | Purpose                                                                                                                        |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `@embra/reactivity`       | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `batch`, `flush`, `untrack`) and reactive collections |
+| `@embra/reactivity`       | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `until`, `batch`, `flush`, `untrack`) and reactive collections |
 | `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>`                                       |
 | `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter                                             |
 
@@ -71,6 +71,7 @@ import { arrayShallowEqual, readable, writable } from "@embra/reactivity";
 const count$ = writable(0);
 count$.value = 1;
 count$.set(2);
+count$.update((n) => n + 1);
 
 function createCounter(initial = 0) {
   const [value$, setValue] = readable(initial);
@@ -105,14 +106,15 @@ const total$ = computed(() => {
 
 Both `computed()` and `derived()` are lazy: they only compute when read or observed, and automatically disconnect from upstream dependencies when their last observer leaves.
 
-### Effects, Subscriptions & Scheduling (`watch` / `subscribe` / `batch`)
+### Effects, Subscriptions & Scheduling (`watch` / `subscribe` / `until` / `batch`)
 
 - `watch(effect, { sync })` runs immediately, tracks all `Readable`s read during execution, and supports returning a cleanup function.
 - `source.subscribe(fn, { sync, immediate })` observes a single `Readable` directly (`immediate` defaults to `true`).
-- Both run asynchronously in a microtask by default (`sync: false`). Use `flush()` to drain pending asynchronous (and synchronous) notifications immediately, or `untrack(fn)` (e.g. `untrack(source$.get)`) to read values inside `computed()` or `watch()` without subscribing to them. Inside either callback, `this.dispose()` disposes the current effect or subscription.
+- `until(predicate, { sync, signal })` returns a `Promise` that resolves with the first truthy value returned by `predicate()` (e.g., `until(ready$.get)`), and supports cancellation via `AbortSignal`.
+- Both `watch` and `subscribe` run asynchronously in a microtask by default (`sync: false`). Use `flush()` to drain pending asynchronous (and synchronous) notifications immediately, or `source.peek()` / `untrack(fn)` (e.g. `untrack(source$.get)`) to read values inside `computed()` or `watch()` without subscribing to them. Inside either callback, `this.dispose()` disposes the current effect or subscription.
 
 ```ts
-import { batch, watch, writable } from "@embra/reactivity";
+import { batch, until, watch, writable } from "@embra/reactivity";
 
 const query$ = writable("");
 
@@ -136,6 +138,8 @@ batch(() => {
   query$.value = "a";
   query$.value = "ab";
 });
+
+await until(() => query$.value === "ab");
 ```
 
 ### Ownership & Lifecycle (`Owned<T>`)
