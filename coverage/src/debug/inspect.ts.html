@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>131/131</span>
+                <span class='fraction'>135/135</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>163/163</span>
+                <span class='fraction'>164/164</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>127/127</span>
+                <span class='fraction'>131/131</span>
             </div>
         
             
@@ -461,7 +461,14 @@
 <a name='L396'></a><a href='#L396'>396</a>
 <a name='L397'></a><a href='#L397'>397</a>
 <a name='L398'></a><a href='#L398'>398</a>
-<a name='L399'></a><a href='#L399'>399</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L399'></a><a href='#L399'>399</a>
+<a name='L400'></a><a href='#L400'>400</a>
+<a name='L401'></a><a href='#L401'>401</a>
+<a name='L402'></a><a href='#L402'>402</a>
+<a name='L403'></a><a href='#L403'>403</a>
+<a name='L404'></a><a href='#L404'>404</a>
+<a name='L405'></a><a href='#L405'>405</a>
+<a name='L406'></a><a href='#L406'>406</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -644,7 +651,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-yes">78x</span>
+<span class="cline-any cline-yes">75x</span>
+<span class="cline-any cline-yes">75x</span>
 <span class="cline-any cline-yes">44x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">78x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -652,7 +662,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">156x</span>
 <span class="cline-any cline-yes">156x</span>
+<span class="cline-any cline-yes">150x</span>
+<span class="cline-any cline-yes">150x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">156x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -717,8 +733,6 @@
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">76x</span>
 <span class="cline-any cline-yes">110x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1042,15 +1056,24 @@ export function collectObserverDeps(observer: Observer, upToTail = false): Sourc
 export function collectSourceSubs(source: Source): Observer[] {
   const subs: Observer[] = [];
   for (let link = source.subHead_; link !== null; link = link.subNext_) {
-    subs.push(link.observer_);
+    const observer = link.observer_;
+    if ((observer.flags_ &amp; (Flags.KindMask | Flags.DepsStatic)) !== (Flags.KindSubscriberNode | Flags.DepsStatic)) {
+      subs.push(observer);
+    }
   }
   return subs;
 }
 &nbsp;
-function countCallbackList(list: { subHead_: { subNext_: any } | null } | null): number {
+function countSubscribers(source: Source, async: boolean): number {
   let count = 0;
-  for (let item = list !== null ? list.subHead_ : null; item !== null; item = item.subNext_) {
-    count++;
+  for (let link = source.subHead_; link !== null; link = link.subNext_) {
+    const flags = link.observer_.flags_;
+    if (
+      (flags &amp; (Flags.KindMask | Flags.DepsStatic)) === (Flags.KindSubscriberNode | Flags.DepsStatic) &amp;&amp;
+      !!(flags &amp; Flags.QueueModeAsync) === async
+    ) {
+      count++;
+    }
   }
   return count;
 }
@@ -1081,13 +1104,13 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
       dirty: false,
       pending: false,
       running: false,
-      connected: source !== null &amp;&amp; (source.subHead_ !== null || !!(source.flags_ &amp; Flags.HasSubscriptions)),
+      connected: source !== null &amp;&amp; source.subHead_ !== null,
       disposed: !!(collection.flags_ &amp; Flags.Disposed),
       disposedAt: collection.__dev_disposed_at ?? null,
       deps: [],
       subs: source !== null ? collectSourceSubs(source) : [],
-      syncSubscriberCount: source !== null ? countCallbackList(source.syncSubscriptions_) : 0,
-      asyncSubscriberCount: source !== null ? countCallbackList(source.asyncSubscriptions_) : 0,
+      syncSubscriberCount: source !== null ? countSubscribers(source, false) : 0,
+      asyncSubscriberCount: source !== null ? countSubscribers(source, true) : 0,
     };
   }
 &nbsp;
@@ -1122,15 +1145,13 @@ export function inspect(...args: unknown[]): NodeSnapshot | null {
     dirty: !!(flags &amp; Flags.Dirty),
     pending: !!(flags &amp; Flags.Pending),
     running: !!(flags &amp; Flags.Running),
-    connected: isComputed
-      ? !!(flags &amp; Flags.Connected)
-      : source.subHead_ !== null || !!(flags &amp; Flags.HasSubscriptions),
+    connected: isComputed ? !!(flags &amp; Flags.Connected) : source.subHead_ !== null,
     disposed: !!(flags &amp; Flags.Disposed),
     disposedAt: source.__dev_disposed_at ?? null,
     deps: isComputed ? collectObserverDeps(source as ComputedNode) : [],
     subs: collectSourceSubs(source),
-    syncSubscriberCount: countCallbackList(source.syncSubscriptions_),
-    asyncSubscriberCount: countCallbackList(source.asyncSubscriptions_),
+    syncSubscriberCount: countSubscribers(source, false),
+    asyncSubscriberCount: countSubscribers(source, true),
   };
 }
 &nbsp;
@@ -1264,7 +1285,7 @@ export function formatTree(targetOrTree: unknown, direction: "deps" | "subs" = "
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-23T09:35:12.570Z
+                at 2026-11-23T11:23:56.842Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
