@@ -111,7 +111,6 @@ declare class ValueNode<T = any> implements ISubList, Writable<T> {
   set: Setter<T>;
   update(updater: (value: T) => T): void;
   dispose(): void;
-  [Symbol.dispose](): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
   toJSON(key?: string): unknown;
   toString(): string;
@@ -198,7 +197,6 @@ declare class ComputedNode<T = any> implements ISubList, IDepList, Readable<T> {
   depTail_: Link | null;
   compute_: ((...values: any[]) => T) | null;
   dispose(): void;
-  [Symbol.dispose](): void;
   subscribe(callback: Subscriber, options?: SubscribeOptions): Cleanup;
   toJSON(key?: string): unknown;
   toString(): string;
@@ -325,10 +323,6 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
 
       clearSubs(this);
     }
-  },
-
-  [Symbol.dispose](): void {
-    this.dispose();
   },
 } satisfies ThisType<ValueNode | ComputedNode>;
 

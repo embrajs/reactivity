@@ -60,7 +60,7 @@ it("reports the original disposal location when a computation writes a disposed 
   source.dispose();
   const original = (source as typeof source & DisposalDiagnostics).__dev_disposed_at;
   const log = vi.spyOn(console, "error").mockImplementation(() => {});
-  using output = computed(() => {
+  const output = computed(() => {
     source.set(1);
     return 0;
   });
@@ -130,13 +130,13 @@ describe("production mode behavior", () => {
       }),
     ).toThrow("prod-batch-err");
 
-    using source = writable(1);
-    using clamped = computed(() => (source.get() > 0 ? 1 : 0));
+    const source = writable(1);
+    const clamped = computed(() => (source.get() > 0 ? 1 : 0));
     expect(clamped.get()).toBe(1);
     source.set(2);
     expect(clamped.get()).toBe(1);
 
-    using broken = computed(() => {
+    const broken = computed(() => {
       if (source.get() > 2) {
         throw new Error("prod-compute-err");
       }
@@ -152,7 +152,7 @@ describe("production mode behavior", () => {
       }),
     ).toThrow("prod-watch-err");
 
-    using asyncSource = writable(0);
+    const asyncSource = writable(0);
     const seen: number[] = [];
     const stopSub = asyncSource.subscribe((v) => seen.push(v), { immediate: false });
     asyncSource.set(10);

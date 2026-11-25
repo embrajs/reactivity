@@ -33,7 +33,7 @@ describe.each([
 
   it("reads an input disposed before its first evaluation", () => {
     const source = writable(0);
-    using value = create(source, (input) => input + 1);
+    const value = create(source, (input) => input + 1);
     source.set(1);
     source.dispose();
     expect(value.get()).toBe(2);
@@ -277,8 +277,8 @@ describe.each([
   it("rejects writes from a computed equality callback", () => {
     const source = writable(0);
     const other = writable(0);
-    using value = create(source, (input) => input);
-    using guarded = computed(() => value.get(), {
+    const value = create(source, (input) => input);
+    const guarded = computed(() => value.get(), {
       equal: (a, b) => {
         other.set(b);
         return a === b;
@@ -292,7 +292,7 @@ describe.each([
 
   it("allows effect writes after a pure computation", () => {
     const source = writable(0);
-    using value = create(source, (input) => input * 2);
+    const value = create(source, (input) => input * 2);
     const seen: number[] = [];
     const stop = value.subscribe(
       (input) => {

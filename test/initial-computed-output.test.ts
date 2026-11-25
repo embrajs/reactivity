@@ -7,10 +7,10 @@ it.each([
   [true, false],
   [true, true],
 ])("preserves initially undefined outputs and consumer cleanup, fixed=%s sync=%s", async (fixed, sync) => {
-  using input = writable<number | undefined>(undefined);
-  using child = fixed ? derived(input, (value) => value) : computed(() => input.get());
+  const input = writable<number | undefined>(undefined);
+  const child = fixed ? derived(input, (value) => value) : computed(() => input.get());
   // A static parent connects its child before that child's first evaluation.
-  using parent = derived(child, (value) => value ?? -1);
+  const parent = derived(child, (value) => value ?? -1);
   const seen: number[] = [];
   const subscribed: (number | undefined)[] = [];
   let cleanups = 0;
@@ -58,9 +58,9 @@ it.each([
 });
 
 it("protects custom equality from an absent initial cached output", () => {
-  using input = writable(0);
+  const input = writable(0);
   const equal = vi.fn((previous: { id: number }, next: { id: number }) => previous.id === next.id);
-  using output = computed(() => ({ id: input.get() }), { equal });
+  const output = computed(() => ({ id: input.get() }), { equal });
   expect(output.get()).toEqual({ id: 0 });
   expect(equal).not.toHaveBeenCalled();
   input.set(1);

@@ -5,7 +5,7 @@ it("refreshes a mixed DAG against an independent evaluator across batched branch
   const raw = [0, 1, 2, 3];
   let selected = false;
   const roots = raw.map((value) => writable(value));
-  using branch = writable(selected);
+  const branch = writable(selected);
   const nodes: Owned<Readable<number>>[] = [];
   const expected = () => {
     const values = [...raw];
@@ -90,13 +90,13 @@ it.each([
   [true, false],
   [true, true],
 ])("keeps a queued computed lazy after its last watch leaves, sync=%s fixed=%s", async (sync, fixed) => {
-  using input = writable(0);
+  const input = writable(0);
   let calls = 0;
   const compute = (value: number) => {
     calls++;
     return value * 2;
   };
-  using output = fixed ? derived(input, compute) : computed(() => compute(input.get()));
+  const output = fixed ? derived(input, compute) : computed(() => compute(input.get()));
   const stop = watch(
     () => {
       output.get();
@@ -118,14 +118,14 @@ it.each([
 });
 
 it("consumes refreshed inputs once when a dirty parent reads a dirty child", () => {
-  using input = writable(0);
+  const input = writable(0);
   let childCalls = 0;
   let parentCalls = 0;
-  using child = computed(() => {
+  const child = computed(() => {
     childCalls++;
     return input.get() * 2;
   });
-  using parent = computed(() => {
+  const parent = computed(() => {
     parentCalls++;
     return input.get() + child.get();
   });

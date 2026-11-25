@@ -84,7 +84,7 @@ describe("effect scheduling", () => {
         },
         { sync: true },
       );
-      using input = fixed ? derived(source, (value) => value) : computed(() => source.get());
+      const input = fixed ? derived(source, (value) => value) : computed(() => source.get());
       const stopAsync = watch(() => {
         callback(input.get());
         return cleanup;
@@ -127,7 +127,7 @@ describe("effect scheduling", () => {
     async (fixed) => {
       const source = writable(0);
       const equal = vi.fn((a: { id: number }, b: { id: number }) => a.id === b.id);
-      using input = fixed
+      const input = fixed
         ? derived(source, (value) => ({ id: value % 10 }), { equal })
         : computed(() => ({ id: source.get() % 10 }), { equal });
       const callback = vi.fn();
@@ -212,7 +212,7 @@ describe("effect scheduling", () => {
     const first = writable(0);
     const second = writable(0);
     const callback = vi.fn();
-    using input = derived([first, second], (a, b) => [a, b] as const);
+    const input = derived([first, second], (a, b) => [a, b] as const);
     const stop = input.subscribe((values) => callback(...values), { immediate: false });
     const stopSync = first.subscribe(() => {}, { sync: true, immediate: false });
     first.set(1);

@@ -116,7 +116,7 @@ describe("failure boundaries", () => {
   });
 
   it("retains a source broadcast completed before a Watch cleanup throws", () => {
-    using source = writable(0);
+    const source = writable(0);
     const callback = vi.fn();
     const stopSecond = source.subscribe(callback, { sync: true, immediate: false });
     const stopFirst = watch(
@@ -152,7 +152,7 @@ describe.each(factories)("$name failures", ({ create }) => {
   it.each(["computation", "equality"])(
     "preserves the published output and supports explicit rebuilding after %s fails",
     (kind) => {
-      using source = writable(0);
+      const source = writable(0);
       const error = new Error(kind);
       let failed = false;
       const build = () =>
@@ -182,10 +182,10 @@ describe.each(factories)("$name failures", ({ create }) => {
       output.dispose();
       input.dispose();
       expect(input.get()).toBe(0);
-      using frozen = derived(input, (value) => value + 10);
+      const frozen = derived(input, (value) => value + 10);
       expect(frozen.get()).toBe(10);
       failed = false;
-      using fresh = build();
+      const fresh = build();
       const stopFresh = fresh.subscribe(callback, { sync: true });
       source.set(2);
       expect(callback.mock.calls).toEqual([[1], [2], [4]]);
@@ -201,7 +201,7 @@ describe.each(factories)("$name failures", ({ create }) => {
     expect(() => node.get()).toThrow("loop detected");
     node.dispose();
     expect(() => source.set(1)).not.toThrow();
-    using fresh = create(source, (value) => value + 1);
+    const fresh = create(source, (value) => value + 1);
     expect(fresh.get()).toBe(2);
   });
 });

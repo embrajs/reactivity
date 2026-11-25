@@ -27,28 +27,28 @@ describe("ReactiveMap", () => {
 
   describe("automatic reactive tracking", () => {
     it("tracks get, has, size, and iterators in computed and watch", () => {
-      using map = reactiveMap<string, number>([["a", 1]]);
-      using getComputed = computed(() => map.get("a") ?? 0);
-      using hasComputed = computed(() => map.has("b"));
-      using sizeComputed = computed(() => map.size);
-      using keysComputed = computed(() => [...map.keys()].join(","));
-      using valuesComputed = computed(() => [...map.values()].reduce((s, n) => s + n, 0));
-      using entriesComputed = computed(() => [...map.entries()].map(([k, v]) => `${k}:${v}`).join(","));
-      using iterComputed = computed(() => {
+      const map = reactiveMap<string, number>([["a", 1]]);
+      const getComputed = computed(() => map.get("a") ?? 0);
+      const hasComputed = computed(() => map.has("b"));
+      const sizeComputed = computed(() => map.size);
+      const keysComputed = computed(() => [...map.keys()].join(","));
+      const valuesComputed = computed(() => [...map.values()].reduce((s, n) => s + n, 0));
+      const entriesComputed = computed(() => [...map.entries()].map(([k, v]) => `${k}:${v}`).join(","));
+      const iterComputed = computed(() => {
         const out: string[] = [];
         for (const [k, v] of map) {
           out.push(`${k}=${v}`);
         }
         return out.join(",");
       });
-      using forEachComputed = computed(() => {
+      const forEachComputed = computed(() => {
         let sum = 0;
         map.forEach((v) => {
           sum += v;
         });
         return sum;
       });
-      using staticDerived = derived(map.$, (m) => m.get("a"));
+      const staticDerived = derived(map.$, (m) => m.get("a"));
 
       expect(getComputed.get()).toBe(1);
       expect(hasComputed.get()).toBe(false);
@@ -534,7 +534,7 @@ describe("ReactiveMap", () => {
 
       setDevMode(true);
       const devMap = reactiveMap([["a", 1]]);
-      using bad = computed(() => {
+      const bad = computed(() => {
         devMap.set("a", 2);
         return 0;
       });

@@ -144,7 +144,7 @@ await until(() => query$.value === "ab");
 
 ### Ownership & Lifecycle (`Owned<T>`)
 
-Every `writable`, `readable`, `computed`, `derived`, and reactive collection returns an `Owned<T>` with a `dispose()` method (and `[Symbol.dispose]` for `using` declarations) for explicit lifecycle control when needed. `Owned<T>` is a zero-cost type-level boundary—passing a node as `Readable<T>` or `Writable<T>` across module boundaries hides `dispose()` without creating any runtime wrapper:
+Every `writable`, `readable`, `computed`, `derived`, and reactive collection returns an `Owned<T>` with a `dispose()` method for explicit lifecycle control when needed. `Owned<T>` is a zero-cost type-level boundary—passing a node as `Readable<T>` or `Writable<T>` across module boundaries hides `dispose()` without creating any runtime wrapper:
 
 ```ts
 const source$ = writable(42);

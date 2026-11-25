@@ -44,8 +44,6 @@ export type Owned<T> = T & {
    * value as a frozen input. Callers must not write to a disposed source.
    */
   dispose(): void;
-  /** Alias for {@link dispose} supporting explicit resource management (`using`). */
-  [Symbol.dispose](): void;
 };
 
 /**

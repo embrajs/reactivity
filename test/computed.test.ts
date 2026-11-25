@@ -249,7 +249,7 @@ describe("computed", () => {
     it("refreshes its retained cache after its last subscription is cancelled", () => {
       const source = writable(0);
       const compute = vi.fn(() => source.get());
-      using value = computed(compute);
+      const value = computed(compute);
       const stop = value.subscribe(() => {}, { sync: true });
       stop();
       source.set(1);

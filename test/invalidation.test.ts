@@ -13,9 +13,9 @@ const factories = [
 describe.each(factories)("$name publication", ({ create }) => {
   it("keeps downstream confirmation after an upstream is read separately", () => {
     const source = writable(0);
-    using first = create(source, (value) => value % 2);
+    const first = create(source, (value) => value % 2);
     const compute = vi.fn((value: number) => value + 1);
-    using second = create(first, compute);
+    const second = create(first, compute);
     expect(second.get()).toBe(1);
 
     source.set(1);
@@ -31,9 +31,9 @@ describe.each(factories)("$name publication", ({ create }) => {
 
   it("stops unchanged publications before a heavy downstream computation", () => {
     const source = writable(0);
-    using first = create(source, (value) => value % 2);
+    const first = create(source, (value) => value % 2);
     const compute = vi.fn((value: number) => value * 100);
-    using second = create(first, compute);
+    const second = create(first, compute);
     const callback = vi.fn();
     const cleanup = vi.fn();
     const stop = watch(
@@ -60,7 +60,7 @@ describe.each(factories)("$name publication", ({ create }) => {
 
   it("filters reverted asynchronous inputs and observes the next change", async () => {
     const source = writable(0);
-    using input = create(source, (value) => value * 2);
+    const input = create(source, (value) => value * 2);
     const callback = vi.fn();
     const stop = input.subscribe(callback);
     source.set(1);
@@ -75,7 +75,7 @@ describe.each(factories)("$name publication", ({ create }) => {
 
   it("uses the frozen value of an input disposed with pending work", () => {
     const source = writable(0);
-    using input = create(source, (value) => value * 2);
+    const input = create(source, (value) => value * 2);
     const callback = vi.fn();
     const stop = input.subscribe(callback, { sync: true });
     batch(() => {
@@ -112,7 +112,7 @@ it.each([false, true])("ordinary reads do not change Effect consumption, sync=%s
 
 it("compares a synchronous subscription group with its consumed value after intermediate memo reads", () => {
   const source = writable(0);
-  using input = computed(() => source.get() * 2);
+  const input = computed(() => source.get() * 2);
   const callback = vi.fn();
   const stop = input.subscribe(callback, { sync: true });
   batch(() => {
@@ -128,7 +128,7 @@ it("compares a synchronous subscription group with its consumed value after inte
 it.each([false, true])("only tests equality-disabled inputs after their own publication, sync=%s", async (sync) => {
   const forced = writable(0, { equal: false });
   const source = writable(0);
-  using stable = computed(() => source.get() % 2);
+  const stable = computed(() => source.get() % 2);
   const callback = vi.fn();
   const stop = watch(
     () => {
@@ -216,7 +216,7 @@ it.each([
       return a === b;
     },
   });
-  using output = derived(input, (value) => value * 2, { equal: (a, b) => a === b });
+  const output = derived(input, (value) => value * 2, { equal: (a, b) => a === b });
   const callback = vi.fn();
   const cleanup = vi.fn();
   const writer = vi.fn();

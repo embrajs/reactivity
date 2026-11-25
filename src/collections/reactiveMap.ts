@@ -117,10 +117,6 @@ class ReactiveMapImpl<K, V> extends Map<K, V> implements ReactiveMap<K, V>, Reac
     disposeCollection(this, super.values());
   }
 
-  public [Symbol.dispose](): void {
-    this.dispose();
-  }
-
   public override get size(): number {
     trackCollection(this);
     return super.size;

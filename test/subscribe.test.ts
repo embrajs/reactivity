@@ -32,7 +32,7 @@ describe("source.subscribe", () => {
 
   it("shares the callback context contract with computed subscriptions", () => {
     const source = writable(1);
-    using value = computed(() => source.get() * 2);
+    const value = computed(() => source.get() * 2);
     const callback = vi.fn();
     const subscriber: Subscriber<number> = function (next) {
       expectTypeOf(this).toEqualTypeOf<EffectContext>();
@@ -94,7 +94,7 @@ describe("source.subscribe", () => {
   it("subscribes to an explicit multi-input derived value", async () => {
     const first = writable(0),
       second = writable("a");
-    using value = derived([first, second], (a, b) => [a, b] as const);
+    const value = derived([first, second], (a, b) => [a, b] as const);
     const callback = vi.fn();
     const stop = value.subscribe(function (next) {
       expectTypeOf(next).toEqualTypeOf<readonly [number, string]>();
@@ -111,7 +111,7 @@ describe("source.subscribe", () => {
   it("primes a computed input when immediate delivery is disabled", () => {
     const source = writable(1);
     const compute = vi.fn(() => source.get() * 2);
-    using value = computed(compute);
+    const value = computed(compute);
     const callback = vi.fn();
     const stop = value.subscribe(callback, { sync: true, immediate: false });
     expect(compute).toHaveBeenCalledOnce();
@@ -124,9 +124,9 @@ describe("source.subscribe", () => {
 
   it("refreshes a dependency diamond before broadcasting its result", () => {
     const source = writable(1);
-    using first = computed(() => source.get() * 2);
-    using second = computed(() => first.get() + 1);
-    using result = derived([source, first, second], (a, b, c) => [a, b, c] as const);
+    const first = computed(() => source.get() * 2);
+    const second = computed(() => first.get() + 1);
+    const result = derived([source, first, second], (a, b, c) => [a, b, c] as const);
     const callback = vi.fn();
     const stop = result.subscribe(callback, { sync: true });
     source.set(2);
@@ -136,7 +136,7 @@ describe("source.subscribe", () => {
 
   it("initializes a dirty computed before taking its group baseline", async () => {
     const source = writable(0);
-    using value = computed(() => source.get());
+    const value = computed(() => source.get());
     expect(value.get()).toBe(0);
     source.set(1);
     const callback = vi.fn();
@@ -183,7 +183,7 @@ describe("source.subscribe", () => {
   it("does not collect a computed subscription's upstream inputs in an outer watch", () => {
     const source = writable(0),
       tracked = writable(0);
-    using value = computed(() => source.get());
+    const value = computed(() => source.get());
     const parent = vi.fn();
     const stop = watch(
       () => {
@@ -222,7 +222,7 @@ describe("source.subscribe", () => {
       source.get();
       throw new Error("compute");
     });
-    using value = computed(compute);
+    const value = computed(compute);
     const callback = vi.fn();
     expect(() => value.subscribe(callback, { sync: true, immediate: false })).toThrow("compute");
     source.set(1);
@@ -248,7 +248,7 @@ describe("source.subscribe", () => {
     const callback = vi.fn();
     const stop = frozen.subscribe(callback, { sync });
     const live = writable(2);
-    using value = derived([frozen, live], (a, b) => a + b);
+    const value = derived([frozen, live], (a, b) => a + b);
     expect(value.get()).toBe(3);
     live.set(3);
     expect(value.get()).toBe(4);
