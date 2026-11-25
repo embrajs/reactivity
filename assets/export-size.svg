@@ -99,7 +99,7 @@
 <g transform="translate(0, 24)">
   <g class="stagger" style="animation-delay: 250ms">
     <text x="2" y="15" class="text">{ readable, writable, computed, watch } (core)</text>
-    <text x="303" y="34" class="text">2.2 kB</text>
+    <text x="303" y="34" class="text">2.19 kB</text>
 
     <svg width="288" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="288" height="8" fill="#fb4c1b37"></rect>
@@ -113,11 +113,11 @@
 <g transform="translate(0, 64)">
   <g class="stagger" style="animation-delay: 400ms">
     <text x="2" y="15" class="text">{ reactiveList, reactiveMap, reactiveSet } (collections)</text>
-    <text x="303" y="34" class="text">1.56 kB</text>
+    <text x="303" y="34" class="text">1.55 kB</text>
 
     <svg width="288" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="288" height="8" fill="#fb4c1b37"></rect>
-      <svg width="70.72727272727273%">
+      <svg width="70.6581352833638%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 700ms" />
       </svg>
     </svg>
@@ -131,7 +131,7 @@
 
     <svg width="288" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="288" height="8" fill="#fb4c1b37"></rect>
-      <svg width="12.727272727272727%">
+      <svg width="12.79707495429616%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 850ms" />
       </svg>
     </svg>
@@ -145,7 +145,7 @@
 
     <svg width="288" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="288" height="8" fill="#fb4c1b37"></rect>
-      <svg width="9.772727272727273%">
+      <svg width="9.826325411334553%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1000ms" />
       </svg>
     </svg>
@@ -168,7 +168,7 @@
 
     <svg width="288" x="0" y="25">
       <rect rx="5" ry="5" x="0" y="0" width="288" height="8" fill="#fb4c1b37"></rect>
-      <svg width="30.409090909090907%">
+      <svg width="30.575868372943326%">
         <rect height="8" fill="#fb4a1b" rx="5" ry="5" x="0" y="0" class="progress" style="animation-delay: 1300ms" />
       </svg>
     </svg>

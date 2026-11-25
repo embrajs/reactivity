@@ -264,10 +264,9 @@
           </h3>
           <p>
             Every <code>writable</code>, <code>readable</code>, <code>computed</code>, <code>derived</code>, and
-            reactive collection returns an <code>Owned&lt;T&gt;</code> with a <code>dispose()</code> method (and
-            <code>[Symbol.dispose]</code> for <code>using</code> declarations) for explicit lifecycle control when
-            needed. <code>Owned&lt;T&gt;</code> is a zero-cost type-level boundary—passing a node as
-            <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> across module boundaries hides
+            reactive collection returns an <code>Owned&lt;T&gt;</code> with a <code>dispose()</code> method for explicit
+            lifecycle control when needed. <code>Owned&lt;T&gt;</code> is a zero-cost type-level boundary—passing a node
+            as <code>Readable&lt;T&gt;</code> or <code>Writable&lt;T&gt;</code> across module boundaries hides
             <code>dispose()</code> without creating any runtime wrapper:
           </p>
           <pre
