@@ -229,7 +229,7 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
   this.compute_ = compute;
 }
 
-ValueNode.prototype = ComputedNode.prototype = {
+(ValueNode as any).prototype = (ComputedNode as any).prototype = {
   runtime_: runtime,
 
   get value(): any {
@@ -330,7 +330,7 @@ ValueNode.prototype = ComputedNode.prototype = {
   [Symbol.dispose](): void {
     this.dispose();
   },
-} satisfies ThisType<ValueNode | ComputedNode> as any;
+} satisfies ThisType<ValueNode | ComputedNode>;
 
 declare class WatchNode implements IDepList, EffectContext {
   flags_: NodeFlags;
