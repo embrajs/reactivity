@@ -125,6 +125,11 @@
               >)—designed for tests and AI agent diagnostics, with zero production overhead via package export
               conditions.
             </li>
+            <li>
+              <strong>Small &amp; fast</strong>: Compact core with runtime performance on par with mainstream
+              fine-grained signals libraries—lazy evaluation, static <code>derived()</code> paths for fixed
+              dependencies, and zero production overhead for dev diagnostics.
+            </li>
           </ul>
           <p><img src="https://embrajs.github.io/reactivity/assets/export-size.svg" alt="export size"></p>
           <h2 id="install" class="tsd-anchor-link">
@@ -165,6 +170,26 @@
               </tr>
             </tbody>
           </table>
+          <h3 id="for-ai-agents" class="tsd-anchor-link">
+            For AI Agents<a href="#for-ai-agents" aria-label="Permalink" class="tsd-anchor-icon"
+              ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
+            >
+          </h3>
+          <ul>
+            <li>
+              <p>Install the Agent Skill:</p>
+              <pre
+              ><code class="sh"><span class="hl-0">npx</span><span class="hl-1"> </span><span class="hl-2">skills</span><span class="hl-1"> </span><span class="hl-2">add</span><span class="hl-1"> </span><span class="hl-2">embrajs/reactivity</span>
+</code><button type="button">Copy</button></pre>
+            </li>
+            <li>
+              <p>
+                Or use the plain-text reference
+                <a href="https://embrajs.github.io/reactivity/llms.txt">llms.txt</a> (also bundled at
+                <code>node_modules/@embra/reactivity/llms.txt</code>).
+              </p>
+            </li>
+          </ul>
           <h2 id="quick-start" class="tsd-anchor-link">
             Quick Start<a href="#quick-start" aria-label="Permalink" class="tsd-anchor-icon"
               ><svg viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons.svg#icon-anchor"></use></svg></a
@@ -408,6 +433,15 @@
                 </li>
                 <li>
                   <a href="#install"><span>Install</span></a>
+                </li>
+                <li>
+                  <ul>
+                    <li>
+                      <a href="#for-ai-agents"
+                        ><span>For <wbr>AI <wbr>Agents</span></a
+                      >
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   <a href="#quick-start"
