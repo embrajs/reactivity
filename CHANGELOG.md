@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.0-rc.2](https://github.com/embrajs/reactivity/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2026-11-25)
+
+### Features
+
+* **skills:** add llms.txt generation from SKILL.md ([ba6faa5](https://github.com/embrajs/reactivity/commit/ba6faa528857b4ac5f92d5659ed7cdf43d2169b0))
+
+### Bug Fixes
+
+* **node:** correct prototype assignment for ValueNode and ComputedNode ([ba7cca0](https://github.com/embrajs/reactivity/commit/ba7cca0441d66e58797914f3bb3ef94a98b3e136))
+
 ## [1.0.0-rc.1](https://github.com/embrajs/reactivity/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2026-11-23)
 
 ## 1.0.0-rc.0 (2026-11-23)
