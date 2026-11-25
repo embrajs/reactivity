@@ -1,4 +1,4 @@
-import { derived, type Readable, type ReadableValues } from "@embra/reactivity";
+import { derived, type Readable, type ReadableValue, type ReadableValues } from "@embra/reactivity";
 import { useMemo } from "react";
 import type { UseDerivedValueOptions } from "./types";
 import { useValue } from "./useValue";
@@ -16,18 +16,29 @@ export function useDerivedValue<T, R>(
   options?: UseDerivedValueOptions<R>,
 ): R;
 /**
- * Derives a value from an array of {@link Readable}s using a pure transform function,
- * subscribes to the result, and returns it.
+ * Derives a value from a single {@link Readable}, `null`, or `undefined` using a pure transform function,
+ * subscribes to the result, and returns it. `null` and `undefined` sources pass through without subscribing.
  *
  * Defaults to synchronous updates (`sync: true`).
  */
-export function useDerivedValue<const T extends readonly Readable[], R>(
+export function useDerivedValue<T extends Readable | null | undefined, R>(
+  source: T,
+  compute: (value: ReadableValue<T>) => R,
+  options?: UseDerivedValueOptions<R>,
+): R;
+/**
+ * Derives a value from an array of {@link Readable}s (or `null` / `undefined` entries) using a pure transform function,
+ * subscribes to the result, and returns it. `null` and `undefined` entries pass through without subscribing.
+ *
+ * Defaults to synchronous updates (`sync: true`).
+ */
+export function useDerivedValue<const T extends readonly (Readable | null | undefined)[], R>(
   sources: T,
   compute: (...values: ReadableValues<T>) => R,
   options?: UseDerivedValueOptions<R>,
 ): R;
 export function useDerivedValue<R>(
-  sources: Readable | readonly Readable[],
+  sources: Readable | null | undefined | readonly (Readable | null | undefined)[],
   compute: (...values: any[]) => R,
   options?: UseDerivedValueOptions<R>,
 ): R {

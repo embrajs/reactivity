@@ -1,4 +1,10 @@
-import { derived, type Readable, type ReadableOptions, type ReadableValues } from "@embra/reactivity";
+import {
+  derived,
+  type Readable,
+  type ReadableOptions,
+  type ReadableValue,
+  type ReadableValues,
+} from "@embra/reactivity";
 import { useMemo, useRef } from "react";
 import { useIsomorphicLayoutEffect, useStableSources } from "./utils";
 
@@ -12,16 +18,27 @@ export function useDerived<T, R>(
   options?: ReadableOptions<R>,
 ): Readable<R>;
 /**
- * Creates a component-local {@link derived} {@link Readable} node from an array of {@link Readable}s.
+ * Creates a component-local {@link derived} {@link Readable} node from a single {@link Readable}, `null`, or `undefined`.
+ * `null` and `undefined` sources pass through as `null` / `undefined` without subscribing.
  * Always invokes the latest `compute` function committed by the component.
  */
-export function useDerived<const T extends readonly Readable[], R>(
+export function useDerived<T extends Readable | null | undefined, R>(
+  source: T,
+  compute: (value: ReadableValue<T>) => R,
+  options?: ReadableOptions<R>,
+): Readable<R>;
+/**
+ * Creates a component-local {@link derived} {@link Readable} node from an array of {@link Readable}s (or `null` / `undefined` entries).
+ * `null` and `undefined` entries pass through as `null` / `undefined` without subscribing.
+ * Always invokes the latest `compute` function committed by the component.
+ */
+export function useDerived<const T extends readonly (Readable | null | undefined)[], R>(
   sources: T,
   compute: (...values: ReadableValues<T>) => R,
   options?: ReadableOptions<R>,
 ): Readable<R>;
 export function useDerived<R>(
-  sources: Readable | readonly Readable[],
+  sources: Readable | null | undefined | readonly (Readable | null | undefined)[],
   compute: (...values: any[]) => R,
   options?: ReadableOptions<R>,
 ): Readable<R> {

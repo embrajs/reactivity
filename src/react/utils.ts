@@ -7,7 +7,9 @@ export const useIsomorphicLayoutEffect = typeof document !== "undefined" ? useLa
  * Stabilizes a single {@link Readable} or array of {@link Readable}s across renders
  * in a Concurrent-Mode-safe way using `useState` instead of render-time ref mutation.
  */
-export function useStableSources<T extends Readable | readonly Readable[]>(sources: T): T {
+export function useStableSources<T extends Readable | null | undefined | readonly (Readable | null | undefined)[]>(
+  sources: T,
+): T {
   const [stableSources, setStableSources] = useState(sources);
   if (!arrayShallowEqual(stableSources, sources)) {
     setStableSources(sources);

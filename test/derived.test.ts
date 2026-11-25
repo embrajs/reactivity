@@ -85,10 +85,88 @@ describe("derived", () => {
     expectTypeOf(derived).toBeCallableWith(provider.$, compute);
     // @ts-expect-error Providers must be explicitly unwrapped.
     expectTypeOf(derived).toBeCallableWith(provider, compute);
-    // @ts-expect-error Every tuple element must be a Readable.
+    // @ts-expect-error Every tuple element must be a Readable, null, or undefined.
     expectTypeOf(derived).toBeCallableWith([source, provider] as const, compute);
-    // @ts-expect-error Every array element must be a Readable.
+    // @ts-expect-error Every array element must be a Readable, null, or undefined.
     expectTypeOf(derived).toBeCallableWith(inputs, compute);
+    // @ts-expect-error Plain values are rejected.
+    expectTypeOf(derived).toBeCallableWith(123, compute);
+    // @ts-expect-error Plain values in tuples are rejected.
+    expectTypeOf(derived).toBeCallableWith([source, "plain"] as const, compute);
+  });
+
+  it("passes through null and undefined sources without subscribing or tracking", () => {
+    const other = writable(10);
+    const computeUndefined = vi.fn((value: undefined) => {
+      expectTypeOf(value).toEqualTypeOf<undefined>();
+      return other.get();
+    });
+    const fromUndefined = derived(undefined, computeUndefined);
+
+    expect(computeUndefined).not.toHaveBeenCalled();
+    expect(fromUndefined.get()).toBe(10);
+    expect(fromUndefined.get()).toBe(10);
+    expect(computeUndefined).toHaveBeenCalledOnce();
+    other.set(20);
+    expect(fromUndefined.get()).toBe(10);
+    expect(computeUndefined).toHaveBeenCalledOnce();
+
+    const fromNull = derived(null, (value) => {
+      expectTypeOf(value).toEqualTypeOf<null>();
+      return value === null ? "nil" : "other";
+    });
+    expect(fromNull.get()).toBe("nil");
+
+    const fromSingleArrayUndefined = derived([undefined], (value) => {
+      expectTypeOf(value).toEqualTypeOf<undefined>();
+      return value;
+    });
+    expect(fromSingleArrayUndefined.get()).toBeUndefined();
+
+    const fromSingleArrayNull = derived([null], (value) => {
+      expectTypeOf(value).toEqualTypeOf<null>();
+      return value;
+    });
+    expect(fromSingleArrayNull.get()).toBeNull();
+
+    const maybeNumber = writable(1) as Readable<number> | undefined;
+    const nullableString = writable("a") as Readable<string> | null;
+    const fromMaybe = derived(maybeNumber, (value) => {
+      expectTypeOf(value).toEqualTypeOf<number | undefined>();
+      return value ?? 0;
+    });
+    expect(fromMaybe.get()).toBe(1);
+
+    const a = writable(1);
+    const b = writable(2);
+    const twoLeft = derived([a, undefined], (x, y) => {
+      expectTypeOf(x).toEqualTypeOf<number>();
+      expectTypeOf(y).toEqualTypeOf<undefined>();
+      return `${x}:${String(y)}`;
+    });
+    expect(twoLeft.get()).toBe("1:undefined");
+    a.set(3);
+    expect(twoLeft.get()).toBe("3:undefined");
+
+    const twoRight = derived([null, b], (x, y) => {
+      expectTypeOf(x).toEqualTypeOf<null>();
+      expectTypeOf(y).toEqualTypeOf<number>();
+      return `${String(x)}:${y}`;
+    });
+    expect(twoRight.get()).toBe("null:2");
+    b.set(4);
+    expect(twoRight.get()).toBe("null:4");
+
+    const mixed = derived([a, undefined, nullableString, null], (va, vb, vc, vd) => {
+      expectTypeOf(va).toEqualTypeOf<number>();
+      expectTypeOf(vb).toEqualTypeOf<undefined>();
+      expectTypeOf(vc).toEqualTypeOf<string | null>();
+      expectTypeOf(vd).toEqualTypeOf<null>();
+      return [va, vb, vc, vd] as const;
+    });
+    expect(mixed.get()).toEqual([3, undefined, "a", null]);
+    a.set(5);
+    expect(mixed.get()).toEqual([5, undefined, "a", null]);
   });
 
   it("uses a readable directly even when it has a provider property", () => {

@@ -101,4 +101,31 @@ describe("useDerivedValue", () => {
     });
     expect(result.current).toBe(25);
   });
+
+  it("supports null and undefined as single or array sources", () => {
+    const a$ = writable(2);
+    const b$ = writable(10);
+
+    const singleUndef = renderHook(() => useDerivedValue(undefined, (v) => v ?? 99));
+    expect(singleUndef.result.current).toBe(99);
+
+    const singleNull = renderHook(() => useDerivedValue(null, (v) => (v === null ? "nil" : "val")));
+    expect(singleNull.result.current).toBe("nil");
+
+    const { result, rerender } = renderHook(
+      ({ maybe }: { maybe: Readable<number> | undefined }) =>
+        useDerivedValue([a$, maybe] as const, (x, y) => x + (y ?? 0)),
+      { initialProps: { maybe: undefined as Readable<number> | undefined } },
+    );
+    expect(result.current).toBe(2);
+
+    rerender({ maybe: b$ });
+    expect(result.current).toBe(12);
+
+    act(() => b$.set(20));
+    expect(result.current).toBe(22);
+
+    rerender({ maybe: undefined });
+    expect(result.current).toBe(2);
+  });
 });

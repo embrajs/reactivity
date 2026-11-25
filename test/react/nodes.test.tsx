@@ -122,5 +122,23 @@ describe("local node hooks (useWritable, useReadable, useComputed, useDerived)",
     multiHook.rerender({ sources: [a$, c$] as const });
     expect(multiHook.result.current).not.toBe(firstMulti);
     expect(multiHook.result.current.get()).toBe(105);
+
+    const optionalHook = renderHook(
+      ({ maybe }: { maybe: Readable<number> | undefined | null }) =>
+        useDerived([a$, maybe] as const, (x, y) => x + (y ?? 0)),
+      { initialProps: { maybe: undefined as Readable<number> | undefined | null }, wrapper: StrictMode },
+    );
+    const firstOptional = optionalHook.result.current;
+    expect(firstOptional.get()).toBe(5);
+
+    optionalHook.rerender({ maybe: undefined });
+    expect(optionalHook.result.current).toBe(firstOptional);
+
+    optionalHook.rerender({ maybe: b$ });
+    expect(optionalHook.result.current).not.toBe(firstOptional);
+    expect(optionalHook.result.current.get()).toBe(7);
+
+    optionalHook.rerender({ maybe: null });
+    expect(optionalHook.result.current.get()).toBe(5);
   });
 });

@@ -28,18 +28,18 @@ export type { ReadableOptions, WritableOptions };
 export { batch, flush, untrack };
 
 /**
- * Extracts the value type from a {@link Readable}.
+ * Extracts the value type from a {@link Readable}, or preserves `null` / `undefined`.
  *
  * @category Utilities
  */
-export type ReadableValue<T> = T extends Readable<infer V> ? V : never;
+export type ReadableValue<T> = T extends Readable<infer V> ? V : T extends null | undefined ? T : never;
 
 /**
- * Maps a tuple or array of {@link Readable}s to their corresponding value types.
+ * Maps a tuple or array of {@link Readable}s (or `null` / `undefined` entries) to their corresponding value types.
  *
  * @category Utilities
  */
-export type ReadableValues<T extends readonly Readable[]> = {
+export type ReadableValues<T extends readonly (Readable | null | undefined)[]> = {
   [K in keyof T]: ReadableValue<T[K]>;
 };
 
@@ -107,9 +107,14 @@ export function computed<T>(compute: () => T, options?: ReadableOptions<T>): Own
   return new ComputedNode(compute, options);
 }
 
+function readDep(dep: Source | null | undefined): any {
+  return dep != null ? (runtime.currentObserver_ !== null ? dep.get() : readSource(dep)) : dep;
+}
+
 /**
  * Creates a lazy {@link computed} node with an explicitly declared {@link Readable} dependency.
  * Pass a reactive collection's `$` readable when depending on a collection.
+ * `null` and `undefined` sources pass through as `null` / `undefined` without subscribing.
  *
  * @category Primitives
  */
@@ -119,46 +124,56 @@ export function derived<T, R>(
   options?: ReadableOptions<R>,
 ): Owned<Readable<R>>;
 /**
- * Creates a lazy {@link computed} node with explicitly declared {@link Readable} dependencies.
- * Pass a reactive collection's `$` readable when depending on a collection.
+ * Creates a lazy {@link computed} node with an explicitly declared {@link Readable}, `null`, or `undefined` dependency.
+ * `null` and `undefined` sources pass through as `null` / `undefined` without subscribing.
  *
  * @category Primitives
  */
-export function derived<const T extends readonly Readable[], R>(
+export function derived<T extends Readable | null | undefined, R>(
+  source: T,
+  compute: (value: ReadableValue<T>) => R,
+  options?: ReadableOptions<R>,
+): Owned<Readable<R>>;
+/**
+ * Creates a lazy {@link computed} node with explicitly declared {@link Readable} dependencies.
+ * Pass a reactive collection's `$` readable when depending on a collection.
+ * `null` and `undefined` entries pass through as `null` / `undefined` without subscribing.
+ *
+ * @category Primitives
+ */
+export function derived<const T extends readonly (Readable | null | undefined)[], R>(
   sources: T,
   compute: (...values: ReadableValues<T>) => R,
   options?: ReadableOptions<R>,
 ): Owned<Readable<R>>;
 export function derived<R>(
-  sources: Readable | readonly Readable[],
+  sources: Readable | null | undefined | readonly (Readable | null | undefined)[],
   compute: (...values: any[]) => R,
   options?: ReadableOptions<R>,
 ): Owned<Readable<R>> {
   let fn: () => R;
-  if (isReadable(sources) || sources.length === 1) {
-    const s0 = (isReadable(sources) ? sources : sources[0]!) as Source;
+  const isArray = Array.isArray(sources);
+  if (!isArray || sources.length === 1) {
+    const s0 = (isArray ? sources[0] : sources) as Source | null | undefined;
     fn = () => {
-      const v0 = runtime.currentObserver_ !== null ? s0.get() : readSource(s0);
+      const v0 = readDep(s0);
       runtime.currentObserver_ = null;
       return compute(v0);
     };
   } else if (sources.length === 2) {
-    const s0 = sources[0]! as Source;
-    const s1 = sources[1]! as Source;
+    const [s0, s1] = sources as [Source | null | undefined, Source | null | undefined];
     fn = () => {
-      const track = runtime.currentObserver_ !== null;
-      const v0 = track ? s0.get() : readSource(s0);
-      const v1 = track ? s1.get() : readSource(s1);
+      const v0 = readDep(s0);
+      const v1 = readDep(s1);
       runtime.currentObserver_ = null;
       return compute(v0, v1);
     };
   } else {
-    const deps = [...sources] as Source[];
+    const deps = [...sources] as (Source | null | undefined)[];
     fn = () => {
-      const track = runtime.currentObserver_ !== null;
       const values = [];
       for (let i = 0; i < deps.length; i++) {
-        values.push(track ? deps[i]!.get() : readSource(deps[i]!));
+        values.push(readDep(deps[i]));
       }
       runtime.currentObserver_ = null;
       return compute(...values);
