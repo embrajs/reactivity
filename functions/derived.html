@@ -117,6 +117,8 @@
                     explicitly declared
                     <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a> dependency. Pass a
                     reactive collection's <code>$</code> readable when depending on a collection.
+                    <code>null</code> and <code>undefined</code> sources pass through as <code>null</code> /
+                    <code>undefined</code> without subscribing.
                   </p>
                 </div>
                 <section class="tsd-panel">
@@ -179,8 +181,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/5c778fc8d43c2f44f939040990e72188eadaf2ca/src/reactivity.ts#L116"
-                        >src/reactivity.ts:116</a
+                        href="https://github.com/embrajs/reactivity/blob/9635871d6823066588567dde723af4d8b4f9a240/src/reactivity.ts#L121"
+                        >src/reactivity.ts:121</a
                       >
                     </li>
                   </ul>
@@ -190,27 +192,28 @@
             <li class="">
               <div class="tsd-signature tsd-anchor-link" id="derived-1">
                 <span class="tsd-kind-call-signature">derived</span><span class="tsd-signature-symbol">&lt;</span
-                ><span class="tsd-signature-keyword">const</span>
-                <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a>
-                <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-keyword">readonly</span>
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a>
+                <span class="tsd-signature-keyword">extends</span>
                 <a href="../interfaces/Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a><span
                   class="tsd-signature-symbol"
                   >&lt;</span
-                ><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span
-                ><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">,</span>
+                ><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>
+                <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">null</span>
+                <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span
+                ><span class="tsd-signature-symbol">,</span>
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-1">R</a><span
                   class="tsd-signature-symbol"
                   >&gt;</span
-                ><span class="tsd-signature-symbol">(</span><br>    <span class="tsd-kind-parameter">sources</span
+                ><span class="tsd-signature-symbol">(</span><br>    <span class="tsd-kind-parameter">source</span
                 ><span class="tsd-signature-symbol">:</span>
                 <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a><span
                   class="tsd-signature-symbol"
                   >,</span
                 ><br>    <span class="tsd-kind-parameter">compute</span><span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span
-                ><span class="tsd-kind-parameter">values</span><span class="tsd-signature-symbol">:</span>
-                <a href="../types/ReadableValues.html" class="tsd-signature-type tsd-kind-type-alias"
-                  >ReadableValues</a
+                <span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">value</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a href="../types/ReadableValue.html" class="tsd-signature-type tsd-kind-type-alias"
+                  >ReadableValue</a
                 ><span class="tsd-signature-symbol">&lt;</span
                 ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a
                 ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
@@ -241,9 +244,11 @@
               <div class="tsd-description">
                 <div class="tsd-comment tsd-typography">
                   <p>
-                    Creates a lazy <a href="computed.html" class="tsd-kind-function">computed</a> node with explicitly
-                    declared <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a> dependencies.
-                    Pass a reactive collection's <code>$</code> readable when depending on a collection.
+                    Creates a lazy <a href="computed.html" class="tsd-kind-function">computed</a> node with an
+                    explicitly declared <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a>,
+                    <code>null</code>, or <code>undefined</code> dependency.
+                    <code>null</code> and <code>undefined</code> sources pass through as <code>null</code> /
+                    <code>undefined</code> without subscribing.
                   </p>
                 </div>
                 <section class="tsd-panel">
@@ -251,14 +256,14 @@
                   <ul class="tsd-type-parameter-list">
                     <li>
                       <span id="derivedt-1"
-                        ><span class="tsd-signature-keyword">const</span> <span class="tsd-kind-type-parameter">T</span>
+                        ><span class="tsd-kind-type-parameter">T</span>
                         <span class="tsd-signature-keyword">extends</span>
-                        <span class="tsd-signature-keyword">readonly</span>
                         <a href="../interfaces/Readable.html" class="tsd-signature-type tsd-kind-interface"
                           >Readable</a
                         ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
-                        ><span class="tsd-signature-symbol">&gt;</span
-                        ><span class="tsd-signature-symbol">[]</span></span
+                        ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-type">undefined</span></span
                       >
                     </li>
                     <li>
@@ -271,17 +276,16 @@
                   <ul class="tsd-parameter-list">
                     <li>
                       <span
-                        ><span class="tsd-kind-parameter">sources</span>:
+                        ><span class="tsd-kind-parameter">source</span>:
                         <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a></span
                       >
                     </li>
                     <li>
                       <span
                         ><span class="tsd-kind-parameter">compute</span>: <span class="tsd-signature-symbol">(</span
-                        ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">values</span
-                        ><span class="tsd-signature-symbol">:</span>
-                        <a href="../types/ReadableValues.html" class="tsd-signature-type tsd-kind-type-alias"
-                          >ReadableValues</a
+                        ><span class="tsd-kind-parameter">value</span><span class="tsd-signature-symbol">:</span>
+                        <a href="../types/ReadableValue.html" class="tsd-signature-type tsd-kind-type-alias"
+                          >ReadableValue</a
                         ><span class="tsd-signature-symbol">&lt;</span
                         ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-1">T</a
                         ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
@@ -314,8 +318,153 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/5c778fc8d43c2f44f939040990e72188eadaf2ca/src/reactivity.ts#L127"
-                        >src/reactivity.ts:127</a
+                        href="https://github.com/embrajs/reactivity/blob/9635871d6823066588567dde723af4d8b4f9a240/src/reactivity.ts#L132"
+                        >src/reactivity.ts:132</a
+                      >
+                    </li>
+                  </ul>
+                </aside>
+              </div>
+            </li>
+            <li class="">
+              <div class="tsd-signature tsd-anchor-link" id="derived-2">
+                <span class="tsd-kind-call-signature">derived</span><span class="tsd-signature-symbol">&lt;</span
+                ><span class="tsd-signature-keyword">const</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-2">T</a>
+                <span class="tsd-signature-keyword">extends</span>
+                <span class="tsd-signature-keyword">readonly</span> (<a
+                  href="../interfaces/Readable.html"
+                  class="tsd-signature-type tsd-kind-interface"
+                  >Readable</a
+                ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
+                ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
+                <span class="tsd-signature-type">undefined</span>)<span class="tsd-signature-symbol">[]</span
+                ><span class="tsd-signature-symbol">,</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a><span
+                  class="tsd-signature-symbol"
+                  >&gt;</span
+                ><span class="tsd-signature-symbol">(</span><br>    <span class="tsd-kind-parameter">sources</span
+                ><span class="tsd-signature-symbol">:</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-2">T</a><span
+                  class="tsd-signature-symbol"
+                  >,</span
+                ><br>    <span class="tsd-kind-parameter">compute</span><span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span
+                ><span class="tsd-kind-parameter">values</span><span class="tsd-signature-symbol">:</span>
+                <a href="../types/ReadableValues.html" class="tsd-signature-type tsd-kind-type-alias"
+                  >ReadableValues</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-2">T</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
+                <span class="tsd-signature-symbol">=&gt;</span>
+                <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a><span
+                  class="tsd-signature-symbol"
+                  >,</span
+                ><br>    <span class="tsd-kind-parameter">options</span><span class="tsd-signature-symbol">?:</span>
+                <a href="../interfaces/ReadableOptions.html" class="tsd-signature-type tsd-kind-interface"
+                  >ReadableOptions</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">,</span><br>
+                <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span>
+                <a href="../types/Owned.html" class="tsd-signature-type tsd-kind-type-alias">Owned</a><span
+                  class="tsd-signature-symbol"
+                  >&lt;</span
+                ><a href="../interfaces/Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                ><span class="tsd-signature-symbol">&lt;</span
+                ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a
+                ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span
+                ><a href="#derived-2" aria-label="Permalink" class="tsd-anchor-icon"
+                  ><svg viewBox="0 0 24 24" aria-hidden="true">
+                    <use href="../assets/icons.svg#icon-anchor"></use>
+                  </svg></a
+                >
+              </div>
+              <div class="tsd-description">
+                <div class="tsd-comment tsd-typography">
+                  <p>
+                    Creates a lazy <a href="computed.html" class="tsd-kind-function">computed</a> node with explicitly
+                    declared <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a> dependencies.
+                    Pass a reactive collection's <code>$</code> readable when depending on a collection.
+                    <code>null</code> and <code>undefined</code> entries pass through as <code>null</code> /
+                    <code>undefined</code> without subscribing.
+                  </p>
+                </div>
+                <section class="tsd-panel">
+                  <h4>Type Parameters</h4>
+                  <ul class="tsd-type-parameter-list">
+                    <li>
+                      <span id="derivedt-2"
+                        ><span class="tsd-signature-keyword">const</span> <span class="tsd-kind-type-parameter">T</span>
+                        <span class="tsd-signature-keyword">extends</span>
+                        <span class="tsd-signature-keyword">readonly</span> (<a
+                          href="../interfaces/Readable.html"
+                          class="tsd-signature-type tsd-kind-interface"
+                          >Readable</a
+                        ><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span
+                        ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-type">null</span> <span class="tsd-signature-symbol">|</span>
+                        <span class="tsd-signature-type">undefined</span>)<span class="tsd-signature-symbol"
+                          >[]</span
+                        ></span
+                      >
+                    </li>
+                    <li>
+                      <span id="derivedr-2"><span class="tsd-kind-type-parameter">R</span></span>
+                    </li>
+                  </ul>
+                </section>
+                <div class="tsd-parameters">
+                  <h4 class="tsd-parameters-title">Parameters</h4>
+                  <ul class="tsd-parameter-list">
+                    <li>
+                      <span
+                        ><span class="tsd-kind-parameter">sources</span>:
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-2">T</a></span
+                      >
+                    </li>
+                    <li>
+                      <span
+                        ><span class="tsd-kind-parameter">compute</span>: <span class="tsd-signature-symbol">(</span
+                        ><span class="tsd-signature-symbol">...</span><span class="tsd-kind-parameter">values</span
+                        ><span class="tsd-signature-symbol">:</span>
+                        <a href="../types/ReadableValues.html" class="tsd-signature-type tsd-kind-type-alias"
+                          >ReadableValues</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedt-2">T</a
+                        ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span>
+                        <span class="tsd-signature-symbol">=&gt;</span>
+                        <a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a></span
+                      >
+                    </li>
+                    <li>
+                      <span
+                        ><code class="tsd-tag">Optional</code><span class="tsd-kind-parameter">options</span>:
+                        <a href="../interfaces/ReadableOptions.html" class="tsd-signature-type tsd-kind-interface"
+                          >ReadableOptions</a
+                        ><span class="tsd-signature-symbol">&lt;</span
+                        ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a
+                        ><span class="tsd-signature-symbol">&gt;</span></span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <h4 class="tsd-returns-title">
+                  Returns <a href="../types/Owned.html" class="tsd-signature-type tsd-kind-type-alias">Owned</a
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a href="../interfaces/Readable.html" class="tsd-signature-type tsd-kind-interface">Readable</a
+                  ><span class="tsd-signature-symbol">&lt;</span
+                  ><a class="tsd-signature-type tsd-kind-type-parameter" href="#derivedr-2">R</a
+                  ><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span>
+                </h4>
+                <aside class="tsd-sources">
+                  <ul>
+                    <li>
+                      Defined in
+                      <a
+                        href="https://github.com/embrajs/reactivity/blob/9635871d6823066588567dde723af4d8b4f9a240/src/reactivity.ts#L144"
+                        >src/reactivity.ts:144</a
                       >
                     </li>
                   </ul>

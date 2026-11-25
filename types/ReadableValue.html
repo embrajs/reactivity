@@ -70,14 +70,21 @@
             class="tsd-signature-symbol"
             >&lt;</span
           ><span class="tsd-signature-keyword">infer</span> <span class="tsd-kind-type-parameter">V</span
-          ><span class="tsd-signature-symbol">&gt;</span> <span class="tsd-signature-symbol">?</span>
-          <span class="tsd-signature-type tsd-kind-type-parameter">V</span> <span class="tsd-signature-symbol">:</span>
-          <span class="tsd-signature-type">never</span>
+          ><span class="tsd-signature-symbol">&gt;</span><br>    <span class="tsd-signature-symbol">?</span>
+          <span class="tsd-signature-type tsd-kind-type-parameter">V</span><br>    <span class="tsd-signature-symbol"
+            >:</span
+          > <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
+          <span class="tsd-signature-keyword">extends</span> <span class="tsd-signature-type">null</span>
+          <span class="tsd-signature-symbol">|</span> <span class="tsd-signature-type">undefined</span>
+          <span class="tsd-signature-symbol">?</span>
+          <a class="tsd-signature-type tsd-kind-type-parameter" href="#t">T</a>
+          <span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">never</span>
         </div>
         <div class="tsd-comment tsd-typography">
           <p>
             Extracts the value type from a
-            <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a>.
+            <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a>, or preserves
+            <code>null</code> / <code>undefined</code>.
           </p>
         </div>
         <section class="tsd-panel">
@@ -93,7 +100,7 @@
             <li>
               Defined in
               <a
-                href="https://github.com/embrajs/reactivity/blob/5c778fc8d43c2f44f939040990e72188eadaf2ca/src/reactivity.ts#L35"
+                href="https://github.com/embrajs/reactivity/blob/9635871d6823066588567dde723af4d8b4f9a240/src/reactivity.ts#L35"
                 >src/reactivity.ts:35</a
               >
             </li>
