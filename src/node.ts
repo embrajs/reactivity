@@ -122,7 +122,6 @@ function ValueNode<T>(this: ValueNode<T>, value: T, options?: ReadableOptions<T>
   this.flags_ = NodeFlags.None;
   this.subHead_ = null;
   this.subTail_ = null;
-  this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
   this.name = options?.name ?? "";
   this.value_ = value;
   this.equal_ = options?.equal ?? null;
@@ -208,7 +207,6 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
   this.flags_ = NodeFlags.KindComputedNode | NodeFlags.Dirty;
   this.subHead_ = null;
   this.subTail_ = null;
-  this[CONTRACT_SYMBOL] = CONTRACT_VERSION;
   this.name = options?.name ?? "";
   this.value_ = undefined;
   this.equal_ = options?.equal ?? null;
@@ -228,6 +226,8 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
 }
 
 (ValueNode as any).prototype = (ComputedNode as any).prototype = {
+  [CONTRACT_SYMBOL]: CONTRACT_VERSION,
+
   runtime_: runtime,
 
   get value(): any {
