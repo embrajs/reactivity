@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.0-rc.3](https://github.com/embrajs/reactivity/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2026-11-25)
+
+### Features
+
+* support null and undefined in useDerived and useDerivedValue ([9635871](https://github.com/embrajs/reactivity/commit/9635871d6823066588567dde723af4d8b4f9a240))
+
 ## [1.0.0-rc.2](https://github.com/embrajs/reactivity/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2026-11-25)
 
 ### Features
