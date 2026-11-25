@@ -1,0 +1,193 @@
+---
+
+name: embra-reactivity
+description: Guides writing, refactoring, and debugging code using @embra/reactivity, @embra/reactivity/react, and @embra/reactivity/debug (writable, readable, computed, derived, watch, until, reactiveList/Map/Set, useValue, Reactive, inspect, record). Use when working in files that import @embra/reactivity or when building or troubleshooting reactive state graphs with it.
+---
+
+# @embra/reactivity
+
+For exact TypeScript signatures and JSDoc, read `node_modules/@embra/reactivity/dist/{index,react,debug}.d.mts`.
+
+**Not provided** (do not invent or assume): no `Proxy`, no `scope`/`effectScope` (use `@embra/disposable`), no writable `computed`, no general `shallowEqual` (only `arrayShallowEqual`).
+
+## 1. State, Ownership & Equality
+
+- Default to `writable()` and type public boundaries as `Readable<T>` / `Writable<T>` to hide writes and `Owned<T>.dispose()` at the type level. Only use `readable()` when strict runtime write isolation is required.
+- For grouped lifecycle cleanup, `Owned<T>` (`dispose()` / `[Symbol.dispose]()`) and cleanup functions from `watch()` / `subscribe()` compose directly into `@embra/disposable` (`scope.use(...)`), and `scope.dispose` can be returned directly from `watch()`.
+- Never mutate plain objects or arrays in place — replace the value or use a reactive collection.
+
+```ts
+import { arrayShallowEqual, writable, type Readable } from "@embra/reactivity";
+
+// Default: writable() internally, expose Readable<T> at the boundary (hides set & dispose)
+function createCounter(initial = 0): { count$: Readable<number>; inc: () => void; dispose: () => void } {
+  const count$ = writable(initial);
+  return { count$, inc: () => count$.update((n) => n + 1), dispose: () => count$.dispose() };
+}
+
+// Equality defaults to Object.is; pass arrayShallowEqual or false (always notify)
+const items$ = writable<string[]>([], { equal: arrayShallowEqual });
+
+// ❌ Bad: in-place mutation does not notify dependents (no Proxy)
+items$.value.push("a");
+
+// ✅ Good: replace the reference (or use reactiveList)
+items$.update((prev) => [...prev, "a"]);
+```
+
+## 2. Derivations (`derived` vs `computed`)
+
+- Prefer `derived()` when dependencies are fixed (avoids dynamic tracking); use `computed()` for conditional/dynamic dependencies. Both are lazy and auto-disconnect when unobserved.
+- `computed`, `derived`, and `equal` callbacks must be **read-only**.
+
+```ts
+import { computed, derived, writable } from "@embra/reactivity";
+
+const price$ = writable(10);
+const qty$ = writable(2);
+const discount$ = writable(0.1);
+
+// Fixed dependencies -> derived()
+const subtotal$ = derived([price$, qty$], (price, qty) => price * qty);
+
+// Conditional dependencies -> computed()
+const total$ = computed(() => (subtotal$.value > 0 ? subtotal$.value * (1 - discount$.value) : 0));
+
+// ❌ Bad: writing reactive state inside computed/derived/equal
+const bad$ = computed(() => {
+  qty$.set(1);
+  return price$.value;
+});
+```
+
+## 3. Effects, Scheduling & Untracking
+
+- `watch()` and `source.subscribe()` batch in a **microtask by default** (`sync: false`). Pass `{ sync: true }` for synchronous delivery, or call `flush()` to drain pending sync and async queues (e.g. in tests).
+- `source.subscribe()` fires **immediately by default** (`immediate: true`).
+- `source.get` and `source.set` are bound (safe to pass detached). `source.peek()` and `source.update()` are prototype methods — never detach them.
+
+```ts
+import { batch, flush, untrack, until, watch, writable } from "@embra/reactivity";
+
+const count$ = writable(0);
+const step$ = writable(1);
+
+// watch() runs immediately, tracks dynamic reads, and accepts an optional cleanup
+const stopWatch = watch(() => {
+  // ✅ update() reads count$ untracked (no self-loop) while still tracking step$
+  count$.update((n) => n + step$.value);
+  return () => {
+    /* cleanup before next run or dispose */
+  };
+});
+
+// source.subscribe() for a single source; use `function` (not arrow) for `this.dispose()`
+const stopSub = count$.subscribe(
+  function (value) {
+    if (value >= 10) {
+      this.dispose();
+    }
+  },
+  { sync: true, immediate: false },
+);
+
+// Coalesce writes; flush() drains pending sync + async notifications immediately
+batch(() => {
+  step$.set(2);
+  step$.set(3);
+});
+flush();
+
+// Bound methods can be passed detached; prototype methods cannot
+const getCount = count$.get; // ✅ bound
+const loaded = await until(count$.get, { signal: AbortSignal.timeout(5000) }); // ✅
+const peekCount = count$.peek; // ❌ Bad: prototype method loses `this`
+const raw = untrack(count$.get); // ✅ untracked read (or count$.peek())
+```
+
+## 4. Reactive Collections
+
+- Pass `collection.$` (not `collection`) to `derived()` and `.subscribe()`.
+- `reactiveList` does **not** extend `Array` — use `.get(i)`, `.set(i, v)`, `.length`; never index `list[i]` or mutate `list.array`.
+- `onDisposeValue` and `onChanged` fire **synchronously** and must not mutate the source collection (`onChanged` keys may contain duplicates).
+
+```ts
+import { derived, reactiveList, reactiveMap, writable } from "@embra/reactivity";
+
+const todos = reactiveList([writable("task 1")]);
+const stopCleanup = todos.onDisposeValue((item) => item.dispose());
+
+const count$ = derived(todos.$, (list) => list.length); // ✅ pass `.$`
+const first$ = computed(() => todos.get(0)?.value); // ✅ tracked read (not todos[0])
+
+const map = reactiveMap<string, number>();
+map.onChanged((keys) => {
+  const unique = new Set(keys); // deduplicate if needed; do not mutate `map` here
+});
+```
+
+## 5. React (`@embra/reactivity/react`)
+
+- `useValue`, `useComputedValue`, `useDerivedValue`, and `<Reactive>` default to **`sync: true`** (keeps controlled inputs synchronous). `useWatch` defaults to **`sync: false`** and disposes on unmount.
+- `useComputed` / `useDerived` return a stable `Readable<T>` **without** re-rendering the parent; `useComputedValue` / `useDerivedValue` subscribe and return `T`.
+
+```tsx
+import { writable, type Readable } from "@embra/reactivity";
+import { Reactive, useComputed, useValue, useWatch, useWritable } from "@embra/reactivity/react";
+
+function Editor({ external$ }: { external$: Readable<string> | string }) {
+  const text$ = useWritable("");
+  // Stable Readable<number> — Parent does NOT re-render when text$ changes
+  const length$ = useComputed(() => text$.value.length);
+
+  // Non-Readable inputs pass through useValue() unchanged
+  const external = useValue(external$);
+
+  // Async by default; disposes automatically on unmount
+  useWatch(() => {
+    document.title = `${external}: ${length$.value}`;
+  });
+
+  return (
+    <div>
+      {/* Isolates re-renders to only this subtree */}
+      <Reactive>{() => <input value={text$.value} onChange={(e) => text$.set(e.target.value)} />}</Reactive>
+      <Reactive>{() => <span>{length$.value} chars</span>}</Reactive>
+    </div>
+  );
+}
+```
+
+## 6. Debugging (`@embra/reactivity/debug`)
+
+Pass `{ name }` on key nodes. `spy`, `trace`, and `record` are dev-only (no-ops in production).
+
+```ts
+import { computed, flush, writable } from "@embra/reactivity";
+import { formatTree, inspect, record, spy, trace } from "@embra/reactivity/debug";
+
+const a$ = writable(1, { name: "a" });
+const b$ = computed(() => a$.value * 2, { name: "b" });
+
+// 1. Non-intrusive inspection (does not trigger lazy evaluation or tracking)
+console.log(inspect(b$)); // omit arg inside computed/watch for current observer
+console.log(formatTree(b$)); // dependency tree ("deps" default)
+console.log(formatTree(a$, "subs")); // observer tree
+
+// 2. Deterministic plain-text timeline for tests & repro scripts (timestamps off by default)
+const rec = record(() => {
+  a$.set(2);
+  flush();
+});
+console.log(rec.text, rec.stats);
+
+// 3. Live attribution
+const untrace = trace(b$);
+const unspy = spy({ filter: "b" });
+```
+
+## 7. Hard Runtime Contracts
+
+- **Acyclic graph**: dependency cycles throw immediately.
+- **Fail-fast errors**: errors in `computed`, `derived`, `equal`, effects, or `batch()` abort the current batch/flush and leave the failed graph un-repaired — dispose and recreate affected nodes.
+- **No writes after `dispose()`**: disposed sources retain their last value as frozen readable inputs; writing after disposal throws with the original `dispose()` stack trace in dev.

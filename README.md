@@ -18,6 +18,7 @@ Fine-grained reactivity with explicit ownership, built for AI agents.
 - **Zero-cost ownership & loud failures**: Ownership is enforced at the type level with no runtime wrapper overhead—creators receive `Owned<T>`, while passing `Readable<T>` or `Writable<T>` hides `dispose()` with zero extra allocation. Dependency cycles and dev-mode writes to disposed sources fail immediately with the original disposal stack trace.
 - **Predictable scheduling**: `watch()` and `source.subscribe()` batch notifications in a microtask by default, with `{ sync: true }` and `batch()` when synchronous execution is needed.
 - **Text-native observability**: `@embra/reactivity/debug` provides non-intrusive snapshots (`inspect`), plain-text dependency and observer trees (`formatTree`), causal attribution (`spy` / `trace`), and deterministic text timelines (`record`)—designed for tests and AI agent diagnostics, with zero production overhead via package export conditions.
+- **Small & fast**: Compact core with runtime performance on par with mainstream fine-grained signals libraries—lazy evaluation, static `derived()` paths for fixed dependencies, and zero production overhead for dev diagnostics.
 
 ![export size](https://embrajs.github.io/reactivity/assets/export-size.svg)
 
@@ -32,6 +33,16 @@ npm add @embra/reactivity
 | `@embra/reactivity`       | Core primitives (`writable`, `readable`, `computed`, `derived`, `watch`, `until`, `batch`, `flush`, `untrack`) and reactive collections |
 | `@embra/reactivity/react` | React hooks (`useValue`, `useComputed`, `useDerived`, `useWatch`, etc.) and `<Reactive>`                                                |
 | `@embra/reactivity/debug` | Graph inspection, tracing, spying, recording, and Chrome DevTools custom formatter                                                      |
+
+### For AI Agents
+
+- Install the Agent Skill:
+
+  ```sh
+  npx skills add embrajs/reactivity
+  ```
+
+- Or use the plain-text reference [llms.txt](https://embrajs.github.io/reactivity/llms.txt) (also bundled at `node_modules/@embra/reactivity/llms.txt`).
 
 ## Quick Start
 

@@ -7,9 +7,6 @@
     "url": "git+https://github.com/embrajs/reactivity.git"
   },
   "type": "module",
-  "main": "./dist/index.mjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.mts",
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
@@ -30,7 +27,9 @@
   "sideEffects": false,
   "files": [
     "src",
-    "dist"
+    "dist",
+    "skills",
+    "llms.txt"
   ],
   "scripts": {
     "prepublishOnly": "npm run build",
@@ -39,11 +38,11 @@
     "lint:ci": "biome ci",
     "ts-check": "tsc --noEmit",
     "ts-watch": "tsc --noEmit -w",
-    "docs": "typedoc --options typedoc.json && biome format --write --config-path=biome.docs.json --files-ignore-unknown=true docs && export-size-svg",
+    "docs": "typedoc --options typedoc.json && biome format --write --config-path=biome.docs.json --files-ignore-unknown=true docs && export-size-svg && node scripts/gen-llms.ts docs/llms.txt",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --coverage --coverage.reportsDirectory='./docs/coverage'",
-    "build": "node scripts/build.ts",
+    "build": "node scripts/build.ts && node scripts/gen-llms.ts llms.txt",
     "build:min": "MINIFY=true node scripts/build.ts && echo '' && gzip-size dist/index.mjs",
     "release": "commit-and-tag-version"
   },
@@ -66,6 +65,7 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
+    "@embra/esbuild-plugin-prune-branches": "^0.1.0",
     "@hyrious/dts": "^0.3.9",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.6.6",

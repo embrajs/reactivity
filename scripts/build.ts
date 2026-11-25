@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pruneBranchesPlugin } from "@embra/esbuild-plugin-prune-branches";
 import { build as buildDts } from "@hyrious/dts";
-import { build, type Plugin } from "esbuild";
-import ts from "typescript";
+import { build } from "esbuild";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const outdir = join(root, "dist");
@@ -17,42 +17,6 @@ const { name: packageName } = JSON.parse(await readFile(join(root, "package.json
 const cachePath = join(root, "mangle-cache.json");
 const mangleCache: Record<string, string | false> = JSON.parse(await readFile(cachePath, "utf8"));
 const minify = Boolean(process.env.MINIFY);
-
-function devGatePlugin(isDev: boolean): Plugin {
-  return {
-    name: "dev-gate",
-    setup(pluginBuild) {
-      pluginBuild.onLoad({ filter: /\.ts$/ }, async ({ path }) => {
-        const source = await readFile(path, "utf8");
-        if (!source.includes("__DEV__")) {
-          return { contents: source, loader: "ts" };
-        }
-        const sf = ts.createSourceFile(path, source, ts.ScriptTarget.ESNext, false, ts.ScriptKind.TS);
-        const edits: [number, number, string][] = [];
-        const visit = (node: ts.Node): void => {
-          if (ts.isIfStatement(node) && ts.isIdentifier(node.expression) && node.expression.text === "__DEV__") {
-            const branch = isDev ? node.thenStatement : node.elseStatement;
-            const replacement = branch
-              ? ts.isBlock(branch)
-                ? source.slice(branch.getStart(sf) + 1, branch.end - 1).trim()
-                : source.slice(branch.getStart(sf), branch.end)
-              : "";
-            edits.push([node.getStart(sf), node.end, replacement]);
-            return;
-          }
-          ts.forEachChild(node, visit);
-        };
-        ts.forEachChild(sf, visit);
-        let contents = source;
-        for (let i = edits.length - 1; i >= 0; i--) {
-          const [start, end, replacement] = edits[i];
-          contents = contents.slice(0, start) + replacement + contents.slice(end);
-        }
-        return { contents, loader: "ts" };
-      });
-    },
-  };
-}
 
 await rm(outdir, { recursive: true, force: true });
 
@@ -77,7 +41,7 @@ for (const [extension, isDev] of [
     mangleProps: /[^_]_$/,
     mangleQuoted: true,
     mangleCache,
-    plugins: [devGatePlugin(isDev)],
+    plugins: [pruneBranchesPlugin({ __DEV__: isDev })],
     logLevel: "info",
   });
 
