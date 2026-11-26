@@ -383,6 +383,22 @@ function createConsoleListener(options?: SpyConsoleOptions): SpyListener {
   };
 }
 
+function syncRuntimeSpy(): void {
+  const spies = runtime.__dev_spies!;
+  if (spies.size === 0) {
+    runtime.__dev_spy = undefined;
+    runtime.__dev_spies = undefined;
+  } else if (spies.size === 1) {
+    runtime.__dev_spy = spies.values().next().value;
+  } else {
+    runtime.__dev_spy = (event: DevSpyEvent) => {
+      for (const handler of spies) {
+        handler(event);
+      }
+    };
+  }
+}
+
 /**
  * Subscribes to reactivity lifecycle events in development builds.
  * Call without a listener to log events to the console (cascading groups by default).
@@ -400,13 +416,15 @@ export function spy(listenerOrOptions?: SpyListener | SpyConsoleOptions, maybeOp
         : { fn: createConsoleListener(listenerOrOptions), filter: listenerOrOptions?.filter };
 
     if (listeners.size === 0) {
-      runtime.__dev_spy = dispatchSpyEvent;
+      (runtime.__dev_spies ??= new Set()).add(dispatchSpyEvent);
+      syncRuntimeSpy();
     }
     listeners.add(entry);
 
     return () => {
       if (listeners.delete(entry) && listeners.size === 0) {
-        runtime.__dev_spy = undefined;
+        runtime.__dev_spies!.delete(dispatchSpyEvent);
+        syncRuntimeSpy();
       }
     };
   } else {

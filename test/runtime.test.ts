@@ -1,8 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import * as first from "../src";
+import * as firstDebug from "../src/debug";
+import { runtime } from "../src/runtime";
 
 vi.resetModules();
 const second = await import("../src");
+const secondDebug = await import("../src/debug");
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -190,5 +193,43 @@ describe("shared runtime", () => {
     ]);
     stopNextA();
     stopNextB();
+  });
+
+  it("shares runtime.__dev_spy across module copies without overwriting or premature cleanup", () => {
+    expect(firstDebug.spy).not.toBe(secondDebug.spy);
+    expect(runtime.__dev_spy).toBeUndefined();
+    expect(runtime.__dev_spies).toBeUndefined();
+
+    const firstEvents: firstDebug.SpyEvent[] = [];
+    const secondEvents: firstDebug.SpyEvent[] = [];
+    const stopFirst = firstDebug.spy((e) => firstEvents.push(e));
+    const stopSecond = secondDebug.spy((e) => secondEvents.push(e));
+
+    expect(runtime.__dev_spies?.size).toBe(2);
+    expect(runtime.__dev_spy).toBeTypeOf("function");
+
+    const a = first.writable(0);
+    const b = second.writable(0);
+    a.set(1);
+    b.set(1);
+
+    expect(firstEvents.map((e) => e.type)).toEqual(["set", "set"]);
+    expect(secondEvents.map((e) => e.type)).toEqual(["set", "set"]);
+
+    stopFirst();
+    expect(runtime.__dev_spies?.size).toBe(1);
+    expect(runtime.__dev_spy).toBeTypeOf("function");
+
+    a.set(2);
+    b.set(2);
+    expect(firstEvents).toHaveLength(2);
+    expect(secondEvents).toHaveLength(4);
+
+    stopSecond();
+    expect(runtime.__dev_spy).toBeUndefined();
+    expect(runtime.__dev_spies).toBeUndefined();
+
+    a.dispose();
+    b.dispose();
   });
 });

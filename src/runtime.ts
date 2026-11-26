@@ -47,6 +47,8 @@ export interface Runtime {
   __dev_currentComputation?: number;
   /** Development-only spy hook; omitted from production evaluation. */
   __dev_spy?: (event: DevSpyEvent) => void;
+  /** Development-only spy handlers shared across module copies; omitted from production evaluation. */
+  __dev_spies?: Set<(event: DevSpyEvent) => void>;
 }
 
 export const runtime = (((globalThis as EmbraReactivityGlobals)[CONTRACT_SYMBOL] ??= {})[CONTRACT_VERSION] ??= {
