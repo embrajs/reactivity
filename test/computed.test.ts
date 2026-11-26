@@ -22,6 +22,37 @@ describe("computed", () => {
     expect(compute).toHaveBeenCalledTimes(2);
   });
 
+  it("caches within the same turn and disconnects after a microtask when unobserved", async () => {
+    const source = writable(1);
+    const compute = vi.fn(() => source.get() * 2);
+    const value = computed(compute);
+    expect(value.get()).toBe(2);
+    expect(value.peek()).toBe(2);
+    expect(compute).toHaveBeenCalledOnce();
+
+    await Promise.resolve();
+    expect(value.get()).toBe(2);
+    expect(compute).toHaveBeenCalledTimes(2);
+  });
+
+  it("disconnects chained unobserved computeds after a microtask", async () => {
+    const source = writable(1);
+    const c1Spy = vi.fn(() => source.get() * 2);
+    const c1 = computed(c1Spy);
+    const c2Spy = vi.fn(() => c1.get() + 1);
+    const c2 = computed(c2Spy);
+
+    expect(c1.get()).toBe(2);
+    expect(c2.get()).toBe(3);
+    expect(c1Spy).toHaveBeenCalledOnce();
+    expect(c2Spy).toHaveBeenCalledOnce();
+
+    await Promise.resolve();
+    expect(c2.peek()).toBe(3);
+    expect(c1Spy).toHaveBeenCalledTimes(2);
+    expect(c2Spy).toHaveBeenCalledTimes(2);
+  });
+
   it("caches a constant without dependencies", () => {
     const compute = vi.fn(() => ({ value: 1 }));
     const value = computed(compute);

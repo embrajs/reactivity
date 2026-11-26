@@ -16,6 +16,7 @@ export enum NodeFlags {
   QueuedSyncSource = 1 << 7,
 
   // Unvisited links are removed after each collection, so one alternating bit is sufficient.
+  QueuedDisconnect = 1 << 8,
   TrackPhase = 1 << 9,
   DepsStatic = 1 << 10,
   QueuedAsyncSource = 1 << 11,

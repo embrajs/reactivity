@@ -39,21 +39,20 @@ describe.each([
     expect(value.get()).toBe(2);
   });
 
-  it("keeps an evaluated observer connected until it is disposed", async () => {
+  it("disconnects an unobserved node after a microtask without dispose", async () => {
     const source = writable(0);
     const compute = vi.fn((value: number) => value + 1);
     const ref = (() => {
       const value = create(source, compute);
       expect(value.get()).toBe(1);
+      expect(value.peek()).toBe(1);
+      expect(compute).toHaveBeenCalledOnce();
+      source.set(1);
+      expect(value.get()).toBe(2);
+      expect(compute).toHaveBeenCalledTimes(2);
       return new WeakRef(value);
     })();
 
-    await collect();
-    expect(ref.deref()).toBeDefined();
-    source.set(1);
-    expect(compute).toHaveBeenCalledOnce();
-    expect(ref.deref()!.get()).toBe(2);
-    ref.deref()!.dispose();
     await collect();
     expect(ref.deref()).toBeUndefined();
     source.set(2);
@@ -125,7 +124,7 @@ describe.each([
     expect(compute).toHaveBeenCalledTimes(2);
   });
 
-  it("keeps a computed observer connected after the last effect is cancelled", async () => {
+  it("disconnects an unobserved computed observer after a microtask even while upstream is subscribed", async () => {
     const source = writable(0);
     const first = create(source, (value) => value + 1);
     const stop = first.subscribe(() => {}, { sync: true });
@@ -136,13 +135,37 @@ describe.each([
     })();
 
     await collect();
-    expect(ref.deref()).toBeDefined();
+    expect(ref.deref()).toBeUndefined();
     stop();
     source.set(1);
-    expect(ref.deref()!.get()).toBe(3);
-    ref.deref()!.dispose();
-    await collect();
-    expect(ref.deref()).toBeUndefined();
+  });
+
+  it("keeps a node connected across a microtask if subscribed in the same turn", async () => {
+    const source = writable(0);
+    const compute = vi.fn((value: number) => value + 1);
+    const value = create(source, compute);
+    expect(value.get()).toBe(1);
+    const seen: number[] = [];
+    const stop = value.subscribe((next) => seen.push(next), { sync: true });
+    expect(compute).toHaveBeenCalledOnce();
+
+    await Promise.resolve();
+    expect(value.get()).toBe(1);
+    expect(compute).toHaveBeenCalledOnce();
+    source.set(1);
+    expect(seen).toEqual([1, 2]);
+    expect(compute).toHaveBeenCalledTimes(2);
+    stop();
+  });
+
+  it("handles dispose before the deferred disconnect microtask runs", async () => {
+    const source = writable(0);
+    const compute = vi.fn((value: number) => value + 1);
+    const value = create(source, compute);
+    expect(value.peek()).toBe(1);
+    value.dispose();
+    await Promise.resolve();
+    expect(compute).toHaveBeenCalledOnce();
   });
 
   it("disconnects an upstream only after its last computed observer leaves", async () => {

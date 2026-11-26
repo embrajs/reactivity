@@ -27,10 +27,10 @@ export function useValue<T>(source: T, options?: UseValueOptions): UnwrapReadabl
     if (readable === null) {
       return null;
     }
-    let snapshot: Snapshot<unknown> = { value: readable.get() };
+    let snapshot: Snapshot<unknown> | null = null;
     const getSnapshot = (): Snapshot<unknown> => {
       const next = readable.get();
-      if (!Object.is(next, snapshot.value)) {
+      if (snapshot === null || !Object.is(next, snapshot.value)) {
         snapshot = { value: next };
       }
       return snapshot;

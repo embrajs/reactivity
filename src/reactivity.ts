@@ -97,9 +97,12 @@ export function readable<T = any>(value: T, config?: ReadableOptions<T>): [Owned
 }
 
 /**
- * Computes lazily and tracks its {@link Readable} inputs. Computations and equality callbacks are
- * read-only. A detached node recomputes on its next read. Failed computations are
- * not repaired automatically; dispose and recreate the affected graph.
+ * Computes lazily and caches within the current synchronous turn while tracking its
+ * {@link Readable} inputs. Unobserved nodes automatically disconnect in a microtask,
+ * allowing unused nodes to be garbage-collected without calling {@link Owned.dispose | dispose()}.
+ * Computations and equality callbacks are read-only. A detached node recomputes on
+ * its next read. Failed computations are not repaired automatically; dispose and
+ * recreate the affected graph.
  *
  * @category Primitives
  */
@@ -115,6 +118,7 @@ function readDep(dep: Source | null | undefined): any {
  * Creates a lazy {@link computed} node with an explicitly declared {@link Readable} dependency.
  * Pass a reactive collection's `$` readable when depending on a collection.
  * `null` and `undefined` sources pass through as `null` / `undefined` without subscribing.
+ * Caches within the current synchronous turn; unobserved nodes disconnect in a microtask.
  *
  * @category Primitives
  */

@@ -211,10 +211,13 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
   this.value_ = undefined;
   this.equal_ = options?.equal ?? null;
   this.get = () => {
+    const observer = this.runtime_.currentObserver_;
     if (this.flags_ & (NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running)) {
       updateComputed(this);
+      if (observer === null && this.subHead_ === null && !(this.flags_ & NodeFlags.Disposed)) {
+        scheduleDisconnect(this);
+      }
     }
-    const observer = this.runtime_.currentObserver_;
     if (observer !== null && !(this.flags_ & NodeFlags.Disposed)) {
       trackDependency(this, observer);
     }
@@ -246,6 +249,9 @@ function ComputedNode<T>(this: ComputedNode<T>, compute: (...values: any[]) => T
       this.flags_ & (NodeFlags.Dirty | NodeFlags.Pending | NodeFlags.Running)
     ) {
       updateComputed(this as ComputedNode);
+      if (this.subHead_ === null && !(this.flags_ & NodeFlags.Disposed)) {
+        scheduleDisconnect(this as ComputedNode);
+      }
     }
     return this.value_;
   },
@@ -374,16 +380,42 @@ function different(equal: Equality, previous: any, next: any): boolean {
   }
 }
 
+const sleepQueue: ComputedNode[] = [];
+let sleepScheduled = false;
+
+function scheduleDisconnect(node: ComputedNode): void {
+  if (!(node.flags_ & NodeFlags.QueuedDisconnect)) {
+    node.flags_ |= NodeFlags.QueuedDisconnect;
+    sleepQueue.push(node);
+    if (!sleepScheduled) {
+      sleepScheduled = true;
+      queueMicrotask(flushSleepQueue);
+    }
+  }
+}
+
+function flushSleepQueue(): void {
+  sleepScheduled = false;
+  for (let i = 0; i < sleepQueue.length; i++) {
+    const node = sleepQueue[i];
+    node.flags_ &= ~NodeFlags.QueuedDisconnect;
+    const deps = releaseUnusedSource(node);
+    if (deps !== null) {
+      unlinkDependencies(deps);
+    }
+  }
+  sleepQueue.length = 0;
+}
+
 function releaseUnusedSource(source: Source): Link | null {
   const flags = source.flags_;
   if (
     (flags & (NodeFlags.KindComputedNode | NodeFlags.Disposed)) === NodeFlags.KindComputedNode &&
     source.subHead_ === null
   ) {
-    const node = source as ComputedNode;
-    node.flags_ = (flags | NodeFlags.Dirty) & ~NodeFlags.Connected;
-    const deps = node.depHead_;
-    node.depHead_ = node.depTail_ = null;
+    (source as ComputedNode).flags_ = (flags | NodeFlags.Dirty) & ~NodeFlags.Connected;
+    const deps = (source as ComputedNode).depHead_;
+    (source as ComputedNode).depHead_ = (source as ComputedNode).depTail_ = null;
     return deps;
   }
   return null;
