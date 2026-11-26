@@ -118,7 +118,8 @@
                     <a href="../interfaces/Readable.html" class="tsd-kind-interface">Readable</a> dependency. Pass a
                     reactive collection's <code>$</code> readable when depending on a collection.
                     <code>null</code> and <code>undefined</code> sources pass through as <code>null</code> /
-                    <code>undefined</code> without subscribing.
+                    <code>undefined</code> without subscribing. Caches within the current synchronous turn; unobserved
+                    nodes disconnect in a microtask.
                   </p>
                 </div>
                 <section class="tsd-panel">
@@ -181,8 +182,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/77a5f0738f0d12df2259e9ebc75dedd69bca8cc0/src/reactivity.ts#L121"
-                        >src/reactivity.ts:121</a
+                        href="https://github.com/embrajs/reactivity/blob/27a1101e1247ef4c86c40ca6d93ac9d295f69985/src/reactivity.ts#L125"
+                        >src/reactivity.ts:125</a
                       >
                     </li>
                   </ul>
@@ -318,8 +319,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/77a5f0738f0d12df2259e9ebc75dedd69bca8cc0/src/reactivity.ts#L132"
-                        >src/reactivity.ts:132</a
+                        href="https://github.com/embrajs/reactivity/blob/27a1101e1247ef4c86c40ca6d93ac9d295f69985/src/reactivity.ts#L136"
+                        >src/reactivity.ts:136</a
                       >
                     </li>
                   </ul>
@@ -463,8 +464,8 @@
                     <li>
                       Defined in
                       <a
-                        href="https://github.com/embrajs/reactivity/blob/77a5f0738f0d12df2259e9ebc75dedd69bca8cc0/src/reactivity.ts#L144"
-                        >src/reactivity.ts:144</a
+                        href="https://github.com/embrajs/reactivity/blob/27a1101e1247ef4c86c40ca6d93ac9d295f69985/src/reactivity.ts#L148"
+                        >src/reactivity.ts:148</a
                       >
                     </li>
                   </ul>
